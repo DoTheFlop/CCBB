@@ -1,4 +1,4 @@
-package com.D104.ccbb.reComment.domain;
+package com.D104.ccbb.re_comment.domain;
 
 import java.time.LocalDateTime;
 
