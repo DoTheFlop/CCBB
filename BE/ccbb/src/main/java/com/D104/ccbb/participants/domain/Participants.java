@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.D104.ccbb.event.domain.Event;
+import com.D104.ccbb.goods.domain.Goods;
+import com.D104.ccbb.user.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,5 +33,17 @@ public class Participants {
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User userId;
+
+	@ManyToOne
+	@JoinColumn(name = "event_id", nullable = false)
+	private Event eventId;
+
+	@ManyToOne
+	@JoinColumn(name = "goods_id", nullable = false)
+	private Goods goodsId;
 
 }
