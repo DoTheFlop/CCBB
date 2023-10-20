@@ -7,6 +7,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.D104.ccbb.user.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,4 +51,13 @@ public class Vote {
 
 	@Column(name = "tier_limit", nullable = false, columnDefinition = "varchar(10)")
 	private String tier;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id1", nullable = false)
+	private User userId1;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id2", nullable = false)
+	private User userId2;
+
 }

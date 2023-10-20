@@ -5,6 +5,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.D104.ccbb.event.domain.Event;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +35,9 @@ public class Goods {
 
 	@Column(nullable = false, columnDefinition = "int")
 	private Integer price;
+
+	@ManyToOne
+	@JoinColumn(name = "event_id", nullable = false)
+	private Event eventId;
 
 }

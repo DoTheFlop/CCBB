@@ -7,6 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import com.D104.ccbb.comment.domain.Comment;
+import com.D104.ccbb.user.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,4 +35,12 @@ public class ReComment {
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
+
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User userId;
+
+	@ManyToOne
+	@JoinColumn(name = "comment_id", nullable = false)
+	private Comment commentId;
 }

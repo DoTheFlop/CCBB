@@ -7,6 +7,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
+import com.D104.ccbb.post.domain.Post;
+import com.D104.ccbb.user.domain.User;
+import com.D104.ccbb.vote.domain.Vote;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,7 +40,16 @@ public class PaymentHistory {
 	@Column(name = "pay_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime payDate;
 
-	// 유저 ID
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User userId;
 
-	// 투표 ID
+	@ManyToOne
+	@JoinColumn(name = "vote_id", nullable = false)
+	private Vote voteId;
+
+	@OneToOne
+	@JoinColumn(name = "post_id", nullable = false)
+	private Post postId;
+
 }
