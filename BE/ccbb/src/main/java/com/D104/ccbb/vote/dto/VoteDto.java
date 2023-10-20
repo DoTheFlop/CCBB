@@ -23,6 +23,9 @@ public class VoteDto {
 	private Boolean accept2;
 	private LocalDateTime deadline;
 	private String tier;
+	private Integer userId1;
+	private Integer userId2;
+	private Integer postId;
 
 	public static VoteDto fromEntity(Vote vote) {
 		return VoteDto.builder()
@@ -35,6 +38,9 @@ public class VoteDto {
 			.accept2(vote.getAccept2())
 			.deadline(vote.getDeadline())
 			.tier(vote.getTier())
+			.userId1(vote.getUserId1().getUserId())
+			.userId2(vote.getUserId2().getUserId())
+			.postId(vote.getPostId().getPostId())
 			.build();
 	}
 }

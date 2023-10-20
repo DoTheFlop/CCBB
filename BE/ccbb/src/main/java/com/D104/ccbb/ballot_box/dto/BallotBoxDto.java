@@ -1,8 +1,5 @@
 package com.D104.ccbb.ballot_box.dto;
 
-import com.D104.ccbb.user.domain.User;
-import com.D104.ccbb.vote.domain.Vote;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BalloBoxDto {
+public class BallotBoxDto {
 
 	private Integer ballotBoxId;
 	private Integer pick;
-	private User userId;
-	private Vote voteId;
+	private Integer userId;
+	private Integer voteId;
 
 }
