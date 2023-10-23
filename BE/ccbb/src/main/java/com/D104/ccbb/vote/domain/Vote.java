@@ -51,8 +51,11 @@ public class Vote {
 	@Column(name = "vote_deadline", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime deadline;
 
-	@Column(name = "tier_limit", nullable = false, columnDefinition = "varchar(10)")
+	@Column(name = "tier_limit", columnDefinition = "varchar(10)")
 	private String tier;
+
+	@Column(columnDefinition = "varchar(100)")
+	private String promise;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
