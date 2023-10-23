@@ -8,8 +8,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.user.service.UserService;
@@ -67,12 +67,17 @@ public class OAuthController {
 	}
 
 	@GetMapping("/kakao/me")
-	public ResponseEntity<String> kakaoLoginUserToken(@RequestParam("access_token") String accessToken,
-		@RequestParam("refresh_token") String refreshToken) {
+	public ResponseEntity<String> kakaoLoginUserToken(@RequestHeader String accessToken,
+		@RequestHeader(required = false) String refreshToken) {
 		log.info("accessToken : {}", accessToken);
 		log.info("refreshToken: {}", refreshToken);
 
-		userService.getUserInfoFromKakao(accessToken);
-		return new ResponseEntity<>("", HttpStatus.OK);
+		try {
+			String userInfoFromKakao = userService.getUserInfoFromKakao(accessToken);
+			return new ResponseEntity<>(userInfoFromKakao, HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
+
 }
