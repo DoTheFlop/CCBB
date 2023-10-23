@@ -1,5 +1,7 @@
 package com.D104.ccbb.event.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +28,12 @@ public class EventService {
 			.startDate(eventDto.getStartDate())
 			.endDate(eventDto.getEndDate())
 			.build();
+		eventRepo.save(event);
+	}
+
+	@Transactional
+	public List<Event> getEventList() {
+		return eventRepo.findAll();
 	}
 
 }
