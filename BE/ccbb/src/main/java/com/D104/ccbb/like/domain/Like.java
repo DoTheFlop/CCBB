@@ -32,7 +32,7 @@ public class Like {
 	@Column(name = "like_id", nullable = false)
 	private Integer likeId;
 
-	@Column(nullable = false, columnDefinition = "boolean")
+	@Column(nullable = false, columnDefinition = "tinyint")
 	private Boolean type;
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
@@ -43,15 +43,15 @@ public class Like {
 	private User userId;
 
 	@ManyToOne
-	@JoinColumn(name = "post_id", nullable = false)
+	@JoinColumn(name = "post_id")
 	private Post postId;
 
 	@ManyToOne
-	@JoinColumn(name = "comment_id", nullable = false)
+	@JoinColumn(name = "comment_id")
 	private Comment commentId;
 
 	@ManyToOne
-	@JoinColumn(name = "re_comment_id", nullable = false)
+	@JoinColumn(name = "re_comment_id")
 	private ReComment reCommentId;
 
 }

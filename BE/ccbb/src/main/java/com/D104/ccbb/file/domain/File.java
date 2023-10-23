@@ -41,16 +41,19 @@ public class File {
 	@Column(nullable = false, columnDefinition = "varchar(10)")
 	private String type;
 
+	@Column(name = "is_promise", nullable = false, columnDefinition = "tinyint")
+	private Boolean isPromise;
+
 	@ManyToOne
-	@JoinColumn(name = "post_id", nullable = false)
+	@JoinColumn(name = "post_id")
 	private Post postId;
 
 	@ManyToOne
-	@JoinColumn(name = "goods_id", nullable = false)
+	@JoinColumn(name = "goods_id")
 	private Goods goodsId;
 
 	@ManyToOne
-	@JoinColumn(name = "event_id", nullable = false)
+	@JoinColumn(name = "event_id")
 	private Event eventId;
 
 }
