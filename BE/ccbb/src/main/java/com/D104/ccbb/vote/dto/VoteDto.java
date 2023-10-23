@@ -17,10 +17,10 @@ public class VoteDto {
 	private Integer voteId;
 	private Integer vote1;
 	private Integer vote2;
-	private Integer neutrality;
 	private String argument;
 	private Boolean accept1;
 	private Boolean accept2;
+	private LocalDateTime voteStart;
 	private LocalDateTime deadline;
 	private String tier;
 	private String promise;
@@ -34,10 +34,10 @@ public class VoteDto {
 			.voteId(vote.getVoteId())
 			.vote1(vote.getVote1())
 			.vote2(vote.getVote2())
-			.neutrality(vote.getNeutrality())
 			.argument(vote.getArgument())
 			.accept1(vote.getAccept1())
 			.accept2(vote.getAccept2())
+			.voteStart(vote.getVoteStart())
 			.deadline(vote.getDeadline())
 			.tier(vote.getTier())
 			.promise(vote.getPromise())

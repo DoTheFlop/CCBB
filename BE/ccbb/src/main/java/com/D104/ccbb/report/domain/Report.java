@@ -1,4 +1,4 @@
-package com.D104.ccbb.repot.domain;
+package com.D104.ccbb.report.domain;
 
 import java.time.LocalDateTime;
 
@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Repot {
+public class Report {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

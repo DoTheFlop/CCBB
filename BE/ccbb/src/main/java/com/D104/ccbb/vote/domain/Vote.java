@@ -36,17 +36,17 @@ public class Vote {
 	@Column(name = "vote_user2", nullable = false, columnDefinition = "int")
 	private Integer vote2;
 
-	@Column(nullable = false, columnDefinition = "int")
-	private Integer neutrality;
-
 	@Column(nullable = false, columnDefinition = "varchar(200)")
 	private String argument;
 
-	@Column(name = "user1_accept", nullable = false, columnDefinition = "tinyint")
+	@Column(name = "user1_accept", nullable = false)
 	private Boolean accept1;
 
-	@Column(name = "user2_accept", nullable = false, columnDefinition = "tinyint")
+	@Column(name = "user2_accept", nullable = false)
 	private Boolean accept2;
+
+	@Column(name = "vote_start", nullable = false, columnDefinition = "DATETIME")
+	private LocalDateTime voteStart;
 
 	@Column(name = "vote_deadline", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime deadline;

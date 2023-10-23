@@ -1,4 +1,4 @@
-package com.D104.ccbb.repot.dto;
+package com.D104.ccbb.report.dto;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RepotDto {
+public class ReportDto {
 	private Integer reportId;
 	private LocalDateTime createDate;
 	private Integer userId;
