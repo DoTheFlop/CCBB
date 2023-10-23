@@ -19,7 +19,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.D104.ccbb.jwt.filter.JwtAuthenticationFilter;
 import com.D104.ccbb.jwt.service.JwtTokenService;
-import com.D104.ccbb.user.service.OAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenService jwtTokenService;
 
 	@Bean
@@ -50,17 +48,10 @@ public class SecurityConfig {
 			// 권한 설정
 			.authorizeRequests()
 			// 로그인, 회원가입, 파일 접근은 권한 개방
-			.antMatchers("/", "/user/login", "/user/signup", "/oauth/*", "/file/*").permitAll()
+			.antMatchers("/**", "/user/login", "/user/signup", "/oauth/**", "/file/*").permitAll()
 			// 그 이외에는 인증된 유저만 접근
 			.anyRequest().authenticated()
-
-			// OAuth 인증
 			.and()
-			.oauth2Login(oauth2Configurer -> oauth2Configurer
-				.loginPage("/login")
-				.successHandler(successHandler())
-				.userInfoEndpoint()
-				.userService(oAuth2UserService))
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
 		// 이후 jwt 인증을 위한 커스텀 필터 등록
 		return http.build();
