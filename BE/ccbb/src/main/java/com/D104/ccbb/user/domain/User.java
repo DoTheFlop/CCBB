@@ -1,5 +1,6 @@
 package com.D104.ccbb.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -37,11 +38,11 @@ public class User {
 	@Column(nullable = false, columnDefinition = "varchar(1000)")
 	private String password;
 
-	@Column(name = "Field", nullable = false, columnDefinition = "tinyint")
-	private Boolean field;
+	@Column(name = "sex", nullable = false)
+	private Boolean sex;
 
-	@Column(name = "birthyear", columnDefinition = "DATETIME")
-	private LocalDateTime birthYear;
+	@Column(name = "birthyear", columnDefinition = "DATE")
+	private LocalDate birthYear;
 
 	@Column(name = "riot_token", columnDefinition = "varchar(1000)")
 	private String riot;

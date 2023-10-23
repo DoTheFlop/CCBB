@@ -9,9 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 
-import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.vote.domain.Vote;
 
@@ -34,7 +32,7 @@ public class PaymentHistory {
 	@Column(nullable = false, columnDefinition = "int")
 	private Integer amount;
 
-	@Column(name = "is_returned", nullable = false, columnDefinition = "tinyint")
+	@Column(name = "is_returned", nullable = false)
 	private Boolean isReturned;
 
 	@Column(name = "pay_date", nullable = false, columnDefinition = "DATETIME")
@@ -47,9 +45,5 @@ public class PaymentHistory {
 	@ManyToOne
 	@JoinColumn(name = "vote_id", nullable = false)
 	private Vote voteId;
-
-	@OneToOne
-	@JoinColumn(name = "post_id", nullable = false)
-	private Post postId;
 
 }

@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.post.domain.Post;
@@ -25,6 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "likes")
 public class Like {
 
 	@Id
@@ -32,7 +34,7 @@ public class Like {
 	@Column(name = "like_id", nullable = false)
 	private Integer likeId;
 
-	@Column(nullable = false, columnDefinition = "tinyint")
+	@Column(nullable = false)
 	private Boolean type;
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
