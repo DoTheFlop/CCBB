@@ -25,10 +25,10 @@ public class Event {
 	@Column(name = "event_id", nullable = false)
 	private Integer eventId;
 
-	@Column(nullable = false, columnDefinition = "varchar(500)")
+	@Column(columnDefinition = "varchar(500)")
 	private String title;
 
-	@Column(nullable = false, columnDefinition = "varchar(2000)")
+	@Column(columnDefinition = "varchar(2000)")
 	private String content;
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")

@@ -24,6 +24,7 @@ public class VoteDto {
 	private LocalDateTime deadline;
 	private String tier;
 	private String promise;
+	private Integer deposit;
 	private Integer userId1;
 	private Integer userId2;
 	private Integer postId;
@@ -40,6 +41,7 @@ public class VoteDto {
 			.deadline(vote.getDeadline())
 			.tier(vote.getTier())
 			.promise(vote.getPromise())
+			.deposit(vote.getDeposit())
 			.userId1(vote.getUserId1().getUserId())
 			.userId2(vote.getUserId2().getUserId())
 			.postId(vote.getPostId().getPostId())
