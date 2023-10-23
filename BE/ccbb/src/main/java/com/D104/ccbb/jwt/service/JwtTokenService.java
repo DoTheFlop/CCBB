@@ -47,7 +47,7 @@ public class JwtTokenService implements InitializingBean {
 	}
 
 	// 토큰 생성
-	public String createToken(String userId) {
+	public String createToken(int userId) {
 
 		long now = (new Date()).getTime();
 		Date validity = new Date(now + this.tokenValidityInMilliseconds);
