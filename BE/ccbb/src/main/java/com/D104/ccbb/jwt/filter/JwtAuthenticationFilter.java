@@ -29,6 +29,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 		ServletException {
 		HttpServletRequest httpServletRequest = (HttpServletRequest)servletRequest;
 		String jwt = resolveToken(httpServletRequest);
+		log.info("jwt: {}", jwt);
 		String requestURI = httpServletRequest.getRequestURI();
 
 		if (StringUtils.hasText(jwt) && jwtTokenService.validateToken(jwt)) {
