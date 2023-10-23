@@ -10,7 +10,7 @@ import com.D104.ccbb.vote.repo.VoteRepo;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class VoteService {
 
@@ -22,12 +22,13 @@ public class VoteService {
 			.voteId(voteDto.getVoteId())
 			.vote1(voteDto.getVote1())
 			.vote2(voteDto.getVote2())
-			.neutrality(voteDto.getNeutrality())
 			.argument(voteDto.getArgument())
 			.accept1(voteDto.getAccept1())
 			.accept2(voteDto.getAccept2())
+			.voteStart(voteDto.getVoteStart())
 			.deadline(voteDto.getDeadline())
 			.tier(voteDto.getTier())
+			.promise(voteDto.getPromise())
 			.build();
 
 		voteRepo.save(vote);
