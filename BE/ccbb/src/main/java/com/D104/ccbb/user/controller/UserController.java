@@ -17,6 +17,6 @@ public class UserController {
 	@RequestMapping("/login")
 	public String login() {
 
-		return jwtTokenService.createToken("1");
+		return jwtTokenService.createToken(1);
 	}
 }
