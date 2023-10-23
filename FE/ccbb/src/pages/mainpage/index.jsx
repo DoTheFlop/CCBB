@@ -1,5 +1,13 @@
+import Headermain from "../../component/headers/headermain"
+
+
+
+
 export default function MainPage() {
     return (
-        <h1>ccbb</h1>
+        <>
+            <Headermain/>
+        </>
+        
     )
 }
