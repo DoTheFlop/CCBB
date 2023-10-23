@@ -57,6 +57,9 @@ public class Vote {
 	@Column(columnDefinition = "varchar(100)")
 	private String promise;
 
+	@Column(columnDefinition = "int")
+	private Integer deposit;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
 	private User userId1;
