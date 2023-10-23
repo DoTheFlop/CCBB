@@ -21,7 +21,7 @@ public class OAuthController {
 	@GetMapping("/kakao")
 	public String kakaoLogin() {
 		// 카카오 OAuth2 흐름 시작
-		return "redirect:/oauth2/authorization/kakao";
+		return "redirect:https://kauth.kakao.com/oauth2/authorization/kakao";
 	}
 
 	@GetMapping("/kakao/callback")

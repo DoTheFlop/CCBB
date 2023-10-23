@@ -1,11 +1,17 @@
 package com.D104.ccbb.config;
 
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -13,6 +19,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.D104.ccbb.jwt.filter.JwtAuthenticationFilter;
 import com.D104.ccbb.jwt.service.JwtTokenService;
+import com.D104.ccbb.user.service.OAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+	private final OAuth2UserService oAuth2UserService;
 	private final JwtTokenService jwtTokenService;
 
 	@Bean
@@ -32,7 +40,7 @@ public class SecurityConfig {
 			.and()
 			.csrf().disable()
 
-			//세선 사용안하므로 비활성
+			//세션 사용안하므로 비활성
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			// 시큐리티 기본 로그인 끄기
@@ -45,10 +53,16 @@ public class SecurityConfig {
 			.antMatchers("/", "/user/login", "/user/signup", "/oauth/*", "/file/*").permitAll()
 			// 그 이외에는 인증된 유저만 접근
 			.anyRequest().authenticated()
+
+			// OAuth 인증
 			.and()
+			.oauth2Login(oauth2Configurer -> oauth2Configurer
+				.loginPage("/login")
+				.successHandler(successHandler())
+				.userInfoEndpoint()
+				.userService(oAuth2UserService))
 			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
 		// 이후 jwt 인증을 위한 커스텀 필터 등록
-
 		return http.build();
 	}
 
@@ -61,5 +75,22 @@ public class SecurityConfig {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", corsConfiguration);
 		return source;
+	}
+
+	@Bean
+	public AuthenticationSuccessHandler successHandler() {
+		return ((request, response, authentication) -> {
+			DefaultOAuth2User defaultOAuth2User = (DefaultOAuth2User)authentication.getPrincipal();
+
+			String id = defaultOAuth2User.getAttributes().get("id").toString();
+			String body = String.format("{id: %s}", id);
+
+			response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+
+			PrintWriter writer = response.getWriter();
+			writer.println(body);
+			writer.flush();
+		});
 	}
 }
