@@ -1,19 +1,12 @@
 package com.D104.ccbb.jwt.service;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,7 +30,7 @@ public class JwtTokenService implements InitializingBean {
 	@Value("${jwt.secretKey}")
 	private String secret;
 
-	private final long tokenValidityInMilliseconds = 86400;
+	private final long tokenValidityInMilliseconds = 8640000;
 	private Key key;
 
 	@Override
@@ -48,7 +41,7 @@ public class JwtTokenService implements InitializingBean {
 
 	// 토큰 생성
 	public String createToken(int userId) {
-
+		log.info("createToken userId: {}", userId);
 		long now = (new Date()).getTime();
 		Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
@@ -61,7 +54,8 @@ public class JwtTokenService implements InitializingBean {
 	}
 
 	// todo: 추후 claim에서 값 가져오는 메서드로 수정할 것
-	public Authentication getAuthentication(String token) {
+	public int getUserId(String token) {
+		log.info(token);
 		Claims claims = Jwts
 			.parserBuilder()
 			.setSigningKey(key)
@@ -69,14 +63,14 @@ public class JwtTokenService implements InitializingBean {
 			.parseClaimsJws(token)
 			.getBody();
 
-		Collection<? extends GrantedAuthority> authorities =
-			Arrays.stream(claims.get("").toString().split(","))
-				.map(SimpleGrantedAuthority::new)
-				.collect(Collectors.toList());
+		return (int)claims.get("userId");
+	}
 
-		User principal = new User(claims.getSubject(), "", authorities);
-
-		return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+	public String extractToken(String token) {
+		if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+			return token.substring(7);
+		}
+		return null;
 	}
 
 	// 토큰이 유효한지 검증
