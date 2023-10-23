@@ -42,10 +42,10 @@ public class Vote {
 	@Column(nullable = false, columnDefinition = "varchar(200)")
 	private String argument;
 
-	@Column(name = "user1_accept", nullable = false, columnDefinition = "boolean")
+	@Column(name = "user1_accept", nullable = false, columnDefinition = "tinyint")
 	private Boolean accept1;
 
-	@Column(name = "user2_accept", nullable = false, columnDefinition = "boolean")
+	@Column(name = "user2_accept", nullable = false, columnDefinition = "tinyint")
 	private Boolean accept2;
 
 	@Column(name = "vote_deadline", nullable = false, columnDefinition = "DATETIME")

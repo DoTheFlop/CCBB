@@ -15,6 +15,7 @@ public class FileDto {
 	private String orgName;
 	private String extension;
 	private String type;
+	private Boolean isPromise;
 	private Integer postId;
 	private Integer goodsId;
 	private Integer eventId;

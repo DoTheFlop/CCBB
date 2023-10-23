@@ -41,6 +41,9 @@ public class File {
 	@Column(nullable = false, columnDefinition = "varchar(10)")
 	private String type;
 
+	@Column(name = "is_promise", nullable = false, columnDefinition = "tinyint")
+	private Boolean isPromise;
+
 	@ManyToOne
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post postId;

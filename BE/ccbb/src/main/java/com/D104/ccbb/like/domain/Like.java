@@ -32,7 +32,7 @@ public class Like {
 	@Column(name = "like_id", nullable = false)
 	private Integer likeId;
 
-	@Column(nullable = false, columnDefinition = "boolean")
+	@Column(nullable = false, columnDefinition = "tinyint")
 	private Boolean type;
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")

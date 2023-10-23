@@ -37,7 +37,7 @@ public class User {
 	@Column(nullable = false, columnDefinition = "varchar(1000)")
 	private String password;
 
-	@Column(name = "Field", nullable = false, columnDefinition = "boolean")
+	@Column(name = "Field", nullable = false, columnDefinition = "tinyint")
 	private Boolean field;
 
 	@Column(name = "birthyear", columnDefinition = "DATETIME")

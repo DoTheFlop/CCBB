@@ -34,7 +34,7 @@ public class PaymentHistory {
 	@Column(nullable = false, columnDefinition = "int")
 	private Integer amount;
 
-	@Column(name = "is_returned", nullable = false, columnDefinition = "boolean")
+	@Column(name = "is_returned", nullable = false, columnDefinition = "tinyint")
 	private Boolean isReturned;
 
 	@Column(name = "pay_date", nullable = false, columnDefinition = "DATETIME")
