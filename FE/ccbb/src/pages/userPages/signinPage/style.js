@@ -1,9 +1,6 @@
 import styled from "styled-components";
 
 export const bg = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-color: darkslateblue;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -12,7 +9,20 @@ export const bg = styled.div`
 export const signinMenu = styled.div`
   display: flex;
   flex-direction: row;
-  text-decoration: none;
-  color: white;
-  background-color: green;
+  justify-content: end;
+  width: 100%;
+
+  & > a {
+    margin-left: 20px;
+    text-decoration: none;
+    color: #fff;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+`;
+
+export const Img = styled.img`
+  margin-top: 50px;
+  margin-bottom: 30px;
 `;
