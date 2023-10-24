@@ -2,7 +2,9 @@ package com.D104.ccbb.jwt.service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.InitializingBean;
@@ -106,14 +108,32 @@ public class JwtTokenService implements InitializingBean {
 	// 		);
 	// }
 	public String extractToken(String token) {
-		if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
+		if (StringUtils.hasText(token) && (token.startsWith("Bearer ") || token.startsWith("bearer "))) {
 			return token.substring(7);
 		}
 		return null;
 	}
 
+	/**
+	 * 헤더에서 RefreshToken 추출
+	 * 토큰 형식 : Bearer XXX에서 Bearer를 제외하고 순수 토큰만 가져오기 위해서
+	 * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
+	 */
+	public Optional<String> extractRefreshToken(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader(refreshHeader))
+			.filter(refreshToken -> refreshToken.startsWith("Bearer ") || refreshToken.startsWith("bearer "))
+			.map(refreshToken -> refreshToken.substring(7));
+	}
+
+	public Optional<String> extractAccessToken(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader(accessHeader))
+			.filter(refreshToken -> refreshToken.startsWith("Bearer ") || refreshToken.startsWith("bearer "))
+			.map(refreshToken -> refreshToken.substring(7));
+	}
+
 	// 토큰이 유효한지 검증
 	public boolean validateToken(String token) {
+		log.info("validateToken: {}", token);
 		try {
 			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 			return true;
@@ -150,4 +170,5 @@ public class JwtTokenService implements InitializingBean {
 	public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
 		response.setHeader(refreshHeader, refreshToken);
 	}
+
 }
