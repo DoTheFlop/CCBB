@@ -1,7 +1,5 @@
-import Headermain from "../../component/headers/headermain"
-
-
-
+import Headermain from "../../component/common/headers/headermain";
+import * as S from './style';
 
 export default function MainPage() {
     return (
