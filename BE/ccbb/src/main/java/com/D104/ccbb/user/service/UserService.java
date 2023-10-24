@@ -79,11 +79,11 @@ public class UserService {
 				.build();
 			log.info(user.toString());
 			User save = userRepository.save(user);
-			createdToken = jwtTokenService.createToken(save.getUserId());
+			createdToken = jwtTokenService.createToken(save.getEmail());
 			log.info("회원가입 완료");
 		} else { // 아니면 로그인
 			log.info("로그인 시작");
-			createdToken = jwtTokenService.createToken(findByEmail.get().getUserId());
+			createdToken = jwtTokenService.createToken(findByEmail.get().getEmail());
 			log.info("로그인 완료");
 		}
 

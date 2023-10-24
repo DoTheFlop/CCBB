@@ -20,7 +20,7 @@ public class UserController {
 
 	@GetMapping("/login")
 	public ResponseEntity<Integer> login(@RequestHeader String Authorization) {
-		return new ResponseEntity<>(jwtTokenService.getUserId(jwtTokenService.extractToken(Authorization)),
+		return new ResponseEntity<>(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),
 			HttpStatus.OK);
 	}
 }

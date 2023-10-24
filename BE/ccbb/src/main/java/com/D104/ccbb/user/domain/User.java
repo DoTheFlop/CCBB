@@ -5,12 +5,16 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
+import com.D104.ccbb.user.dto.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,4 +71,7 @@ public class User {
 	@Column(name = "val_tier", columnDefinition = "varchar(50)")
 	private String val;
 
+	@Column(name = "role")
+	@Enumerated(EnumType.STRING)
+	private Role role;
 }
