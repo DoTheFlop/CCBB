@@ -19,6 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.D104.ccbb.jwt.filter.JwtAuthenticationFilter;
 import com.D104.ccbb.jwt.service.JwtTokenService;
+import com.D104.ccbb.oauth2.handler.OAuth2LoginFailureHandler;
+import com.D104.ccbb.oauth2.handler.OAuth2LoginSuccessHandler;
+import com.D104.ccbb.oauth2.service.CustomOAuth2UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +31,9 @@ import lombok.RequiredArgsConstructor;
 public class SecurityConfig {
 
 	private final JwtTokenService jwtTokenService;
+	private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
+	private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+	private final CustomOAuth2UserService customOAuth2UserService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -48,11 +54,17 @@ public class SecurityConfig {
 			// 권한 설정
 			.authorizeRequests()
 			// 로그인, 회원가입, 파일 접근은 권한 개방
-			.antMatchers("/**", "/user/login", "/user/signup", "/oauth/**", "/file/*").permitAll()
+			.antMatchers("/", "/user/login", "/user/signup", "/oauth2/**", "/file/*").permitAll()
 			// 그 이외에는 인증된 유저만 접근
 			.anyRequest().authenticated()
 			.and()
-			.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
+			//== 소셜 로그인 설정 ==//
+			.oauth2Login()
+			.successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
+			.failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
+			.userInfoEndpoint().userService(customOAuth2UserService); // customUserService 설정
+
+		http.addFilterBefore(new JwtAuthenticationFilter(jwtTokenService), UsernamePasswordAuthenticationFilter.class);
 		// 이후 jwt 인증을 위한 커스텀 필터 등록
 		return http.build();
 	}
@@ -84,4 +96,5 @@ public class SecurityConfig {
 			writer.flush();
 		});
 	}
+
 }

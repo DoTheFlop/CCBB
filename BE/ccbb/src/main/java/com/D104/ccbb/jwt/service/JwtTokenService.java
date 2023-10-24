@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import com.D104.ccbb.user.repository.UserRepository;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -40,6 +42,7 @@ public class JwtTokenService implements InitializingBean {
 
 	private String accessHeader = "Authorization";
 	private String refreshHeader = "Authorization-refresh";
+	private final UserRepository userRepository;
 
 	@Override
 	public void afterPropertiesSet() {
@@ -80,7 +83,7 @@ public class JwtTokenService implements InitializingBean {
 	}
 
 	// todo: 추후 claim에서 값 가져오는 메서드로 수정할 것
-	public int getUserEmail(String token) {
+	public String getUserEmail(String token) {
 		log.info(token);
 		Claims claims = Jwts
 			.parserBuilder()
@@ -89,9 +92,19 @@ public class JwtTokenService implements InitializingBean {
 			.parseClaimsJws(token)
 			.getBody();
 
-		return (int)claims.get("email");
+		return (String)claims.get("email");
 	}
 
+	/**
+	 * RefreshToken DB 저장(업데이트)
+	 */
+	// public void updateRefreshToken(String email, String refreshToken) {
+	// 	userRepository.findByEmail(email)
+	// 		.ifPresentOrElse(
+	// 			user -> user.updateRefreshToken(refreshToken),
+	// 			() -> new Exception("일치하는 회원이 없습니다.")
+	// 		);
+	// }
 	public String extractToken(String token) {
 		if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
 			return token.substring(7);
