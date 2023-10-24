@@ -53,7 +53,6 @@ public class OAuthAttributes {
 	public User toEntity(OAuth2UserInfo oauth2UserInfo) {
 		KakaoOAuth2UserInfo oauth2UserInfo1 = (KakaoOAuth2UserInfo)oauth2UserInfo;
 		return User.builder()
-			.socialID(oauth2UserInfo.getId())
 			.email(oauth2UserInfo1.getEmail())
 			.nickname(oauth2UserInfo.getNickname())
 			.name(oauth2UserInfo.getNickname())
