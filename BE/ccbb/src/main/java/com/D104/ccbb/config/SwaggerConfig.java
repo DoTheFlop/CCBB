@@ -20,7 +20,8 @@ public class SwaggerConfig {
 			.apis(RequestHandlerSelectors.basePackage("com.D104.ccbb"))
 			.paths(PathSelectors.any())
 			.build()
-			.apiInfo(apiInfo());
+			.apiInfo(apiInfo())
+			.enable(true);
 	}
 
 	private ApiInfo apiInfo() {
