@@ -1,5 +1,4 @@
 import Button1 from '../../component/common/buttons';
-import Headermain from '../../component/common/headers/headermain';
 import Headermenu from '../../component/common/headers/headermenu';
 import Input1 from '../../component/common/inputs/input1';
 import Input2 from '../../component/common/inputs/input2';
@@ -7,9 +6,9 @@ import UserProfile from '../../component/common/profile';
 import * as S from './style';
 
 export default function ComponentPage() {
+    
     return (
         <S.main>
-            <Headermain/>
             <Headermenu title={"리그 오브 레전드"}/>
             <Headermenu title={"자유게시판"}/>
             <Input1 label="닉네임" id="nicknameInput" width="300px" height="40px" />
