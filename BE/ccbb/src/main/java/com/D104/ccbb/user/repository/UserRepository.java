@@ -11,6 +11,4 @@ import com.D104.ccbb.user.domain.User;
 public interface UserRepository extends JpaRepository<User, Integer> {
 
 	Optional<User> findByEmail(String email);
-
-	Optional<User> findBySocialID(String socialId);
 }

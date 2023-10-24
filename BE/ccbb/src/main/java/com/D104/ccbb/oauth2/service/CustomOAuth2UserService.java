@@ -56,7 +56,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 		KakaoOAuth2UserInfo kakaoAttributes = (KakaoOAuth2UserInfo)OAuthAttributes.of(userNameAttributeName, attributes)
 			.getOauth2UserInfo();
 
-		User createdUser = getUser(extractAttributes, kakaoAttributes.getId()); // getUser() 메소드로 User 객체 생성 후 반환
+		User createdUser = getUser(extractAttributes); // getUser() 메소드로 User 객체 생성 후 반환
 		log.info("OAuth2 User Service User : {}", createdUser.toString());
 		// DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
 		return new CustomOAuth2User(
@@ -72,14 +72,17 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 	 * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
 	 * 만약 찾은 회원이 있다면, 그대로 반환하고 없다면 saveUser()를 호출하여 회원을 저장한다.
 	 */
-	private User getUser(OAuthAttributes attributes, String socialId) {
+	private User getUser(OAuthAttributes attributes) {
+		KakaoOAuth2UserInfo oauth2UserInfo = (KakaoOAuth2UserInfo)attributes.getOauth2UserInfo();
 
-		Optional<User> findUser = userRepository.findBySocialID(socialId);
+		Optional<User> findUser = userRepository.findByEmail(oauth2UserInfo.getEmail());
 		// , attributes.getOauth2UserInfo().getId()).orElse(null);
 
 		if (findUser.isEmpty()) {
+			log.info("DB에 유저 정보 저장");
 			return saveUser(attributes);
 		}
+		log.info("DB에 유저 정보 조회");
 		return findUser.get();
 	}
 
