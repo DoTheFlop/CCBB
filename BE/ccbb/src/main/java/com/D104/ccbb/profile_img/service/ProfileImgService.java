@@ -1,20 +1,67 @@
 package com.D104.ccbb.profile_img.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.aspectj.util.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.D104.ccbb.jwt.service.JwtTokenService;
+import com.D104.ccbb.profile_img.domain.ProfileImg;
 import com.D104.ccbb.profile_img.repo.ProfileImgRepo;
+import com.D104.ccbb.user.domain.User;
+import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProfileImgService {
 	private final ProfileImgRepo profileImgRepo;
+	private final JwtTokenService jwtTokenService;
+	private final UserRepository userRepository;
 
-	public void addImg(String authorization, MultipartFile file) {
+	@Value("${spring.servlet.multipart.location}")
+	private String FILE_PATH;
+
+	@Value("${file.profileImg}")
+	private String PROFILE_IMG;
+
+	public byte[] getProfileImg(String imgName) throws IOException {
+		String file_path = FILE_PATH + PROFILE_IMG + "/" + imgName;
+		File file = new File(file_path);
+		return FileUtil.readAsByteArray(file);
+	}
+
+	@Transactional
+	public ProfileImg addImg(String authorization, MultipartFile file) throws Exception {
 		String fileName = getFileNameWithoutExtension(file.getOriginalFilename());
 		String fileExtension = getFileExtension(file.getOriginalFilename());
+		String uuidName = UUID.randomUUID().toString();
+		String profile_path = FILE_PATH + PROFILE_IMG + "/" + uuidName;
+		File dest = new File(profile_path);
+		file.transferTo(dest);
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> byEmail = userRepository.findByEmail(userEmail);
+		if (byEmail.isEmpty()) {
+			throw new Exception("유저가 존재하지 않습니다.");
+		}
+
+		ProfileImg build = ProfileImg.builder()
+			.name(uuidName)
+			.orgName(fileName)
+			.extension(fileExtension)
+			.userId(byEmail.get())
+			.build();
+		ProfileImg save = profileImgRepo.save(build);
+		return save;
 	}
 
 	// 파일 이름과 확장자를 분리하여 파일 이름 반환
@@ -34,6 +81,7 @@ public class ProfileImgService {
 		}
 		return "";
 	}
+
 
 	/*
 	public FanDto writeProfileImage(MultipartFile file, String email) throws

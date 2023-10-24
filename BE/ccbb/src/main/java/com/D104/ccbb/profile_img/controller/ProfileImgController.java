@@ -1,7 +1,11 @@
 package com.D104.ccbb.profile_img.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,15 +27,28 @@ public class ProfileImgController {
 
 	private final ProfileImgService profileImgService;
 
-	@PostMapping("/add")
-	public ResponseEntity<ProfileImg> createProfileImg(@RequestHeader String Authorization,
-		@RequestParam MultipartFile file) {
+	@GetMapping("/{imgName}")
+	public ResponseEntity<byte[]> getProfileImg(@PathVariable String imgName) {
 		try {
-			profileImgService.addImg(Authorization, file);
+			byte[] img = profileImgService.getProfileImg(imgName);
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.IMAGE_JPEG);
+			return new ResponseEntity<>(img, headers, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@PostMapping("/add")
+	public ResponseEntity<ProfileImg> createProfileImg(@RequestHeader String Authorization,
+		@RequestParam MultipartFile file) {
+		try {
+			ProfileImg profileImg = profileImgService.addImg(Authorization, file);
+			return new ResponseEntity<>(profileImg, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
