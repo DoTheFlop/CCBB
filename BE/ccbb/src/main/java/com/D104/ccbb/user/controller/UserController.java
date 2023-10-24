@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.D104.ccbb.jwt.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
@@ -20,6 +22,7 @@ public class UserController {
 
 	@GetMapping("/login")
 	public ResponseEntity<String> login(@RequestHeader String Authorization) {
+		log.info("login 호출: {}", Authorization);
 		return new ResponseEntity<>(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),
 			HttpStatus.OK);
 	}
