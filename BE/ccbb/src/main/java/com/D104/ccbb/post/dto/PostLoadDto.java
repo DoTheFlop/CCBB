@@ -13,22 +13,22 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostDto {
+public class PostLoadDto {
 	private Integer postId;
 	private String title;
 	private String content;
 	private LocalDateTime createDate;
 	private Integer type;
-	private Integer userId;
+	private String userEmail;
 
-	public static PostDto fromEntity(Post post) {
-		return PostDto.builder()
+	public static PostLoadDto fromEntity(Post post) {
+		return PostLoadDto.builder()
 			.postId(post.getPostId())
 			.title(post.getTitle())
 			.content(post.getContent())
 			.createDate(post.getCreateDate())
 			.type(post.getType())
-			.userId(post.getUserId().getUserId())
+			.userEmail(post.getUserId().getEmail())
 			.build();
 	}
 }
