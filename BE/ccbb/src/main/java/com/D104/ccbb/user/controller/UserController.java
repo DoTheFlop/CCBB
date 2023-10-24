@@ -23,4 +23,9 @@ public class UserController {
 		return new ResponseEntity<>(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),
 			HttpStatus.OK);
 	}
+
+	@GetMapping("/sign-up")
+	public ResponseEntity<String> signUp() {
+		return new ResponseEntity<>("회원가입", HttpStatus.OK);
+	}
 }
