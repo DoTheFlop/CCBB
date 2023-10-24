@@ -38,7 +38,7 @@ export default function Headermain(){
                         <p>기부내역</p>
                     </Link>
                 </S.webmenu>
-                <Button1 onClick={handleSigninClick} text={"로그인ll"} width={'75px'} height={'30px'}/>
+                <Button1 onClick={handleSigninClick} text={"로그인"} width={'75px'} height={'30px'}/>
             </S.rightmenu>
         </S.Header>
         
