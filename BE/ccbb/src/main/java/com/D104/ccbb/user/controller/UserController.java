@@ -19,7 +19,7 @@ public class UserController {
 	private final JwtTokenService jwtTokenService;
 
 	@GetMapping("/login")
-	public ResponseEntity<Integer> login(@RequestHeader String Authorization) {
+	public ResponseEntity<String> login(@RequestHeader String Authorization) {
 		return new ResponseEntity<>(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),
 			HttpStatus.OK);
 	}

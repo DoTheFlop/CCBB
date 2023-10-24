@@ -80,7 +80,7 @@ public class JwtTokenService implements InitializingBean {
 	}
 
 	// todo: 추후 claim에서 값 가져오는 메서드로 수정할 것
-	public int getUserEmail(String token) {
+	public String getUserEmail(String token) {
 		log.info(token);
 		Claims claims = Jwts
 			.parserBuilder()
@@ -89,7 +89,7 @@ public class JwtTokenService implements InitializingBean {
 			.parseClaimsJws(token)
 			.getBody();
 
-		return (int)claims.get("email");
+		return (String)claims.get("email");
 	}
 
 	public String extractToken(String token) {
