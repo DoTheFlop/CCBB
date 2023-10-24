@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Pagemain = styled.main`
     display: flex;
+    height: 700px;
     flex-direction: column;
     p {
         color: white;
@@ -19,60 +20,34 @@ export const Img = styled.img`
 `
 
 export const Pagebottom = styled.section`
+    margin-top: 30px;
     font-weight: bold;
+    font-size: 20px;
 `
 
 
 export const Moviebox = styled.article`
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
   display: flex;
-  overflow: hidden; /* 넘치는 컨텐츠 숨기기 */
-  position: relative;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 0 20px;
+  justify-content: center;
+  align-items: center;
+}
 
-  .carousel-container {
-    display: flex;
-    transition: transform 0.3s ease;
-  }
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
-  .carousel-item {
-    flex: 0 0 70%; /* 각 영상 너비 설정 */
-    margin: 0 15px;
-    transition: flex 0.3s ease;
-  }
-
-  .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-  }
-
-  .carousel-arrow.left {
-    left: 0;
-  }
-
-  .carousel-arrow.right {
-    right: 0;
-  }
-
-  .carousel-indicators {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-
-  .carousel-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: #000;
-    margin: 0 5px;
-    cursor: pointer;
-  }
-
-  .carousel-indicator.active {
-    background: #fff;
-  }
+.swiper {
+  width: 1400px;
+  height: 250px;
+  margin: 20px auto;
+}
 `;
