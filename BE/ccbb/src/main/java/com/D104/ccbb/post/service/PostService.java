@@ -23,7 +23,6 @@ public class PostService {
 	public void setPost(PostDto postDto) {
 
 		Post post = Post.builder()
-			.postId(postDto.getPostId())
 			.title(postDto.getTitle())
 			.content(postDto.getContent())
 			.createDate(postDto.getCreateDate())
@@ -39,5 +38,9 @@ public class PostService {
 
 	public List<Post> getVote() {
 		return postRepo.findByTypeOrderByPostIdDesc(1);
+	}
+
+	public void deletePost(int postId) {
+		postRepo.delete(postRepo.getReferenceById(postId));
 	}
 }
