@@ -1,6 +1,7 @@
 package com.D104.ccbb.profile_img.service;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,6 +65,53 @@ public class ProfileImgService {
 		return save;
 	}
 
+	@Transactional
+	public ProfileImg modifyImg(String authorization, MultipartFile file, int profileimgId) throws
+		Exception {
+		Optional<ProfileImg> findImgOpt = profileImgRepo.findById(profileimgId);
+		if (findImgOpt.isEmpty()) {
+			throw new FileNotFoundException("이미지를 찾을 수 없습니다.");
+		}
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> byEmail = userRepository.findByEmail(userEmail);
+		if (byEmail.isEmpty()) {
+			throw new Exception("유저를 찾을 수 없습니다.");
+		}
+		if (!findImgOpt.get().getUserId().getUserId().equals(byEmail.get().getUserId())) {
+			throw new Exception("본인의 프로필만 바꿀 수 있습니다.");
+		}
+		ProfileImg findImg = findImgOpt.get();
+		String profile_path = FILE_PATH + PROFILE_IMG + "/" + findImg.getName();
+		File fileImg = new File(profile_path);
+		fileImg.delete();
+		file.transferTo(fileImg);
+		return findImg;
+	}
+
+	@Transactional
+	public String deleteImg(String authorization, int profileimgId) throws Exception {
+		// 유저 조회
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> byEmail = userRepository.findByEmail(userEmail);
+		if (byEmail.isEmpty()) {
+			throw new Exception("유저를 찾을 수 없습니다.");
+		}
+		// 유저의 프로필 이미지 정보 조회
+		Optional<ProfileImg> userProfileImgOpt = profileImgRepo.findById(profileimgId);
+		if (userProfileImgOpt.isEmpty()) {
+			throw new Exception("이미지를 찾을 수 없습니다.");
+		}
+		// 삭제하고자 하는 이미지가 본인의 프로필인지 확인
+		if (!userProfileImgOpt.get().getUserId().getUserId().equals(byEmail.get().getUserId())) {
+			throw new Exception("본인의 프로필만 바꿀 수 있습니다.");
+		}
+		// 이미지도 있고, 유저도 있고, 본인의 이미지인지 확인 했으니 이미지 삭제
+		String file_path = FILE_PATH + PROFILE_IMG + "/" + userProfileImgOpt.get().getName();
+		File file = new File(file_path);
+		file.delete();
+		return "삭제완료";
+	}
+
 	// 파일 이름과 확장자를 분리하여 파일 이름 반환
 	private String getFileNameWithoutExtension(String filename) {
 		int lastDotIndex = filename.lastIndexOf(".");
@@ -81,6 +129,8 @@ public class ProfileImgService {
 		}
 		return "";
 	}
+
+
 
 
 	/*
