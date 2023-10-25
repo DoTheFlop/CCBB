@@ -1,5 +1,5 @@
 import * as S from './style';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -9,14 +9,22 @@ import ReactPlayer from 'react-player';
 
 export default function MainPage() {
     const CAROUSEL_VIDEOS = [
-        'resource/168787.mp4',
+        'resource/LoLsample.mp4',
         '/resource/168787.mp4',
         '/resource/168811.mp4',
         '/resource/173522.mp4',
         '/resource/183271.mp4',
     ]
+    const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+    const [playing, setPlaying] = useState(false);
 
-    const [swiperRef, setSwiperRef] = useState(null);
+    useEffect(() => {
+
+        if (activeSlideIndex === 0) {
+            setPlaying(true);
+        }
+
+    }, [activeSlideIndex]);
 
     return (
         <S.Pagemain>
@@ -27,29 +35,36 @@ export default function MainPage() {
             <S.Pagebottom>
                 <p>투표율 TOP5</p>
                 <S.Moviebox>
-                <Swiper
-                    onSwiper={setSwiperRef}
-                    slidesPerView={3}
-                    centeredSlides={true}
-                    spaceBetween={30}
-                    pagination={{
-                    type: 'fraction',
-                    }}
-                    navigation={true}
-                    modules={[Pagination, Navigation]}
-                    className="mySwiper"
-                >
-                    {CAROUSEL_VIDEOS.map((video, index) => (
-                            <SwiperSlide key={index}>
-                                <ReactPlayer
-                                    url={video}
-                                    controls
-                                    width="100%"
-                                    height="100%"
-                                />
-                            </SwiperSlide>
-                        ))}
-                </Swiper>
+                    <Swiper
+
+                        onSlideChange={(swiper) => {
+                            setActiveSlideIndex(swiper.realIndex);
+                            setPlaying(true); // 슬라이드가 변경될 때마다 재생
+                        }}
+                        slidesPerView={3}
+                        centeredSlides={true}
+                        spaceBetween={30}
+                        pagination={{
+                            clickable: true ,
+                        }}
+                        loop={true}
+                        loopedSlides={2}
+                        navigation={true}
+                        modules={[Pagination, Navigation]}
+                        className="mySwiper"
+                    >
+                        {CAROUSEL_VIDEOS.map((video, index) => (
+                                <SwiperSlide key={index}>
+                                    <ReactPlayer
+                                        url={video}
+                                        controls
+                                        width="98%"
+                                        height="98%"
+                                        playing={playing && index === activeSlideIndex}
+                                    />
+                                </SwiperSlide>
+                            ))}
+                    </Swiper>
                 </S.Moviebox>
             </S.Pagebottom>
         </S.Pagemain>
