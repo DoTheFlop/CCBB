@@ -55,7 +55,7 @@ public class SecurityConfig {
 			// 권한 설정
 			.authorizeRequests()
 			// 로그인, 회원가입, 파일 접근은 권한 개방
-			.antMatchers("/", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**",
+			.antMatchers("/", "/profileimg/**", "/swagger-ui/**", "/swagger-resources/**", "/v2/api-docs/**",
 				"/user/signup", "/oauth2/**",
 				"/file/*").permitAll()
 			// 그 이외에는 인증된 유저만 접근
