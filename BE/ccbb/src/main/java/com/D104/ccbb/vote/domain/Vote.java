@@ -71,5 +71,5 @@ public class Vote {
 	@OneToOne
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post postId;
-
+	//게릿테스트용 주석입니다
 }

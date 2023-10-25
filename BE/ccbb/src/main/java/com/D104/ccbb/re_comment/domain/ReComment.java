@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+
 public class ReComment {
 
 	@Id
@@ -35,11 +37,11 @@ public class ReComment {
 
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
-
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User userId;
-
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "comment_id", nullable = false)
 	private Comment commentId;
