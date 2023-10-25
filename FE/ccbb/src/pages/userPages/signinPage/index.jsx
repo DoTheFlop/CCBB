@@ -1,7 +1,7 @@
 import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function SigninPage() {
   return (
