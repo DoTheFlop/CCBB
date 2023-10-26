@@ -13,7 +13,7 @@ export default function KakaoLoginPage() {
 
     // 로그인버튼 누를 때 페이지 기억해뒀다가 로그인 성공 후 복원
     navigate(toUrl);
-  }, [token, navigate]);
+  }, [token, toUrl, navigate]);
 
   return <></>;
 }

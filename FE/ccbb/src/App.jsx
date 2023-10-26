@@ -3,6 +3,7 @@ import MainPage from "./pages/mainPage";
 import ComponentPage from "./pages/componentPage";
 import SigninPage from "./pages/userPages/signinPage";
 import SignupPage from "./pages/userPages/siginupPage";
+import MyPage from "./pages/userPages/myPage";
 import LoLvoteboardPage from "./pages/boardPages/lolvoteBoard";
 import FreeboardPage from "./pages/boardPages/freeBoard";
 import GiftPage from "./pages/giftPage";
@@ -23,6 +24,7 @@ export default function App() {
           <Route path="/1" element={<ComponentPage />}></Route>
           <Route path="/signin" element={<SigninPage />}></Route>
           <Route path="/signup" element={<SignupPage />}></Route>
+          <Route path="/mypage" element={<MyPage />}></Route>
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
           <Route path="/free" element={<FreeboardPage />}></Route>
           <Route path="/gift" element={<GiftPage />}></Route>
