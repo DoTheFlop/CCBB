@@ -1,5 +1,7 @@
 package com.D104.ccbb.re_comment.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +24,25 @@ public class ReCommentService {
 
 	public void setReCommentRepo(ReCommentDto reCommentDto) {
 		ReComment reComment = ReComment.builder()
-			.reCommentId(reCommentDto.getCommentId())
 			.content(reCommentDto.getContent())
 			.createDate(reCommentDto.getCreateDate())
 			.userId(userRepository.getReferenceById(reCommentDto.getUserId()))
 			.commentId(commentRepo.getReferenceById(reCommentDto.getCommentId()))
 			.build();
+		reCommentRepo.save(reComment);
+	}
+
+	public List<ReComment> getReComment(int commentId) {
+		return reCommentRepo.findByCommentId_CommentId(commentId);
+	}
+
+	public void deleteReComment(int reCommentId) {
+		reCommentRepo.delete(reCommentRepo.getReferenceById(reCommentId));
+	}
+
+	public void modifyReComment(ReCommentDto reCommentDto) {
+		ReComment reComment = reCommentRepo.getReferenceById(reCommentDto.getReCommentId());
+		reComment.setContent(reCommentDto.getContent());
 		reCommentRepo.save(reComment);
 	}
 

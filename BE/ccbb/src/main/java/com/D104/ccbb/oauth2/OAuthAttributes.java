@@ -60,6 +60,7 @@ public class OAuthAttributes {
 			.role(Role.GUEST)
 			.sex(true)
 			.createDate(LocalDateTime.now())
+			.state((byte)1)
 			.point(0)
 			.build();
 	}

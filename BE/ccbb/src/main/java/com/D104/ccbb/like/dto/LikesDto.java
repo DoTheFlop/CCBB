@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LikeDto {
+public class LikesDto {
 	private Integer likeId;
 	private Boolean type;
 	private LocalDateTime createDate;

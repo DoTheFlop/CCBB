@@ -37,6 +37,6 @@ public class BallotBox {
 
 	@ManyToOne
 	@JoinColumn(name = "vote_id", nullable = false)
-	private Vote voteId;
+	private Vote vote;
 
 }
