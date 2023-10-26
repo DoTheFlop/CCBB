@@ -142,4 +142,26 @@ public class FileService {
 			.contentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM))
 			.body(resourceRegion);
 	}
+
+	public String deleteFile(int fileId) throws Exception {
+		Optional<File> findFileOpt = fileRepo.findById(fileId);
+		if (findFileOpt.isEmpty()) {
+			throw new Exception("파일이 없습니다.");
+		}
+		File file = findFileOpt.get();
+		String path = FILE_PATH;
+		if (file.getType().startsWith("video")) {
+			path += VIDEO_PATH;
+		}
+		if (file.getType().startsWith("image")) {
+			path += IMAGE_PATH;
+		}
+		path = path + file.getName() + "." + file.getExtension();
+		fileRepo.deleteById(fileId);
+		boolean delete = new java.io.File(path).delete();
+		if (delete) {
+			return "삭제완료";
+		}
+		return "삭제실패";
+	}
 }
