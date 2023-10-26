@@ -1,7 +1,18 @@
+import React, { useState } from "react";
 import * as S from "./style";
 import AccountCard from "../../../component/accountCard";
+import OngoingVote from "../../../component/myPage/ongoingVote";
+import MyPosts from "../../../component/myPage/myPosts";
+import MyWards from "../../../component/myPage/myWards";
 
 export default function MyPage() {
+  const tabs = [
+    { name: "진행중인 투표", component: <OngoingVote key={0} /> },
+    { name: "작성한 글", component: <MyPosts key={1} /> },
+    { name: "와드한 글", component: <MyWards key={2} /> },
+  ];
+
+  const [currentTab, setCurrentTab] = useState(0);
   return (
     <>
       <S.profileInfo>
@@ -17,6 +28,18 @@ export default function MyPage() {
         </S.textSection>
         <AccountCard />
       </S.profileInfo>
+      <S.tabGroup>
+        {tabs.map((tab, index) => (
+          <h3
+            key={index}
+            onClick={() => setCurrentTab(index)}
+            className={currentTab === index ? "active" : ""}
+          >
+            {tab.name}
+          </h3>
+        ))}
+      </S.tabGroup>
+      <S.bottomSection>{tabs[currentTab].component}</S.bottomSection>
     </>
   );
 }
