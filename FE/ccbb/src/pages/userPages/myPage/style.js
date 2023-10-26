@@ -11,7 +11,7 @@ export const profileInfo = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffffff30;
+  /* background-color: #ffffff30; */
   margin-top: 20px;
 `;
 
@@ -29,4 +29,38 @@ export const textSection = styled.div`
   padding-left: 2%;
   flex-direction: column;
   color: white;
+`;
+
+//탭그룹
+export const tabGroup = styled.div`
+  width: 90%;
+  height: fit-content;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* background-color: lightblue; */
+  h3 {
+    cursor: pointer;
+    color: #a4a4a4;
+    margin-right: 10px;
+    margin-bottom: 0px;
+    padding: 10px 10px 10px 10px;
+  }
+
+  h3.active {
+    color: #110c1f;
+    background-color: white;
+    margin-bottom: 0px;
+    border-radius: 10px 10px 0 0;
+  }
+`;
+
+//마이페이지 하단영역(탭아래)
+export const bottomSection = styled.div`
+  width: 100%;
+  flex: 1;
+  box-sizing: border-box;
+  /* padding: 20px 100px 20px 100px; */
+  padding: 5% 10% 5% 10%;
+  background-color: white;
 `;
