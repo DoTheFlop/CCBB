@@ -110,4 +110,10 @@ public class UserService {
 		return UserDto.fromEntity(user);
 	}
 
+	public void deleteUser(String email) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException("No user found with the provided email"));
+
+		userRepository.delete(user);
+	}
 }

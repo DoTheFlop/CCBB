@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -82,4 +83,23 @@ public class UserController {
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
+
+	@DeleteMapping("/quit")
+	public ResponseEntity<Map<String, Object>> deleteMyProfile(@RequestHeader String Authorization) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status;
+		try {
+			userService.deleteUser(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)));
+			resultMap.put("message", "success");
+			resultMap.put("Authorization", Authorization);
+			status = HttpStatus.OK;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e);
+			resultMap.put("Authorization", Authorization);
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
 }
