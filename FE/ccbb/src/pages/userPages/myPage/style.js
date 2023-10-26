@@ -31,6 +31,16 @@ export const textSection = styled.div`
   color: white;
 `;
 
+export const textAndBtn = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  svg {
+    color: gold;
+  }
+`;
+
 //탭그룹
 export const tabGroup = styled.div`
   width: 90%;
