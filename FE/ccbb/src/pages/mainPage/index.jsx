@@ -60,6 +60,7 @@ export default function MainPage() {
                                         controls
                                         width="98%"
                                         height="98%"
+                                        muted
                                         playing={playing && index === activeSlideIndex}
                                     />
                                 </SwiperSlide>
