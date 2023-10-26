@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
@@ -20,6 +21,29 @@ export default function SigninPage() {
       doLogin(); // Enter 입력이 되면 클릭 이벤트 실행
     }
   };
+
+  const doKakaoLogin = async () => {
+    console.log("kakao login");
+    await axios({
+      method: "GET",
+      // url: `https://k9d104.p.ssafy.io/api/auth?code=${code}`,
+      url: `http://localhost:8081/oauth2/authorization/kakao`,
+      headers: {
+        "Content-Type": "application/json;charset=utf-8", //json형태로 데이터를 보내겠다는뜻
+      },
+    })
+      .then((res) => {
+        console.log(res);
+        // const user = {
+        //   email: "",
+        //   name: "",
+        // };
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <S.bg>
       <S.Img
@@ -56,6 +80,13 @@ export default function SigninPage() {
         height={"50px"}
         onClick={doLogin}
       />
+      <a href="http://localhost:8081/oauth2/authorization/kakao">kakao</a>
+      <Button1
+        text={"카카오로그인"}
+        width={"100%"}
+        height={"50px"}
+        // onClick={doKakaoLogin}
+      ></Button1>
       <S.signinMenu>
         <Link to="/signup">
           <p>회원가입</p>
