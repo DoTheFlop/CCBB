@@ -40,4 +40,10 @@ public class ReCommentService {
 		reCommentRepo.delete(reCommentRepo.getReferenceById(reCommentId));
 	}
 
+	public void modifyReComment(ReCommentDto reCommentDto) {
+		ReComment reComment = reCommentRepo.getReferenceById(reCommentDto.getReCommentId());
+		reComment.setContent(reCommentDto.getContent());
+		reCommentRepo.save(reComment);
+	}
+
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +40,9 @@ public class PostController {
 	private final LikesService likesService;
 	private final LikesRepo likesRepo;
 	private final PostRepo postRepo;
+	// private final FileService fileService;
+
+	// public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
 
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto) {
@@ -156,6 +160,29 @@ public class PostController {
 				status = HttpStatus.ACCEPTED;
 			} catch (Exception e) {
 				resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
+				System.out.println(e);
+				status = HttpStatus.INTERNAL_SERVER_ERROR;
+			}
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@PutMapping("/modify")
+	public ResponseEntity<Map<String, Object>> modify(@RequestHeader String Authorization,
+		@RequestBody PostDto postDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		if (postRepo.getReferenceById(postDto.getPostId()).getUserId().getUserId()
+			== userRepository.findByEmail(
+				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.get()
+			.getUserId()) {
+			try {
+				postService.modifyPost(postDto);
+				resultMap.put("message", "success");
+				status = HttpStatus.ACCEPTED;
+			} catch (Exception e) {
+				resultMap.put("message", "fail: " + e.getClass().getSimpleName());
 				System.out.println(e);
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
 			}
