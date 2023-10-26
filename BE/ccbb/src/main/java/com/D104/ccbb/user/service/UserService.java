@@ -1,6 +1,7 @@
 package com.D104.ccbb.user.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
+import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
 import com.D104.ccbb.user.dto.UserDto;
@@ -93,13 +95,19 @@ public class UserService {
 	}
 
 	@Transactional
-	public void updateUser(Integer userId, UserDto userDto) {
-		// User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
-		User user = userRepository.getReferenceById(userId);
+	public void updateUser(String email, UserDto userDto) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException(" No User"));
 		user.setNickname(userDto.getNickname());
 		user.setSex(userDto.getSex());
-		userRepository.save(user);
+		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
 
+	public UserDto getUserProfile(String email) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException(" No User"));
+
+		return UserDto.fromEntity(user);
+	}
 
 }

@@ -1,7 +1,9 @@
 package com.D104.ccbb.user.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,9 +52,7 @@ public class UserController {
 
 		try {
 
-			userService.updateUser(userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
-				.getUserId() ,userDto);
+			userService.updateUser(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userDto);
 			resultMap.put("message", "success");
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.OK;
@@ -62,6 +62,24 @@ public class UserController {
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@GetMapping("/profile")
+	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			UserDto userDto = userService.getUserProfile(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)));
+			resultMap.put("user", userDto);
+			resultMap.put("message", "success");
+			resultMap.put("Authorization", Authorization);
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			resultMap.put("Authorization", Authorization);
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 }
