@@ -40,4 +40,11 @@ public class CommentService {
 	public void deleteComment(int commentId) {
 		commentRepo.delete(commentRepo.getReferenceById(commentId));
 	}
+
+	public void modifyComment(CommentDto commentDto) {
+		Comment comment = commentRepo.getReferenceById(commentDto.getCommentId());
+		comment.setContent(commentDto.getContent());
+		commentRepo.save(comment);
+	}
+
 }

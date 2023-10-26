@@ -7,4 +7,7 @@ import com.D104.ccbb.ballot_box.domain.BallotBox;
 
 @Repository
 public interface BallotBoxRepo extends JpaRepository<BallotBox, Integer> {
+
+	Long countByVote_VoteIdAndPick(int voteId, int pick);
+
 }

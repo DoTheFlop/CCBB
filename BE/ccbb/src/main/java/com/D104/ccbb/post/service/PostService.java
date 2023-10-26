@@ -29,7 +29,8 @@ public class PostService {
 			.type(postDto.getType())
 			.userId(userRepository.getReferenceById(postDto.getUserId()))
 			.build();
-		postRepo.save(post);
+		Post save = postRepo.save(post);
+
 	}
 
 	public List<Post> getFree() {
@@ -43,4 +44,12 @@ public class PostService {
 	public void deletePost(int postId) {
 		postRepo.delete(postRepo.getReferenceById(postId));
 	}
+
+	public void modifyPost(PostDto postDto) {
+		Post post = postRepo.getReferenceById(postDto.getPostId());
+		post.setTitle(postDto.getTitle());
+		post.setContent(postDto.getContent());
+		postRepo.save(post);
+	}
+
 }
