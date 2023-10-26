@@ -143,7 +143,8 @@ public class FileService {
 			.body(resourceRegion);
 	}
 
-	public String deleteFile(int fileId) throws Exception {
+	public boolean deleteFile(int fileId) throws Exception {
+		log.info("deleteFile fileId: {}", fileId);
 		Optional<File> findFileOpt = fileRepo.findById(fileId);
 		if (findFileOpt.isEmpty()) {
 			throw new Exception("파일이 없습니다.");
@@ -159,9 +160,9 @@ public class FileService {
 		path = path + file.getName() + "." + file.getExtension();
 		fileRepo.deleteById(fileId);
 		boolean delete = new java.io.File(path).delete();
-		if (delete) {
-			return "삭제완료";
+		if (!delete) {
+			throw new Exception("삭제 실패");
 		}
-		return "삭제실패";
+		return true;
 	}
 }
