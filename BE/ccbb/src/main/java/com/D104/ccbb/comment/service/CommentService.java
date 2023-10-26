@@ -25,7 +25,6 @@ public class CommentService {
 	@Transactional
 	public void setComment(CommentDto commentDto) {
 		Comment comment = Comment.builder()
-			.commentId(commentDto.getCommentId())
 			.content(commentDto.getContent())
 			.createDate(commentDto.getCreateDate())
 			.userId(userRepository.getReferenceById(commentDto.getUserId()))
@@ -37,4 +36,15 @@ public class CommentService {
 	public List<Comment> getComment(int postId) {
 		return commentRepo.findByPostId_PostId(postId);
 	}
+
+	public void deleteComment(int commentId) {
+		commentRepo.delete(commentRepo.getReferenceById(commentId));
+	}
+
+	public void modifyComment(CommentDto commentDto) {
+		Comment comment = commentRepo.getReferenceById(commentDto.getCommentId());
+		comment.setContent(commentDto.getContent());
+		commentRepo.save(comment);
+	}
+
 }
