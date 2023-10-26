@@ -61,6 +61,7 @@ public class OAuthAttributes {
 			.sex(true)
 			.createDate(LocalDateTime.now())
 			.point(0)
+			.state((byte)0)
 			.build();
 	}
 }

@@ -9,11 +9,13 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
+import com.D104.ccbb.user.dto.UserDto;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -89,4 +91,15 @@ public class UserService {
 
 		return createdToken;
 	}
+
+	@Transactional
+	public void updateUser(Integer userId, UserDto userDto) {
+		// User user = userRepository.findById(id).orElseThrow(() -> new IllegalStateException("존재하지 않는 유저입니다."));
+		User user = userRepository.getReferenceById(userId);
+		user.setNickname(userDto.getNickname());
+		user.setSex(userDto.getSex());
+		userRepository.save(user);
+	}
+
+
 }
