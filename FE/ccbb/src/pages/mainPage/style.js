@@ -42,13 +42,12 @@ export const Moviebox = styled.article`
   height: 250px;
 }
 
-/* 다음 버튼 아이콘의 색상을 변경 */
 .swiper-button-next, .swiper-container-rtl .swiper-button-prev {
-    color: white; /* 원하는 색상으로 변경 */
+    color: white;
 }
 
 .swiper-button-prev, .swiper-container-rtl .swiper-button-next {
-    color: white; /* 원하는 색상으로 변경 */
+    color: white;
 }
 .swiper-pagination-bullet-active{
     background-color : white;
