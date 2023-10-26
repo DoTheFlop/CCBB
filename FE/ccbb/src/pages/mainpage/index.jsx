@@ -1,19 +1,30 @@
 import * as S from './style';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import React, { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
-import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import 'swiper/css/scrollbar';
+import 'swiper/css/navigation';
+import { Pagination, Navigation } from 'swiper/modules';
+import ReactPlayer from 'react-player';
 
 export default function MainPage() {
-    const CAROUSEL_IMAGES = [
-        'https://img.freepik.com/free-photo/vivid-blurred-colorful-background_58702-2545.jpg',
-        'https://img.freepik.com/premium-vector/abstract-pastel-color-background-with-pink-purple-gradient-effect-graphic-design-decoration_120819-463.jpg',
-        'https://media.architecturaldigest.com/photos/6080a73d795a7b010f3dd2e0/2:1/w_2700,h_1350,c_limit/GettyImages-1213929929.jpg',
+    const CAROUSEL_VIDEOS = [
+        'resource/LoLsample.mp4',
+        '/resource/168787.mp4',
+        '/resource/168811.mp4',
+        '/resource/173522.mp4',
+        '/resource/183271.mp4',
     ]
+    const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+    const [playing, setPlaying] = useState(false);
+
+    useEffect(() => {
+
+        if (activeSlideIndex === 0) {
+            setPlaying(true);
+        }
+
+    }, [activeSlideIndex]);
 
     return (
         <S.Pagemain>
@@ -25,21 +36,34 @@ export default function MainPage() {
                 <p>투표율 TOP5</p>
                 <S.Moviebox>
                     <Swiper
-                        // Install Swiper modules
-                        modules={[Navigation, Pagination, Scrollbar, A11y]}
-                        spaceBetween={50}
+
+                        onSlideChange={(swiper) => {
+                            setActiveSlideIndex(swiper.realIndex);
+                            setPlaying(true); // 슬라이드가 변경될 때마다 재생
+                        }}
                         slidesPerView={3}
-                        navigation
-                        pagination={{ clickable: true }}
-                        scrollbar={{ draggable: true }}
-                        onSwiper={(swiper) => console.log(swiper)}
-                        onSlideChange={() => console.log('slide change')}
+                        centeredSlides={true}
+                        spaceBetween={30}
+                        pagination={{
+                            clickable: true ,
+                        }}
+                        loop={true}
+                        loopedSlides={2}
+                        navigation={true}
+                        modules={[Pagination, Navigation]}
+                        className="mySwiper"
                     >
-                        {CAROUSEL_IMAGES.map((image, index) => (
-                            <SwiperSlide key={index}>
-                                <img src={image} alt={`Image ${index + 1}`} />
-                            </SwiperSlide>
-                        ))}
+                        {CAROUSEL_VIDEOS.map((video, index) => (
+                                <SwiperSlide key={index}>
+                                    <ReactPlayer
+                                        url={video}
+                                        controls
+                                        width="98%"
+                                        height="98%"
+                                        playing={playing && index === activeSlideIndex}
+                                    />
+                                </SwiperSlide>
+                            ))}
                     </Swiper>
                 </S.Moviebox>
             </S.Pagebottom>
