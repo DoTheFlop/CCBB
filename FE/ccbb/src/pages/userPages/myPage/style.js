@@ -31,6 +31,16 @@ export const textSection = styled.div`
   color: white;
 `;
 
+export const textAndBtn = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  svg {
+    color: gold;
+  }
+`;
+
 //탭그룹
 export const tabGroup = styled.div`
   width: 90%;
@@ -61,6 +71,6 @@ export const bottomSection = styled.div`
   flex: 1;
   box-sizing: border-box;
   /* padding: 20px 100px 20px 100px; */
-  padding: 5% 10% 5% 10%;
+  padding: 2% 10% 3% 10%;
   background-color: white;
 `;
