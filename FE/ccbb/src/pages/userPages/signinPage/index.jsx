@@ -80,7 +80,7 @@ export default function SigninPage() {
         height={"50px"}
         onClick={doLogin}
       />
-      <a href="http://ccbb.pro:8081/oauth2/authorization/kakao">kakao</a>
+      <a href="https://ccbb.pro/api/oauth2/authorization/kakao">kakao</a>
       <Button1
         text={"카카오로그인"}
         width={"100%"}

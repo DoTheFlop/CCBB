@@ -71,6 +71,6 @@ export const bottomSection = styled.div`
   flex: 1;
   box-sizing: border-box;
   /* padding: 20px 100px 20px 100px; */
-  padding: 5% 10% 5% 10%;
+  padding: 2% 10% 3% 10%;
   background-color: white;
 `;
