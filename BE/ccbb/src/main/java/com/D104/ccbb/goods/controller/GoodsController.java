@@ -5,40 +5,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
-import com.D104.ccbb.file.service.FileService;
-import com.D104.ccbb.goods.domain.Goods;
 import com.D104.ccbb.goods.dto.GoodsDto;
 import com.D104.ccbb.goods.service.GoodsService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("event/goods")
-@RequiredArgsConstructor
 public class GoodsController {
 
+	@Autowired
 	private GoodsService goodsService;
-	private FileService fileService;
 
 	@PostMapping("/add")
-	public ResponseEntity<Map<String, Object>> add(
-		@RequestPart(value = "files", required = false) List<MultipartFile> files,
-		@RequestPart(value = "goods") GoodsDto goodsDto) {
+	public ResponseEntity<Map<String, Object>> add(@RequestBody GoodsDto goodsDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			Goods goods = goodsService.setGoods(goodsDto);
-			fileService.saveFile(files, "goods", goods.getGoodsId());
+			goodsService.setGoods(goodsDto);
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {

@@ -20,7 +20,7 @@ public class PostService {
 	private final PostRepo postRepo;
 	private final UserRepository userRepository;
 
-	public Post setPost(PostDto postDto) {
+	public void setPost(PostDto postDto) {
 
 		Post post = Post.builder()
 			.title(postDto.getTitle())
@@ -30,7 +30,7 @@ public class PostService {
 			.userId(userRepository.getReferenceById(postDto.getUserId()))
 			.build();
 		Post save = postRepo.save(post);
-		return save;
+
 	}
 
 	public List<Post> getFree() {

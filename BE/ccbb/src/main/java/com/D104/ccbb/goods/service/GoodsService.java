@@ -20,7 +20,7 @@ public class GoodsService {
 	private final GoodsRepo goodsRepo;
 	private final EventRepo eventRepo;
 
-	public Goods setGoods(GoodsDto goodsDto) {
+	public void setGoods(GoodsDto goodsDto) {
 		Goods goods = Goods.builder()
 			.goodsId(goodsDto.getGoodsId())
 			.name(goodsDto.getName())
@@ -28,8 +28,7 @@ public class GoodsService {
 			.price(goodsDto.getPrice())
 			.eventId(eventRepo.getReferenceById(goodsDto.getEventId()))
 			.build();
-		Goods save = goodsRepo.save(goods);
-		return save;
+		goodsRepo.save(goods);
 	}
 
 	public List<Goods> getList(int eventId) {
