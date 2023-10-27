@@ -38,7 +38,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 				String accessToken = jwtService.createToken(oAuth2User.getEmail());
 				response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
 				response.sendRedirect(
-					"http://localhost:3000/kakaologin/" + accessToken); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
+					"https://ccbb.pro/kakaologin/" + accessToken); // 프론트의 회원가입 추가 정보 입력 폼으로 리다이렉트
 
 				jwtService.sendAccessAndRefreshToken(response, accessToken, null);
 				//                User findUser = userRepository.findByEmail(oAuth2User.getEmail())
