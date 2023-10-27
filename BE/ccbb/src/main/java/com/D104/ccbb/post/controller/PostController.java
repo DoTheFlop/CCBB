@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.D104.ccbb.file.service.FileService;
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.like.dto.LikesDto;
 import com.D104.ccbb.like.repo.LikesRepo;
 import com.D104.ccbb.like.service.LikesService;
+import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.post.dto.PostDto;
 import com.D104.ccbb.post.dto.PostLoadDto;
 import com.D104.ccbb.post.repo.PostRepo;
@@ -28,10 +32,12 @@ import com.D104.ccbb.post.service.PostService;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/post")
 @RequiredArgsConstructor
+@Slf4j
 public class PostController {
 
 	private final PostService postService;
@@ -40,12 +46,19 @@ public class PostController {
 	private final LikesService likesService;
 	private final LikesRepo likesRepo;
 	private final PostRepo postRepo;
+	private final FileService fileService;
 	// private final FileService fileService;
 
 	// public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
 
 	@PostMapping("/add")
-	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto) {
+	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
+		@RequestPart(value = "files", required = false) List<MultipartFile> files,
+		@RequestPart(value = "post") PostDto postDto) {
+		log.info(String.valueOf(postDto));
+		for (MultipartFile a : files) {
+			log.info(a.getOriginalFilename());
+		}
 		postDto.setUserId(
 			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.get()
@@ -53,7 +66,8 @@ public class PostController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			postService.setPost(postDto);
+			Post post = postService.setPost(postDto);
+			fileService.saveFile(files, "post", post.getPostId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
