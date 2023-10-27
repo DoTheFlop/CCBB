@@ -1,18 +1,20 @@
 import styled from "styled-components";
 
-
-
 export const Profile = styled.div`
   display: flex;
   align-items: center;
+  width: fit-content;
+  flex-direction: ${(props) =>
+    props.direction === "reverse" ? "row-reverse" : "row"};
 `;
 
 export const Name = styled.div`
-  color: white;
+  color: ${(props) => props.color};
   padding-left: 10px;
+  padding-right: 10px;
   font-size: 25px;
 `;
 
 export const Img = styled.img`
   border-radius: 50%;
-`
+`;
