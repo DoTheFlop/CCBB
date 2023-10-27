@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import * as S from "./style";
+import Button1 from "../../../component/common/buttons";
 import AccountCard from "../../../component/accountCard";
 import OngoingVote from "../../../component/myPage/ongoingVote";
 import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
+import TollIcon from "@mui/icons-material/Toll";
 
 export default function MyPage() {
   const tabs = [
@@ -23,8 +25,15 @@ export default function MyPage() {
           />
         </S.imgSection>
         <S.textSection>
-          <div>닉네임</div>
-          <div>1,000P</div>
+          <S.textAndBtn>
+            <h1>닉네임</h1>
+            <Button1 text="정보수정" height={"30px"}></Button1>
+          </S.textAndBtn>
+          <S.textAndBtn>
+            <TollIcon />
+            <div>1,000P</div>
+            <Button1 text="내역보기" height={"30px"}></Button1>
+          </S.textAndBtn>
         </S.textSection>
         <AccountCard />
       </S.profileInfo>
