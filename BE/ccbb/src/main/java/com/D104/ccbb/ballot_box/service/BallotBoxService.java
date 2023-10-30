@@ -1,5 +1,7 @@
 package com.D104.ccbb.ballot_box.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +40,10 @@ public class BallotBoxService {
 		ballotResultDto.setPick1(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 1));
 		ballotResultDto.setPick2(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 2));
 		return ballotResultDto;
+	}
+
+	public List<BallotBox> getBallotList(int voteId){
+		return ballotBoxRepo.findByVote_VoteId(voteId);
 	}
 
 }

@@ -60,6 +60,9 @@ public class Vote {
 	@Column(columnDefinition = "int")
 	private Integer deposit;
 
+	@Column(name = "select_line", columnDefinition = "int")
+	private Integer selectLine;
+
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
 	private User userId1;
