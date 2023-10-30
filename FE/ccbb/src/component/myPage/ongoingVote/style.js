@@ -18,6 +18,11 @@ export const processChart = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  align-items: center;
+  .arrow {
+    color: #0b123f;
+    margin-bottom: 5%;
+  }
 `;
 
 export const processStep = styled.div`

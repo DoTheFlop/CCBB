@@ -3,15 +3,21 @@ import * as S from "./style";
 import Button1 from "../../../component/common/buttons";
 import AccountCard from "../../../component/accountCard";
 import OngoingVote from "../../../component/myPage/ongoingVote";
+import ExpiredVote from "../../../component/myPage/expiredVote";
 import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
 import TollIcon from "@mui/icons-material/Toll";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../../recoil/UserAtom";
 
 export default function MyPage() {
+  const user = useRecoilValue(userState);
+
   const tabs = [
     { name: "진행중인 투표", component: <OngoingVote key={0} /> },
-    { name: "작성한 글", component: <MyPosts key={1} /> },
-    { name: "와드한 글", component: <MyWards key={2} /> },
+    { name: "종료된 투표", component: <ExpiredVote key={1} /> },
+    { name: "작성한 글", component: <MyPosts key={2} /> },
+    { name: "와드한 글", component: <MyWards key={3} /> },
   ];
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -26,7 +32,7 @@ export default function MyPage() {
         </S.imgSection>
         <S.textSection>
           <S.textAndBtn>
-            <h1>닉네임</h1>
+            <h1>{user.nickname}</h1>
             <Button1 text="정보수정" height={"30px"}></Button1>
           </S.textAndBtn>
           <S.textAndBtn>

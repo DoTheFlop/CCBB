@@ -1,3 +1,4 @@
+import React from "react";
 import { Link } from "react-router-dom";
 import * as S from "./style";
 import ProcessBtn from "../processBtn";
@@ -5,6 +6,7 @@ import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import HowToVoteOutlinedIcon from "@mui/icons-material/HowToVoteOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
+import DoubleArrowOutlinedIcon from "@mui/icons-material/DoubleArrowOutlined";
 import VoteRate from "../../voteBoard/voteRate";
 
 export default function OngoingVote() {
@@ -35,13 +37,22 @@ export default function OngoingVote() {
       <S.processChart>
         {processList.map((proc, index) => {
           return (
-            <S.processStep key={index}>
-              <ProcessBtn
-                Icon={proc.icon}
-                isOngoing={proc.title === "수락 대기중"}
-              />
-              <p>{proc.title}</p>
-            </S.processStep>
+            <React.Fragment key={index}>
+              <S.processStep>
+                <ProcessBtn
+                  Icon={proc.icon}
+                  isOngoing={proc.title === "수락 대기중"}
+                />
+                <p>{proc.title}</p>
+              </S.processStep>
+              {!(index === 3) && (
+                <DoubleArrowOutlinedIcon
+                  key={proc.title}
+                  className="arrow"
+                  style={{ width: "7vw", height: "7vw" }}
+                />
+              )}
+            </React.Fragment>
           );
         })}
       </S.processChart>
