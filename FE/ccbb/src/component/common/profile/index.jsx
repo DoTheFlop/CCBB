@@ -1,16 +1,22 @@
 import * as S from "./style";
 
-export default function UserProfile({ name, color = "white", direction = "" }) {
-  const iconSize = "50px";
-
+export default function UserProfile({
+  name,
+  color = "white",
+  direction = "",
+  size = 50,
+}) {
+  // const iconSize = "50px";
   return (
     <S.Profile direction={direction}>
       <S.Img
         src="/resource/squareyoon.png"
         alt="리그 오브 레전드 이미지"
-        style={{ width: iconSize, height: iconSize }}
+        style={{ width: size, height: size }}
       />
-      <S.Name color={color}>{name}</S.Name>
+      <S.Name color={color} size={size}>
+        {name}
+      </S.Name>
     </S.Profile>
   );
 }

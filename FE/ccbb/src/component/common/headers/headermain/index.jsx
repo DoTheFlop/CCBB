@@ -1,18 +1,27 @@
 import Button1 from "../../buttons";
 import * as S from "./style";
 import GavelIcon from "@mui/icons-material/Gavel";
+import UserProfile from "../../profile";
 import { Link, useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { UrlAtom } from "../../../../recoil/UrlAtom";
+import { userState } from "../../../../recoil/UserAtom";
 
 export default function Headermain() {
-  const goSignIn = useNavigate();
+  const navigate = useNavigate();
   const setToUrl = useSetRecoilState(UrlAtom);
+  const user = useRecoilValue(userState);
+  const resetUserState = useResetRecoilState(userState);
   const handleSigninClick = () => {
     //로그인페이지로 가기 전 url을 기억하자
     const toUrl = window.location.pathname;
     setToUrl(toUrl);
-    goSignIn("/signin");
+    navigate("/signin");
+  };
+  const handleLogoutClick = () => {
+    localStorage.removeItem("token");
+    resetUserState();
+    navigate("/");
   };
 
   return (
@@ -43,12 +52,26 @@ export default function Headermain() {
             <p>기부내역</p>
           </Link>
         </S.webmenu>
-        <Button1
-          onClick={handleSigninClick}
-          text={"로그인"}
-          width={"75px"}
-          height={"30px"}
-        />
+        {localStorage.getItem("token") ? (
+          <S.usermenu>
+            <Link to="/mypage">
+              <UserProfile name={user.nickname} size={42} />
+            </Link>
+            <Button1
+              text={"로그아웃"}
+              onClick={handleLogoutClick}
+              width={"90px"}
+              height={"30px"}
+            />
+          </S.usermenu>
+        ) : (
+          <Button1
+            onClick={handleSigninClick}
+            text={"로그인"}
+            width={"75px"}
+            height={"30px"}
+          />
+        )}
       </S.rightmenu>
     </S.Header>
   );
