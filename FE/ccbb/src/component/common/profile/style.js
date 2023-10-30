@@ -12,7 +12,7 @@ export const Name = styled.div`
   color: ${(props) => props.color};
   padding-left: 10px;
   padding-right: 10px;
-  font-size: 25px;
+  font-size: ${(props) => `${props.size / 2}px`};
 `;
 
 export const Img = styled.img`
