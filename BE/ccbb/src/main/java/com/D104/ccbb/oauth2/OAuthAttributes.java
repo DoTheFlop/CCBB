@@ -62,6 +62,7 @@ public class OAuthAttributes {
 			.createDate(LocalDateTime.now())
 			.state((byte)1)
 			.point(0)
+			.state((byte)0)
 			.build();
 	}
 }
