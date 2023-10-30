@@ -80,13 +80,18 @@ export default function SigninPage() {
         height={"50px"}
         onClick={doLogin}
       />
-      <a href="https://ccbb.pro/api/oauth2/authorization/kakao">kakao</a>
-      <Button1
+      <a href="http://localhost:8081/api/oauth2/authorization/kakao">
+        kakao(localhost:8081)
+      </a>
+      <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
+        kakao(ccbb.pro)
+      </a>
+      {/* <Button1
         text={"카카오로그인"}
         width={"100%"}
         height={"50px"}
         // onClick={doKakaoLogin}
-      ></Button1>
+      ></Button1> */}
       <S.signinMenu>
         <Link to="/signup">
           <p>회원가입</p>
