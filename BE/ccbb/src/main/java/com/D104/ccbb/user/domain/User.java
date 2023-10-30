@@ -72,13 +72,10 @@ public class User {
 	private String val;
 
 	// 0 = 관리자 // 1 = 일반 유저 // 2 = 정지 유저
-	@Column(nullable = false ,columnDefinition = "tinyint")
+	@Column(nullable = false, columnDefinition = "tinyint")
 	private Byte state;
 
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private Role role;
-
-	@Column(name = "state")
-	private Byte state;
 }
