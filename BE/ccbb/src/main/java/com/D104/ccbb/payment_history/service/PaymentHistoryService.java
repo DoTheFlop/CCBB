@@ -44,7 +44,7 @@ public class PaymentHistoryService {
 	private final PaymentHistoryRepo paymentHistoryRepo;
 	private final VoteRepo voteRepo;
 
-	public void addPayment(int voteId, int price, String authorization) throws
+	public String addPayment(int voteId, int price, String authorization) throws
 		Exception {
 		// 결제하는 유저 정보 불러오기
 		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
@@ -99,6 +99,8 @@ public class PaymentHistoryService {
 			.build();
 
 		paymentHistoryRepo.save(readyPay);
+
+		return body.get("next_redirect_pc_url");
 	}
 
 	public boolean approvePayment(Integer userId, int voteId, int price, String pgToken) {

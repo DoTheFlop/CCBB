@@ -29,8 +29,9 @@ public class PaymentHistoryController {
 		@RequestHeader String Authorization) {
 
 		try {
-			paymentHistoryService.addPayment(voteId, price, Authorization);
-			return new ResponseEntity<>("결제 준비 완료", HttpStatus.OK);
+			String paymentUrl = paymentHistoryService.addPayment(voteId, price, Authorization);
+			log.info("결제 준비 완료");
+			return new ResponseEntity<>(paymentUrl, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
