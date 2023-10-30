@@ -79,10 +79,10 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	private Role role;
 
-	@Column(name = "main_position", nullable = false, columnDefinition = "tinyint")
+	@Column(name = "main_position", columnDefinition = "tinyint")
 	private Byte mainPosition;
 
-	@Column(name = "sub_position", nullable = false, columnDefinition = "tinyint")
+	@Column(name = "sub_position", columnDefinition = "tinyint")
 	private Byte subPosition;
 
 	@Column(name = "vote_count", nullable = false, columnDefinition = "int")
