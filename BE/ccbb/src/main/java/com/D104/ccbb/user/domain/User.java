@@ -71,6 +71,10 @@ public class User {
 	@Column(name = "val_tier", columnDefinition = "varchar(50)")
 	private String val;
 
+	// 0 = 관리자 // 1 = 일반 유저 // 2 = 정지 유저
+	@Column(nullable = false ,columnDefinition = "tinyint")
+	private Byte state;
+
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private Role role;
