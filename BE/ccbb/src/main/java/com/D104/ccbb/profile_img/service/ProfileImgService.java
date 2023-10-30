@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.profile_img.domain.ProfileImg;
+import com.D104.ccbb.profile_img.dto.ProfileImgDto;
 import com.D104.ccbb.profile_img.repo.ProfileImgRepo;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
@@ -128,6 +129,22 @@ public class ProfileImgService {
 			return filename.substring(lastDotIndex + 1);
 		}
 		return "";
+	}
+
+	public ProfileImgDto getProfileImgMetaData(String authorization) throws Exception {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> byEmail = userRepository.findByEmail(userEmail);
+		if (byEmail.isEmpty()) {
+			throw new Exception("존재하지 않는 유저입니다");
+		}
+		ProfileImg byUserIdUserId = profileImgRepo.findByUserId_UserId(byEmail.get().getUserId());
+		return ProfileImgDto.builder()
+			.profileImgId(byUserIdUserId.getProfileImgId())
+			.orgName(byUserIdUserId.getOrgName())
+			.name(byUserIdUserId.getName())
+			.userId(byUserIdUserId.getUserId().getUserId())
+			.extension(byUserIdUserId.getExtension())
+			.build();
 	}
 
 

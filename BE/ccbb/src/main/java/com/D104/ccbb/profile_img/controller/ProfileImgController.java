@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.D104.ccbb.profile_img.domain.ProfileImg;
+import com.D104.ccbb.profile_img.dto.ProfileImgDto;
 import com.D104.ccbb.profile_img.service.ProfileImgService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,17 @@ import lombok.extern.slf4j.Slf4j;
 public class ProfileImgController {
 
 	private final ProfileImgService profileImgService;
+
+	@GetMapping("/meta")
+	private ResponseEntity<?> getProfileImgMetaData(@RequestHeader String Authorization) {
+		try {
+			ProfileImgDto profileImgDto = profileImgService.getProfileImgMetaData(Authorization);
+			return new ResponseEntity<>(profileImgDto, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@GetMapping("/{imgName}")
 	public ResponseEntity<byte[]> getProfileImg(@PathVariable String imgName) {
