@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.UserService;
 
@@ -45,6 +47,15 @@ public class UserController {
 	public ResponseEntity<String> signUp() {
 		return new ResponseEntity<>("회원가입", HttpStatus.OK);
 	}
+
+
+
+	@PostMapping("/esign-up")
+	public ResponseEntity<String> esignup(@RequestBody UserLoginDto userLoginDto) {
+		userService.eSignup(userLoginDto);
+		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
+	}
+	
 
 	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization ,@RequestBody UserDto userDto) {

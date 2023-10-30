@@ -18,6 +18,7 @@ import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
 import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -93,6 +94,24 @@ public class UserService {
 
 		return createdToken;
 	}
+
+	@Transactional
+	public void eSignup(UserLoginDto userLoginDto) {
+		User user = User.builder()
+			.name(userLoginDto.getName())
+			.email(userLoginDto.getEmail())
+			.password(userLoginDto.getPassword())
+			.sex(userLoginDto.getSex())
+			.point(0)
+			.createDate(LocalDateTime.now())
+			.state((byte)1)
+			.voteCount(0)
+			.voteVictory(0)
+			.build();
+		userRepository.save(user);
+	}
+
+
 
 	@Transactional
 	public void updateUser(String email, UserDto userDto) {

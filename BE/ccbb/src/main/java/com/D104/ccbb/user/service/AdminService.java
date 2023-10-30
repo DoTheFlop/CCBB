@@ -9,15 +9,21 @@ import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.UserDto;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.nimbusds.oauth2.sdk.util.ListUtils;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class AdminService {
 	private final UserRepository userRepository;
 	public List<User> getUser() {
+		log.info("service 호출");
+		log.info("list: {}", userRepository.findAllByUserId(3));
+		log.info("service 완료");
 		return userRepository.findAll();
 	}
 
