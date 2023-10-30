@@ -8,7 +8,7 @@ export const Profile = styled.div`
 `;
 
 export const Name = styled.div`
-  color: white;
+  color: ${(props) => props.color || 'white'};
   padding-left: 10px;
   font-size: 25px;
 `;

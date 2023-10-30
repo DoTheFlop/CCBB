@@ -12,11 +12,14 @@ export const StyledInput = styled.input`
 `;
 
 export const Inputlabel = styled.label`
-    color: white;
-    padding-bottom: 5px;
+    color: black;
+    padding-bottom: 10px;
+    font-size: 20px;
+    font-weight: bold;
 `
 
 export const InputBox = styled.div`
     display: flex;
     flex-direction: column;
+    padding: 20px 0;
 `
