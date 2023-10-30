@@ -1,5 +1,8 @@
 package com.D104.ccbb.vote.service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,4 +44,11 @@ public class VoteService {
 
 		voteRepo.save(vote);
 	}
+
+	public List<Vote> getVoteList(LocalDateTime deadLine){
+		return voteRepo.findByDeadLineLessThan(deadLine);
+	}
+
+
+
 }
