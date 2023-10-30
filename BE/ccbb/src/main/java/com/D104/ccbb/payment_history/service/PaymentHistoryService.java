@@ -38,6 +38,7 @@ public class PaymentHistoryService {
 
 	private final String READY_KAKAO_URL = "https://kapi.kakao.com/v1/payment/ready";
 	private final String APPROVE_KAKAO_URL = "https://kapi.kakao.com/v1/payment/approve";
+	private final String CANCEL_KAKAO_URL = "https://kapi.kakao.com/v1/payment/cancel";
 
 	private final JwtTokenService jwtTokenService;
 	private final UserRepository userRepository;
@@ -70,7 +71,7 @@ public class PaymentHistoryService {
 		// 성공, 실패, 취소시 리다이렉트 주소 설정
 		// todo: 각 주소를 결제 성공시 db에 결제 정보 넣는 백엔드 API로 설정, 그 후 해당 API에서 프론트 결제 완료창으로 리다이렉트 시키기
 		requestBody.add("approval_url",
-			String.format("http://ccbb.pro/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
+			String.format("http://localhost:8081/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
 				byEmail.get().getUserId()));
 		requestBody.add("cancel_url", "https://ccbb.pro/api/payment/cancel");
 		requestBody.add("fail_url", "https://ccbb.pro/api/payment/fail");
@@ -130,6 +131,41 @@ public class PaymentHistoryService {
 		log.info("response body : {}", Kakaoresponse.getBody());
 		readyPayment.setApprove(true);
 		paymentHistoryRepo.save(readyPayment);
+		return true;
+	}
+
+	public boolean returnPayment(String authorization, Integer voteId) throws Exception {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> foundUser = userRepository.findByEmail(userEmail);
+		if (foundUser.isEmpty()) {
+			throw new Exception("존재하지 않는 유저입니다.");
+		}
+		PaymentHistory foundPayment = paymentHistoryRepo.findByUserId_UserIdAndVoteId_VoteId(
+			foundUser.get().getUserId(), voteId);
+		log.info("foundPayment: {}", foundPayment);
+		// 카카오 페이 API에 결제 취소 요청
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "KakaoAK " + KAKAO_ADMIN_KEY);
+		headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+		MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+		requestBody.add("cid", "TC0ONETIME");
+		requestBody.add("tid", foundPayment.getTid());
+		requestBody.add("cancel_amount", foundPayment.getAmount().toString());
+		requestBody.add("cancel_tax_free_amount", foundPayment.getAmount().toString());
+
+		log.info("requestBody: {}", requestBody);
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
+		ResponseEntity<Map> Kakaoresponse = restTemplate.exchange(
+			CANCEL_KAKAO_URL,
+			HttpMethod.POST,
+			entity,
+			Map.class);
+		log.info("response headers : {}", Kakaoresponse.getHeaders());
+		log.info("response body : {}", Kakaoresponse.getBody());
+		foundPayment.setIsReturned(true);
+		paymentHistoryRepo.save(foundPayment);
 		return true;
 	}
 }

@@ -54,4 +54,14 @@ public class PaymentHistoryController {
 		}
 	}
 
+	@PostMapping("/return")
+	public ResponseEntity<?> returnPayment(@RequestHeader String Authorization, @RequestParam Integer voteId) {
+		try {
+			paymentHistoryService.returnPayment(Authorization, voteId);
+			return new ResponseEntity<>("취소 완료", HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
