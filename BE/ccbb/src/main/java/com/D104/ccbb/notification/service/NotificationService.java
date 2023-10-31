@@ -1,18 +1,25 @@
 package com.D104.ccbb.notification.service;
 
+import com.D104.ccbb.notification.domain.Notification;
+import com.D104.ccbb.notification.domain.NotificationType;
+import com.D104.ccbb.notification.dto.NotificationResponseDto;
 import com.D104.ccbb.notification.repo.EmitterRepo;
+import com.D104.ccbb.notification.repo.NotificationRepo;
+import com.D104.ccbb.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
-public class NotifiactionService {
+public class NotificationService {
 
     private final EmitterRepo emitterRepo;
+    private final NotificationRepo notificationRepo;
     private Long DEFAULT_TIMEOUT = 60L * 1000L * 60L;
 
     public SseEmitter subscribe(Integer userId, String lastEventId) {
@@ -41,13 +48,14 @@ public class NotifiactionService {
         return userId + "_" + System.currentTimeMillis();
     }
 
-    private void sendNotification(SseEmitter emitter, String eventId, String userId, Object data) {
+    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
         try {
             emitter.send(SseEmitter.event()
                     .id(eventId)
                     .data(data));
         } catch (IOException e) {
-            emitterRepo.deleteById(userId);
+            emitterRepo.deleteById(emitterId);
+            throw new RuntimeException("연결 오류!");
         }
     }
 
@@ -63,5 +71,36 @@ public class NotifiactionService {
         eventCaches.entrySet().stream()
                 .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
                 .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
+    }
+
+    /**
+     * 어떤 회원에게 알림을 보낼지에 대해 찾고 알림을 받을 회원의 Emitter들을 모두 찾아 해당 Emitter로 Send 시켜준다.
+     */
+    public void send(User receiver, NotificationType notificationType, String content, String url) {
+        Notification notification = notificationRepo.save(createNotification(receiver, notificationType, content, url));
+
+        String receiverId = String.valueOf(receiver.getUserId());
+        String eventId = receiverId + "_" + System.currentTimeMillis();
+        Map<String, SseEmitter> emitters = emitterRepo.findAllEmitterStartWithByUserId(receiverId);
+        emitters.forEach(
+                (key, emitter) -> {
+                    emitterRepo.saveEventCache(key, notification); // 유실된 데이터를 관리하기 위해 저장
+                    sendNotification(emitter, eventId, key, NotificationResponseDto.fromEntity(notification)); // 데이터 전송
+                }
+        );
+    }
+
+    /**
+     * Notification 엔티티를 생성한다.
+     */
+    private Notification createNotification(User receiver, NotificationType notificationType, String content, String url) {
+        return Notification.builder()
+                .receiver(receiver)
+                .notificationType(notificationType)
+                .content(content)
+                .url(url)
+                .isRead(false)
+                .createDate(LocalDateTime.now())
+                .build();
     }
 }

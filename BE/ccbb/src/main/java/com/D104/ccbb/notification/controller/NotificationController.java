@@ -1,12 +1,11 @@
 package com.D104.ccbb.notification.controller;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
-import com.D104.ccbb.notification.service.NotifiactionService;
+import com.D104.ccbb.notification.service.NotificationService;
 import com.D104.ccbb.user.repository.UserRepository;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -16,7 +15,7 @@ public class NotificationController {
 
     private final UserRepository userRepository;
     private final JwtTokenService jwtTokenService;
-    private final NotifiactionService notifiactionService;
+    private final NotificationService notificationService;
 
 
     @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
@@ -28,6 +27,6 @@ public class NotificationController {
                 .get()
                 .getUserId();
 
-        return notifiactionService.subscribe(userId, lastEventId);
+        return notificationService.subscribe(userId, lastEventId);
     }
 }
