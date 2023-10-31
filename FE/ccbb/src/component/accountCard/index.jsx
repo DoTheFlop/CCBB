@@ -7,9 +7,9 @@ export default function AccountCard() {
     <S.card>
       <h3>계정 연동</h3>
       <S.gameLinks>
-        {games.map((game) => {
+        {games.map((game, index) => {
           return (
-            <S.gameLinkItem>
+            <S.gameLinkItem key={index}>
               <span>{game}</span>
               <AccountLinkBtn />
             </S.gameLinkItem>
