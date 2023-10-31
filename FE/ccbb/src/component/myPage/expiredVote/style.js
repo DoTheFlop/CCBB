@@ -12,3 +12,10 @@ export const main = styled.main`
     width: fit-content;
   }
 `;
+
+export const VoteGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  /* grid-template-columns: 1fr 1fr 1fr 1fr; */
+  justify-content: start;
+`;
