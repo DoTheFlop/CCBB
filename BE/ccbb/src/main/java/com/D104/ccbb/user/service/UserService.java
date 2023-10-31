@@ -18,6 +18,7 @@ import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
 import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserEmailPasDto;
 import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 
@@ -111,7 +112,18 @@ public class UserService {
 		userRepository.save(user);
 	}
 
+	public String elogin(UserEmailPasDto userEmailPasDto) {
+		User user = userRepository.findByEmail(userEmailPasDto.getEmail())
+			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저가 존재하지 않습니다."));
 
+		// 비밀번호 검증
+		if (!user.getPassword().equals(userEmailPasDto.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+		}
+
+		// 토큰 생성 및 반환
+		return jwtTokenService.createToken(user.getEmail());
+	}
 
 	@Transactional
 	public void updateUser(String email, UserDto userDto) {
