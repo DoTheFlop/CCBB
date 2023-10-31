@@ -1,11 +1,21 @@
 package com.D104.ccbb.notification.domain;
 
+import com.D104.ccbb.user.domain.User;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
 public class Notification {
 
     @Id
@@ -22,6 +32,14 @@ public class Notification {
     @Column(nullable = false)
     private Boolean isRead;
 
-    @Column(nullable = false)
-    private NotificationType nt_type;
+    @Column(name = "nt_type", nullable = false)
+    private NotificationType notificationType;
+
+    @Column(name = "create_date", nullable = false)
+    private LocalDateTime createDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User receiver;
 }
