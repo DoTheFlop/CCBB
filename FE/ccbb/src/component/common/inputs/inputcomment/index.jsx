@@ -1,6 +1,6 @@
 import * as S from './style';
 
-export default function Input2({ width, height, label, id, type }) {
+export default function InputComment({ width, height, label, id }) {
     return (
       <S.InputBox>
         <S.Inputlabel htmlFor={id}>{label}</S.Inputlabel>
