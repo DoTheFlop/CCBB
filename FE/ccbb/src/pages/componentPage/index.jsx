@@ -1,3 +1,4 @@
+import CommentBox from '../../component/commentBox';
 import Button1 from '../../component/common/buttons';
 import Headermenu from '../../component/common/headers/headermenu';
 import Input1 from '../../component/common/inputs/input1';
@@ -15,6 +16,8 @@ export default function ComponentPage() {
             <Input2 label="닉네임" id="nickname" width="300px" height="40px" />
             <Button1 text={"로그인"} width={'75px'} height={'30px'}/>
             <UserProfile name={"챌우혁"}/>
+            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+
         </S.main>  
     )
 }

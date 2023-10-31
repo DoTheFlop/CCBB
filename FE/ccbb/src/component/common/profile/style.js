@@ -9,8 +9,9 @@ export const Profile = styled.div`
 `;
 
 export const Name = styled.div`
-  color: ${(props) => props.color};
+  color: ${(props) => props.color || 'white'};
   padding-left: 10px;
+  font-weight: bold;
   padding-right: 10px;
   font-size: ${(props) => `${props.size / 2}px`};
 `;
