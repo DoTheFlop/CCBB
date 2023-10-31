@@ -13,6 +13,7 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "./styles/Theme";
 import Headermain from "./component/common/headers/headermain";
 import * as S from "./style";
+import LoLvoteDetailPage from "./pages/boardPages/lolvoteBoard/lolvoteDetail";
 
 export default function App() {
   return (
@@ -30,6 +31,7 @@ export default function App() {
           <Route path="/gift" element={<GiftPage />}></Route>
           <Route path="/donate" element={<DonatePage />}></Route>
           <Route path="/kakaologin/:token" element={<KakaoLoginPage />}></Route>
+          <Route path="/lolvote/detail" element={<LoLvoteDetailPage />}></Route>
         </Routes>
       </S.main>
     </ThemeProvider>
