@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +33,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final JwtTokenService jwtTokenService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String USER_INFO_URI;
@@ -98,10 +100,15 @@ public class UserService {
 
 	@Transactional
 	public void eSignup(UserLoginDto userLoginDto) {
+		if(userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
+			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+		}
+		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
+
 		User user = User.builder()
 			.name(userLoginDto.getName())
 			.email(userLoginDto.getEmail())
-			.password(userLoginDto.getPassword())
+			.password(encodedPassword)
 			.sex(userLoginDto.getSex())
 			.point(0)
 			.createDate(LocalDateTime.now())
@@ -116,8 +123,7 @@ public class UserService {
 		User user = userRepository.findByEmail(userEmailPasDto.getEmail())
 			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저가 존재하지 않습니다."));
 
-		// 비밀번호 검증
-		if (!user.getPassword().equals(userEmailPasDto.getPassword())) {
+		if(!passwordEncoder.matches(userEmailPasDto.getPassword(), user.getPassword())) {
 			throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
 		}
 
