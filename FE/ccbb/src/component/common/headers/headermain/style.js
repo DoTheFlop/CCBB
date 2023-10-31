@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Header = styled.header`
   display: flex;
-  background-color: #110C1F;
+  background-color: #110c1f;
   color: white;
   justify-content: space-between;
   margin-top: 20px;
@@ -15,33 +15,38 @@ export const Header = styled.header`
     font-size: 20px;
     padding: 10px;
   }
-  
+
   a {
-    text-decoration: none; 
-    color: inherit; 
-    cursor: pointer; 
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
   }
   > div {
-    margin: 10px; 
+    margin: 10px;
   }
-`
+`;
 export const leftmenu = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 export const rightmenu = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 export const gamemenu = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
 export const webmenu = styled.div`
   display: flex;
   align-items: center;
-`
+`;
 
-
+//로그인상태일때 프로필, 로그아웃버튼
+export const usermenu = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
