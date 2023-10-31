@@ -44,6 +44,9 @@ dependencies {
     // swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
     implementation 'io.springfox:springfox-swagger-ui:3.0.0'
+
+    // smtp password찾기
+    implementation 'org.springframework.boot:spring-boot-starter-mail:2.7.17'
 }
 
 tasks.named('test') {

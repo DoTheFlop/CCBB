@@ -1,15 +1,18 @@
 package com.D104.ccbb.payment_history.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.payment_history.domain.PaymentHistory;
+import com.D104.ccbb.payment_history.dto.PaymentHistoryDto;
 import com.D104.ccbb.payment_history.repo.PaymentHistoryRepo;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
@@ -38,6 +42,7 @@ public class PaymentHistoryService {
 
 	private final String READY_KAKAO_URL = "https://kapi.kakao.com/v1/payment/ready";
 	private final String APPROVE_KAKAO_URL = "https://kapi.kakao.com/v1/payment/approve";
+	private final String CANCEL_KAKAO_URL = "https://kapi.kakao.com/v1/payment/cancel";
 
 	private final JwtTokenService jwtTokenService;
 	private final UserRepository userRepository;
@@ -70,7 +75,7 @@ public class PaymentHistoryService {
 		// 성공, 실패, 취소시 리다이렉트 주소 설정
 		// todo: 각 주소를 결제 성공시 db에 결제 정보 넣는 백엔드 API로 설정, 그 후 해당 API에서 프론트 결제 완료창으로 리다이렉트 시키기
 		requestBody.add("approval_url",
-			String.format("http://ccbb.pro/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
+			String.format("https://ccbb.pro/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
 				byEmail.get().getUserId()));
 		requestBody.add("cancel_url", "https://ccbb.pro/api/payment/cancel");
 		requestBody.add("fail_url", "https://ccbb.pro/api/payment/fail");
@@ -131,5 +136,64 @@ public class PaymentHistoryService {
 		readyPayment.setApprove(true);
 		paymentHistoryRepo.save(readyPayment);
 		return true;
+	}
+
+	public String returnPayment(String authorization, Integer voteId, boolean isMine) throws Exception {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> foundUser = userRepository.findByEmail(userEmail);
+		if (foundUser.isEmpty()) {
+			throw new Exception("존재하지 않는 유저입니다.");
+		}
+		PaymentHistory foundPayment;
+		if (isMine) { // 내꺼를 환불하는지, 혹은 공약을 이행한 상대를 환분하는지
+			foundPayment = paymentHistoryRepo.findByUserId_UserIdAndVoteId_VoteId(
+				foundUser.get().getUserId(), voteId);
+		} else {
+			foundPayment = paymentHistoryRepo.findByUserId_UserIdIsNotAndVoteId_VoteId(
+				foundUser.get().getUserId(), voteId);
+		}
+		if (foundPayment == null) {
+			return "환불해야할 기록이 존재하지 않습니다.";
+		}
+		if (foundPayment.getIsReturned()) {
+			return "이미 환불된 기록입니다.";
+		}
+
+		log.info("foundPayment: {}", foundPayment);
+		// 카카오 페이 API에 결제 취소 요청
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "KakaoAK " + KAKAO_ADMIN_KEY);
+		headers.set("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+		MultiValueMap<String, String> requestBody = new LinkedMultiValueMap<>();
+		requestBody.add("cid", "TC0ONETIME");
+		requestBody.add("tid", foundPayment.getTid());
+		requestBody.add("cancel_amount", foundPayment.getAmount().toString());
+		requestBody.add("cancel_tax_free_amount", foundPayment.getAmount().toString());
+
+		log.info("requestBody: {}", requestBody);
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
+		ResponseEntity<Map> Kakaoresponse = restTemplate.exchange(
+			CANCEL_KAKAO_URL,
+			HttpMethod.POST,
+			entity,
+			Map.class);
+		log.info("response body : {}", Kakaoresponse.getBody());
+		foundPayment.setIsReturned(true);
+		paymentHistoryRepo.save(foundPayment);
+		return "환불완료";
+	}
+
+	public List<PaymentHistoryDto> getPaymentList(String authorization) {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> foundUser = userRepository.findByEmail(userEmail);
+		if (foundUser.isEmpty()) {
+			throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+		}
+		List<PaymentHistory> paymentList = paymentHistoryRepo.findByUserId(foundUser.get());
+		return paymentList.stream()
+			.map(PaymentHistoryDto::fromEntity)
+			.collect(Collectors.toList());
 	}
 }

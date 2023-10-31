@@ -58,11 +58,11 @@ public class OAuthAttributes {
 			.name(oauth2UserInfo.getNickname())
 			.password("asdfasdf")
 			.role(Role.GUEST)
-			.sex(true)
 			.createDate(LocalDateTime.now())
 			.state((byte)1)
 			.point(0)
-			.state((byte)0)
+			.voteCount(0)
+			.voteVictory(0)
 			.build();
 	}
 }

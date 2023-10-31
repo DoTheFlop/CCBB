@@ -30,12 +30,6 @@ public class Vote {
 	@Column(name = "vote_id", nullable = false)
 	private Integer voteId;
 
-	@Column(name = "vote_user1", nullable = false, columnDefinition = "int")
-	private Integer vote1;
-
-	@Column(name = "vote_user2", nullable = false, columnDefinition = "int")
-	private Integer vote2;
-
 	@Column(nullable = false, columnDefinition = "varchar(200)")
 	private String argument;
 
@@ -60,6 +54,11 @@ public class Vote {
 	@Column(columnDefinition = "int")
 	private Integer deposit;
 
+	@Column(name = "select_line", columnDefinition = "int")
+	private Integer selectLine;
+
+	@Column(name = "do_promise")
+	private Boolean doPromise;
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
 	private User userId1;

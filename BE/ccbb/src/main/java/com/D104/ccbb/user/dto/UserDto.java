@@ -36,6 +36,10 @@ public class UserDto {
 	private String val;
 	private Byte state;
 	private String role;
+	private Byte mainPosition;
+	private Byte subPosition;
+	private Integer voteCount;
+	private Integer voteVictory;
 
 	public static UserDto fromEntity(User user) {
 		return UserDto.builder()
@@ -54,6 +58,10 @@ public class UserDto {
 			.val(user.getVal())
 			.state(user.getState())
 			.role(user.getRole().getKey())
+			.mainPosition(user.getMainPosition())
+			.subPosition(user.getSubPosition())
+			.voteCount(user.getVoteCount())
+			.voteVictory(user.getVoteVictory())
 			.build();
 	}
 }
