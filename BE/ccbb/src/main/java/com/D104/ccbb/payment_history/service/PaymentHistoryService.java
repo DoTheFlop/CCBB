@@ -134,14 +134,27 @@ public class PaymentHistoryService {
 		return true;
 	}
 
-	public boolean returnPayment(String authorization, Integer voteId) throws Exception {
+	public String returnPayment(String authorization, Integer voteId, boolean isMine) throws Exception {
 		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
 		Optional<User> foundUser = userRepository.findByEmail(userEmail);
 		if (foundUser.isEmpty()) {
 			throw new Exception("존재하지 않는 유저입니다.");
 		}
-		PaymentHistory foundPayment = paymentHistoryRepo.findByUserId_UserIdAndVoteId_VoteId(
-			foundUser.get().getUserId(), voteId);
+		PaymentHistory foundPayment;
+		if (isMine) { // 내꺼를 환불하는지, 혹은 공약을 이행한 상대를 환분하는지
+			foundPayment = paymentHistoryRepo.findByUserId_UserIdAndVoteId_VoteId(
+				foundUser.get().getUserId(), voteId);
+		} else {
+			foundPayment = paymentHistoryRepo.findByUserId_UserIdIsNotAndVoteId_VoteId(
+				foundUser.get().getUserId(), voteId);
+		}
+		if (foundPayment == null) {
+			return "환불해야할 기록이 존재하지 않습니다.";
+		}
+		if (foundPayment.getIsReturned()) {
+			return "이미 환불된 기록입니다.";
+		}
+
 		log.info("foundPayment: {}", foundPayment);
 		// 카카오 페이 API에 결제 취소 요청
 		RestTemplate restTemplate = new RestTemplate();
@@ -162,10 +175,9 @@ public class PaymentHistoryService {
 			HttpMethod.POST,
 			entity,
 			Map.class);
-		log.info("response headers : {}", Kakaoresponse.getHeaders());
 		log.info("response body : {}", Kakaoresponse.getBody());
 		foundPayment.setIsReturned(true);
 		paymentHistoryRepo.save(foundPayment);
-		return true;
+		return "환불완료";
 	}
 }

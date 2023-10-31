@@ -9,5 +9,7 @@ import com.D104.ccbb.payment_history.domain.PaymentHistory;
 public interface PaymentHistoryRepo extends JpaRepository<PaymentHistory, Integer> {
 
 	PaymentHistory findByUserId_UserIdAndVoteId_VoteId(int userId, int voteId);
-	
+
+	PaymentHistory findByUserId_UserIdIsNotAndVoteId_VoteId(int userId, int voteId);
+
 }
