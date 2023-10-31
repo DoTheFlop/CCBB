@@ -67,6 +67,7 @@ public class PostController {
 		HttpStatus status = null;
 		try {
 			Post post = postService.setPost(postDto);
+			if(files!=null)
 			fileService.saveFile(files, "post", post.getPostId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
