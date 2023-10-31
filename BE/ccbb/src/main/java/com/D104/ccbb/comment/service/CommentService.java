@@ -3,9 +3,11 @@ package com.D104.ccbb.comment.service;
 import java.util.List;
 
 import com.D104.ccbb.notification.domain.NotificationType;
+import com.D104.ccbb.notification.dto.NotificationRequestDto;
 import com.D104.ccbb.notification.service.NotificationService;
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +27,7 @@ public class CommentService {
 	private final CommentRepo commentRepo;
 	private final UserRepository userRepository;
 	private final PostRepo postRepo;
-	private final NotificationService notificationService;
+	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional
 	public void setComment(CommentDto commentDto) {
@@ -41,16 +43,7 @@ public class CommentService {
 		commentRepo.save(comment);
 
 		// 알람 전송
-		Integer postId = post.getPostId();
-		User receiver = post.getUserId();
-		String content = post.getTitle();
-		if (content.length() > 8) {
-			content = content.substring(0, 8) + "...";
-		}
-		content = user.getNickname() + "님이 회원님이 작성하신 \"" + content + "\"에 답변을 달았습니다.";
-		String url = "/lolvote/detail/" + postId;
-		notificationService.send(receiver, NotificationType.COMMENT, content, url);
-
+		eventPublisher.publishEvent(NotificationRequestDto.commentOf(post, user));
 	}
 
 	public List<Comment> getComment(int postId) {
