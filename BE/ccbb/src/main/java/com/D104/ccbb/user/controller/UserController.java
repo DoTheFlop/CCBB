@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,13 +19,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
+import com.D104.ccbb.user.dto.MailDto;
 import com.D104.ccbb.user.dto.UserDto;
 import com.D104.ccbb.user.dto.UserEmailPasDto;
 import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.SendEmailService;
 import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +42,7 @@ public class UserController {
 
 	private final JwtTokenService jwtTokenService;
 	private final UserService userService;
-	private final UserRepository userRepository;
+	private final SendEmailService sendEmailService;
 
 	@GetMapping("/login")
 	public ResponseEntity<String> login(@RequestHeader String Authorization) {
