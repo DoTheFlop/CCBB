@@ -47,7 +47,7 @@ public class User {
 	@Column(nullable = false, columnDefinition = "varchar(1000)")
 	private String password;
 
-	@Column(name = "sex", nullable = false)
+	@Column(name = "sex")
 	private Boolean sex;
 
 	@Column(name = "birthyear", columnDefinition = "DATE")
