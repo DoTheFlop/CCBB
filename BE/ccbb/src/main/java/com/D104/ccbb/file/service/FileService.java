@@ -10,9 +10,7 @@ import java.util.UUID;
 import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.support.ResourceRegion;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
@@ -115,32 +113,14 @@ public class FileService {
 		}
 	}
 
-	public ResponseEntity<ResourceRegion> getVideoFile(String fileName, HttpHeaders headers) throws IOException {
+	public ResponseEntity<FileSystemResource> getVideoFile(String fileName) throws IOException {
 		log.info("VideoController.getVideo");
 		String path = FILE_PATH + VIDEO_PATH + "/" + fileName;
 		log.info("path: {}", path);
 		FileSystemResource video = new FileSystemResource(path);
-		ResourceRegion resourceRegion;
-
-		final long chunkSize = 1000000L;
-		long contentLength = video.contentLength();
-
-		Optional<HttpRange> optional = headers.getRange().stream().findFirst();
-		HttpRange httpRange;
-		if (optional.isPresent()) {
-			httpRange = optional.get();
-			long start = httpRange.getRangeStart(contentLength);
-			long end = httpRange.getRangeEnd(contentLength);
-			long rangeLength = Long.min(chunkSize, end - start + 1);
-			resourceRegion = new ResourceRegion(video, start, rangeLength);
-		} else {
-			long rangeLength = Long.min(chunkSize, contentLength);
-			resourceRegion = new ResourceRegion(video, 0, rangeLength);
-		}
-
-		return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
-			.contentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM))
-			.body(resourceRegion);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM));
+		return new ResponseEntity<>(video, headers, HttpStatus.OK);
 	}
 
 	public boolean deleteFile(int fileId) throws Exception {
