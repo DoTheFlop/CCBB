@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import * as S from "./style";
-import VoteRate from "../../voteBoard/voteRate";
+// import VoteRate from "../../voteBoard/voteRate";
 import VoteCard from "../../voteBoard/Cardsection";
 
 export default function ExpiredVote() {
