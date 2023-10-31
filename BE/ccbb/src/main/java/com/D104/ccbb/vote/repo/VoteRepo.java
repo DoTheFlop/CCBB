@@ -11,5 +11,5 @@ import com.D104.ccbb.vote.domain.Vote;
 @Repository
 public interface VoteRepo extends JpaRepository<Vote, Integer> {
 
-	List<Vote> findByDeadLineLessThan(LocalDateTime deadLine);
+	List<Vote> findByDeadlineLessThan(LocalDateTime deadLine);
 }

@@ -27,8 +27,6 @@ public class VoteService {
 	public void setVote(VoteAddDto voteAddDto) {
 		Vote vote = Vote.builder()
 			.voteId(voteAddDto.getVoteId())
-			.vote1(voteAddDto.getVote1())
-			.vote2(voteAddDto.getVote2())
 			.argument(voteAddDto.getArgument())
 			.accept1(voteAddDto.getAccept1())
 			.accept2(voteAddDto.getAccept2())
@@ -46,7 +44,7 @@ public class VoteService {
 	}
 
 	public List<Vote> getVoteList(LocalDateTime deadLine){
-		return voteRepo.findByDeadLineLessThan(deadLine);
+		return voteRepo.findByDeadlineLessThan(deadLine);
 	}
 
 

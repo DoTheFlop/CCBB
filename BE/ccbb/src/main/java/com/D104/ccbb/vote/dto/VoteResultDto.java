@@ -18,14 +18,21 @@ public class VoteResultDto {
 	private Integer voteId;
 	private Boolean win;
 
-	// public static VoteResultDto fromEntity(Vote vote){
-	// 	BallotBoxRepo ballotBoxRepo = null;
-	// 	Boolean a;
-	// 	if(ballotBoxRepo.countByVote_VoteIdAndPick(vote.getVoteId(), 1)>)
-	// 	return VoteResultDto.builder()
-	// 		.voteId(vote.getVoteId())
-	// 		.win()
-	// 		.build();
-	// }
+	public static VoteResultDto fromEntity(Vote vote){
+		BallotBoxRepo ballotBoxRepo = null;
+		Boolean a;
+		if(ballotBoxRepo.countByVote_VoteIdAndPick(vote.getVoteId(), 1)>ballotBoxRepo.countByVote_VoteIdAndPick(vote.getVoteId(), 2)){
+			return VoteResultDto.builder()
+				.voteId(vote.getVoteId())
+				.win(true)
+				.build();
+		}
+		else{
+			return VoteResultDto.builder()
+				.voteId(vote.getVoteId())
+				.win(false)
+				.build();
+		}
+	}
 
 }
