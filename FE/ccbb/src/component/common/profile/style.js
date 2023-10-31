@@ -10,7 +10,8 @@ export const Profile = styled.div`
 export const Name = styled.div`
   color: ${(props) => props.color || 'white'};
   padding-left: 10px;
-  font-size: 25px;
+  font-size: ${(props) => props.fontsize || '25px'};
+  font-weight: bold;
 `;
 
 export const Img = styled.img`

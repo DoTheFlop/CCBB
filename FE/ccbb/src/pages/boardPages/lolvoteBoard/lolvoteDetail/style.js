@@ -151,3 +151,6 @@ export const Createcomment1 = styled.div`
     justify-items: end;
 
 `
+
+export const CommentBody = styled.div`
+`
