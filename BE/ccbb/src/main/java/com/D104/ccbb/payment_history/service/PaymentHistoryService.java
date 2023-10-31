@@ -1,15 +1,18 @@
 package com.D104.ccbb.payment_history.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
@@ -18,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.payment_history.domain.PaymentHistory;
+import com.D104.ccbb.payment_history.dto.PaymentHistoryDto;
 import com.D104.ccbb.payment_history.repo.PaymentHistoryRepo;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
@@ -179,5 +183,17 @@ public class PaymentHistoryService {
 		foundPayment.setIsReturned(true);
 		paymentHistoryRepo.save(foundPayment);
 		return "환불완료";
+	}
+
+	public List<PaymentHistoryDto> getPaymentList(String authorization) {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> foundUser = userRepository.findByEmail(userEmail);
+		if (foundUser.isEmpty()) {
+			throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+		}
+		List<PaymentHistory> paymentList = paymentHistoryRepo.findByUserId(foundUser.get());
+		return paymentList.stream()
+			.map(PaymentHistoryDto::fromEntity)
+			.collect(Collectors.toList());
 	}
 }

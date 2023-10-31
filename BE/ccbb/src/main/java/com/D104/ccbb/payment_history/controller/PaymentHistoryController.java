@@ -1,5 +1,7 @@
 package com.D104.ccbb.payment_history.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.http.HttpStatus;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.D104.ccbb.payment_history.dto.PaymentHistoryDto;
 import com.D104.ccbb.payment_history.service.PaymentHistoryService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,18 @@ import lombok.extern.slf4j.Slf4j;
 public class PaymentHistoryController {
 
 	private final PaymentHistoryService paymentHistoryService;
+
+	@GetMapping("/get")
+	public ResponseEntity<List<PaymentHistoryDto>> getPaymentList(@RequestHeader String Authorization) {
+		try {
+			List<PaymentHistoryDto> list = paymentHistoryService.getPaymentList(Authorization);
+			return new ResponseEntity<>(list, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
 
 	@PostMapping("/add")
 	public ResponseEntity<String> addPayment(@RequestParam int voteId, @RequestParam int price,
