@@ -15,8 +15,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VoteDto {
 	private Integer voteId;
-	private Integer vote1;
-	private Integer vote2;
 	private String argument;
 	private Boolean accept1;
 	private Boolean accept2;
@@ -32,8 +30,6 @@ public class VoteDto {
 	public static VoteDto fromEntity(Vote vote) {
 		return VoteDto.builder()
 			.voteId(vote.getVoteId())
-			.vote1(vote.getVote1())
-			.vote2(vote.getVote2())
 			.argument(vote.getArgument())
 			.accept1(vote.getAccept1())
 			.accept2(vote.getAccept2())
