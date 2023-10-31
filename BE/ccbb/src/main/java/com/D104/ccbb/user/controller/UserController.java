@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserEmailPasDto;
 import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.UserService;
@@ -56,6 +58,12 @@ public class UserController {
 		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
 	}
 	
+
+	@PostMapping("/elogin")
+	public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+		String token = userService.elogin(userEmailPasDto);
+		return new ResponseEntity<>(token, HttpStatus.OK);
+	}
 
 	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization ,@RequestBody UserDto userDto) {
