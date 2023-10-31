@@ -153,4 +153,23 @@ public class UserService {
 
 		userRepository.delete(user);
 	}
+
+	public boolean userEmailCheck(String userEmail, String userName) {
+
+		// User user = userRepository.findUserByUserId(userEmail).get();
+		// if(user!=null && user.getName().equals(userName)) {
+		// 	return true;
+		// }
+		// else {
+		// 	return false;
+		// }
+
+		User user = userRepository.findByEmail(userEmail).get();
+		if(user!=null && user.getName().equals(userName)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
 }
