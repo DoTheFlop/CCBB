@@ -9,6 +9,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -18,6 +19,8 @@ import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
 import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserEmailPasDto;
+import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +33,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final JwtTokenService jwtTokenService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String USER_INFO_URI;
@@ -95,6 +99,39 @@ public class UserService {
 	}
 
 	@Transactional
+	public void eSignup(UserLoginDto userLoginDto) {
+		if(userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
+			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+		}
+		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
+
+		User user = User.builder()
+			.name(userLoginDto.getName())
+			.email(userLoginDto.getEmail())
+			.password(encodedPassword)
+			.sex(userLoginDto.getSex())
+			.point(0)
+			.createDate(LocalDateTime.now())
+			.state((byte)1)
+			.voteCount(0)
+			.voteVictory(0)
+			.build();
+		userRepository.save(user);
+	}
+
+	public String elogin(UserEmailPasDto userEmailPasDto) {
+		User user = userRepository.findByEmail(userEmailPasDto.getEmail())
+			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저가 존재하지 않습니다."));
+
+		if(!passwordEncoder.matches(userEmailPasDto.getPassword(), user.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+		}
+
+		// 토큰 생성 및 반환
+		return jwtTokenService.createToken(user.getEmail());
+	}
+
+	@Transactional
 	public void updateUser(String email, UserDto userDto) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalStateException(" No User"));
@@ -115,5 +152,24 @@ public class UserService {
 			.orElseThrow(() -> new IllegalStateException("No user found with the provided email"));
 
 		userRepository.delete(user);
+	}
+
+	public boolean userEmailCheck(String userEmail, String userName) {
+
+		// User user = userRepository.findUserByUserId(userEmail).get();
+		// if(user!=null && user.getName().equals(userName)) {
+		// 	return true;
+		// }
+		// else {
+		// 	return false;
+		// }
+
+		User user = userRepository.findByEmail(userEmail).get();
+		if(user!=null && user.getName().equals(userName)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
