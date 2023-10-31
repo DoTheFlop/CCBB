@@ -33,6 +33,7 @@ public class Notification {
     private Boolean isRead;
 
     @Column(name = "nt_type", nullable = false)
+    @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
     @Column(name = "create_date", nullable = false)
