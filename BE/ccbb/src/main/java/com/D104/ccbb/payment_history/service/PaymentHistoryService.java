@@ -71,7 +71,7 @@ public class PaymentHistoryService {
 		// 성공, 실패, 취소시 리다이렉트 주소 설정
 		// todo: 각 주소를 결제 성공시 db에 결제 정보 넣는 백엔드 API로 설정, 그 후 해당 API에서 프론트 결제 완료창으로 리다이렉트 시키기
 		requestBody.add("approval_url",
-			String.format("http://localhost:8081/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
+			String.format("https://ccbb.pro/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
 				byEmail.get().getUserId()));
 		requestBody.add("cancel_url", "https://ccbb.pro/api/payment/cancel");
 		requestBody.add("fail_url", "https://ccbb.pro/api/payment/fail");
