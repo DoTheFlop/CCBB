@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Input2 from '../../../../component/common/inputs/input2';
 import Button1 from '../../../../component/common/buttons';
+import InputComment from '../../../../component/common/inputs/inputcomment';
+import CommentBox from '../../../../component/commentBox';
 
 export default function LoLvoteDetailPage() {
 
@@ -153,14 +155,21 @@ export default function LoLvoteDetailPage() {
                     </S.Votebody>
                     <S.BodyBottom>
                         <S.Createcomment>
-                            <Input2 type="textarea" label="댓글작성" id="댓글작성" width="100%" height=""/>
+                            <InputComment label="댓글작성" id="댓글작성" width="100%" height="50px"/>
                         </S.Createcomment>
                         <S.Createcomment1>
                             <Button1 text={"등록"} width={"80px"} height={"40px"} onClick={''}/>
                         </S.Createcomment1>
 
                         <h4>댓글 00개</h4>
-                        
+                        <S.CommentBody>
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                            <CommentBox bgcolor="#97A7FF" comment="This is a comment" userId="user123" date="2023-10-31" />
+                        </S.CommentBody>
                     </S.BodyBottom>
                 </S.DetailBody>
             </S.Votebodycover>
