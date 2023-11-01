@@ -86,4 +86,62 @@ public class StatisticsController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@GetMapping("/vote/tier")
+	public ResponseEntity<Map<String, Object>> getTier() {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("statistics", statisticsService.getStatisticsTier());
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		}catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+	@GetMapping("/vote/position")
+	public ResponseEntity<Map<String, Object>> getPosition() {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("statistics", statisticsService.getStatisticsPosition());
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		}catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@GetMapping("/count/tier")
+	public ResponseEntity<Map<String, Object>> getCountTier() {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("statistics", statisticsService.getCountUserTier());
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		}catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@GetMapping("/count/position")
+	public ResponseEntity<Map<String, Object>> getCountPosition() {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("statistics", statisticsService.getCountUserPosition());
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		}catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 }
