@@ -140,6 +140,14 @@ public class UserService {
 		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
 
+	@Transactional
+	public void updateVote(Integer userId, Integer a) {
+		User user = userRepository.getReferenceById(userId);
+		user.setVoteCount(user.getVoteCount()+1);
+		user.setVoteVictory(user.getVoteVictory()+a);
+		userRepository.save(user);
+	}
+
 	public UserDto getUserProfile(String email) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalStateException(" No User"));

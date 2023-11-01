@@ -45,5 +45,4 @@ public class BallotBoxService {
 	public List<BallotBox> getBallotList(int voteId){
 		return ballotBoxRepo.findByVote_VoteId(voteId);
 	}
-
 }

@@ -1,5 +1,6 @@
 package com.D104.ccbb.file.service;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -7,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.aspectj.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -66,9 +66,30 @@ public class FileService {
 		return "";
 	}
 
-	public byte[] getImageFile(String fileName) throws IOException {
-		String url = FILE_PATH + IMAGE_PATH + "/" + fileName;
-		return FileUtil.readAsByteArray(new java.io.File(url));
+	public ResponseEntity<FileSystemResource> getFile(int fileId) throws IOException {
+		log.info("fileService fileId : {}", fileId);
+		Optional<File> fileOpt = fileRepo.findById(fileId);
+
+		if (fileOpt.isEmpty()) {
+			throw new FileNotFoundException("존재하지 않는 파일입니다.");
+		}
+		File file = fileOpt.get();
+		String path = FILE_PATH;
+		if (file.getType().startsWith("image")) {
+			log.info("이미지 파일");
+			path += IMAGE_PATH;
+		}
+		if (file.getType().startsWith("video")) {
+			log.info("비디오 파일");
+			path += VIDEO_PATH;
+		}
+		path = path + "/" + file.getName() + "." + file.getExtension();
+		log.info("path: {}", path);
+		FileSystemResource video = new FileSystemResource(path);
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM));
+		headers.setContentDispositionFormData("inline", file.getOrgName() + "." + file.getExtension());
+		return new ResponseEntity<>(video, headers, HttpStatus.OK);
 	}
 
 	public void saveFile(List<MultipartFile> files, String type, int id) throws Exception {
@@ -111,16 +132,6 @@ public class FileService {
 			Path path = Paths.get(url);
 			file.transferTo(path);
 		}
-	}
-
-	public ResponseEntity<FileSystemResource> getVideoFile(String fileName) throws IOException {
-		log.info("VideoController.getVideo");
-		String path = FILE_PATH + VIDEO_PATH + "/" + fileName;
-		log.info("path: {}", path);
-		FileSystemResource video = new FileSystemResource(path);
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM));
-		return new ResponseEntity<>(video, headers, HttpStatus.OK);
 	}
 
 	public boolean deleteFile(int fileId) throws Exception {
