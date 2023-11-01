@@ -37,7 +37,8 @@ public class EventController {
 		HttpStatus status = null;
 		try {
 			Event event = eventService.setEvent(eventDto);
-			fileService.saveFile(files, "event", event.getEventId());
+			if (files != null)
+				fileService.saveFile(files, "event", event.getEventId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
