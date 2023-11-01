@@ -13,9 +13,13 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.D104.ccbb.ballot_box.dto.BallotBoxDto;
+import com.D104.ccbb.ballot_box.dto.BallotResultDto;
+import com.D104.ccbb.ballot_box.service.BallotBoxService;
 import com.D104.ccbb.post.dto.PostLoadDto;
 import com.D104.ccbb.statistics.service.StatisticsService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 import com.D104.ccbb.vote.dto.VoteResultDto;
 
 import lombok.RequiredArgsConstructor;
@@ -28,8 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 public class StatisticsController {
 
 	private final StatisticsService statisticsService;
-	private final UserRepository userRepository;
-
+	private final UserService userService;
+	private final BallotBoxService ballotBoxService;
 	// @PutMapping("/update")
 	@GetMapping("/update")
 	public ResponseEntity<Map<String, Object>> add2() {
@@ -40,7 +44,39 @@ public class StatisticsController {
 				.stream()
 				.map(m -> VoteResultDto.fromEntity(m))
 				.collect(Collectors.toList());
-			resultMap.put("voteResultList", voteResultList);
+			for(VoteResultDto a : voteResultList){
+				BallotResultDto ballotResultDto = ballotBoxService.getBallotResult(a.getVoteId());
+				if(ballotResultDto.getPick1()>ballotResultDto.getPick2())
+					a.setWin(1);
+				else if(ballotResultDto.getPick1()==ballotResultDto.getPick2())
+					a.setWin(0);
+				else a.setWin(2);
+			}
+			for(VoteResultDto a : voteResultList){
+				List<BallotBoxDto> ballotBoxDto = ballotBoxService.getBallotList(a.getVoteId())
+					.stream()
+					.map(m -> BallotBoxDto.fromEntity(m))
+					.collect(Collectors.toList());
+				if(a.getWin()==0){
+					for(BallotBoxDto b : ballotBoxDto){
+						userService.updateVote(b.getUserId(),1);
+					}
+				}
+				else if(a.getWin()==1){
+					for(BallotBoxDto b : ballotBoxDto){
+						if(b.getPick()==1)
+						userService.updateVote(b.getUserId(),1);
+						else userService.updateVote(b.getUserId(),0);
+					}
+				}
+				else{
+					for(BallotBoxDto b : ballotBoxDto){
+						if(b.getPick()==2)
+							userService.updateVote(b.getUserId(),1);
+						else userService.updateVote(b.getUserId(),0);
+					}
+				}
+			}
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
