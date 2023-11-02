@@ -1,4 +1,4 @@
-import * as S from './style';
+import * as S from "./style";
 
 export default function Button1({ text, width, height, onClick, color, size }) {
     return (

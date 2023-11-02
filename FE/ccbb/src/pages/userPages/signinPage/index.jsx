@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
