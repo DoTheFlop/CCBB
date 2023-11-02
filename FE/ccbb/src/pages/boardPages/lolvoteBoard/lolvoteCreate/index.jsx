@@ -28,10 +28,10 @@ export default function LoLvoteCreatePage() {
 
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTier, setSelectedTier] = useState(options[0]);
+    
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
-
     const handleTierChange = (selected) => {
         setSelectedTier(selected);
     };
@@ -170,7 +170,6 @@ export default function LoLvoteCreatePage() {
                                     dateFormat="yyyy-MM-dd"
                                     placeholderText="투표 마감일을 선택하세요"
                                     id='voterange'
-        
                                 />
                                 <CalendarMonthIcon  style={{ position: 'absolute', top: '60%', left: '120%'}}/>
                             </S.VoteRange>
