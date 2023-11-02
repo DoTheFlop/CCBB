@@ -1,5 +1,6 @@
 package com.D104.ccbb.post.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ public class PostService {
 		Post post = Post.builder()
 			.title(postDto.getTitle())
 			.content(postDto.getContent())
-			.createDate(postDto.getCreateDate())
 			.type(postDto.getType())
 			.userId(userRepository.getReferenceById(postDto.getUserId()))
 			.build();

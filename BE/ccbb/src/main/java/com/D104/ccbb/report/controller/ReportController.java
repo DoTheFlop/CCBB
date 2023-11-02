@@ -18,6 +18,7 @@ import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.report.dto.ReportDto;
 import com.D104.ccbb.report.service.ReportService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,14 +30,14 @@ public class ReportController {
 	private final ReportService reportService;
 	private final UserRepository userRepository;
 	private final JwtTokenService jwtTokenService;
+	private final UserService userService;
 
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody ReportDto reportDto) {
 		// log.info("add: {}", Authorization);
 		reportDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;

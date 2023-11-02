@@ -24,7 +24,6 @@ public class EventService {
 			.eventId(eventDto.getEventId())
 			.title(eventDto.getTitle())
 			.content(eventDto.getContent())
-			.createDate(eventDto.getCreateDate())
 			.startDate(eventDto.getStartDate())
 			.endDate(eventDto.getEndDate())
 			.build();

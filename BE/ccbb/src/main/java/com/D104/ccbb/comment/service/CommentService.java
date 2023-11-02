@@ -1,5 +1,6 @@
 package com.D104.ccbb.comment.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -26,7 +27,6 @@ public class CommentService {
 	public void setComment(CommentDto commentDto) {
 		Comment comment = Comment.builder()
 			.content(commentDto.getContent())
-			.createDate(commentDto.getCreateDate())
 			.userId(userRepository.getReferenceById(commentDto.getUserId()))
 			.postId(postRepo.getReferenceById(commentDto.getPostId()))
 			.build();

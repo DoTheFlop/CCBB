@@ -15,6 +15,7 @@ import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.participants.dto.ParticipantsDto;
 import com.D104.ccbb.participants.service.ParticipantsService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +28,13 @@ public class ParticipantsController {
 
 	private final ParticipantsService participantsService;
 	private final JwtTokenService jwtTokenService;
-	private final UserRepository userRepository;
-
+	private final UserService userService;
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody ParticipantsDto participantsDto) {
 		// log.info("add: {}", Authorization);
 		participantsDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
