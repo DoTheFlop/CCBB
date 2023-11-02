@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 public class UserLoginDto {
 
 	private String name;
+	private String nickname;
 	private String email;
 	private String password;
 	private Boolean sex;

@@ -106,6 +106,7 @@ public class UserService {
 		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
 
 		User user = User.builder()
+			.nickname(userLoginDto.getNickname())
 			.name(userLoginDto.getName())
 			.email(userLoginDto.getEmail())
 			.password(encodedPassword)
