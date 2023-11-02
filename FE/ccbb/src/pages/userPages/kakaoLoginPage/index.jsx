@@ -17,9 +17,11 @@ export default function KakaoLoginPage() {
     const headers = {
       Authorization: `Bearer ${token}`,
     };
+    // console.log(ccbbApi.defaults.baseURL);
     ccbbApi
       .get("/user/profile", { headers })
       .then((res) => {
+        console.log(res);
         setUserInfo(res.data.user);
       })
       .catch((e) => console.log(e));
