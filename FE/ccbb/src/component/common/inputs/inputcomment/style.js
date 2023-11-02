@@ -1,10 +1,9 @@
 import styled from "styled-components";
 
-export const StyledInput = styled.textarea`
-  border-bottom: 1px solid #ccc;  
-  padding: 10px;         
-  width: 100%;
-  height: 90px;
+export const StyledInput = styled.textarea` 
+  padding: 10px;       
+  width: ${(props) => props.width || '100%'};
+  height: ${(props) => props.height || '90px'};
   box-sizing: border-box;
   font-size: 20px;
   border-radius: 5px;
