@@ -1,7 +1,10 @@
 package com.D104.ccbb.post.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.D104.ccbb.file.dto.FileDto;
 import com.D104.ccbb.post.domain.Post;
 
 import lombok.AllArgsConstructor;
@@ -20,6 +23,7 @@ public class PostLoadDto {
 	private LocalDateTime createDate;
 	private Integer type;
 	private String userEmail;
+	private List<FileDto> fileId;
 
 	public static PostLoadDto fromEntity(Post post) {
 		return PostLoadDto.builder()
@@ -29,6 +33,7 @@ public class PostLoadDto {
 			.createDate(post.getCreateDate())
 			.type(post.getType())
 			.userEmail(post.getUserId().getEmail())
+			.fileId(post.getFiles().stream().map(FileDto::fromEntity).collect(Collectors.toList()))
 			.build();
 	}
 }

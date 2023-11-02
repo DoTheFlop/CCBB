@@ -38,7 +38,8 @@ public class GoodsController {
 		HttpStatus status = null;
 		try {
 			Goods goods = goodsService.setGoods(goodsDto);
-			fileService.saveFile(files, "goods", goods.getGoodsId());
+			if (files != null)
+				fileService.saveFile(files, "goods", goods.getGoodsId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {

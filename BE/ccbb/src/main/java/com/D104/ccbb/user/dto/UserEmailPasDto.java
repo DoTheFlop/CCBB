@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEmailPasDto {
-	private String email;
-	private String password;
+	 String email;
+	 String password;
 }
