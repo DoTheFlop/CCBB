@@ -56,9 +56,12 @@ public class PostController {
 		@RequestPart(value = "files", required = false) List<MultipartFile> files,
 		@RequestPart(value = "post") PostDto postDto) {
 		log.info(String.valueOf(postDto));
-		for (MultipartFile a : files) {
-			log.info(a.getOriginalFilename());
+		if (files != null) {
+			for (MultipartFile a : files) {
+				log.info(a.getOriginalFilename());
+			}
 		}
+
 		postDto.setUserId(
 			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.get()
@@ -67,8 +70,8 @@ public class PostController {
 		HttpStatus status = null;
 		try {
 			Post post = postService.setPost(postDto);
-			if(files!=null)
-			fileService.saveFile(files, "post", post.getPostId());
+			if (files != null)
+				fileService.saveFile(files, "post", post.getPostId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
