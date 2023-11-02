@@ -26,7 +26,6 @@ public class VoteService {
 	@Transactional
 	public void setVote(VoteAddDto voteAddDto) {
 		Vote vote = Vote.builder()
-			.voteId(voteAddDto.getVoteId())
 			.argument(voteAddDto.getArgument())
 			.accept1(voteAddDto.getAccept1())
 			.accept2(voteAddDto.getAccept2())
@@ -38,6 +37,8 @@ public class VoteService {
 			.userId1(userRepository.getReferenceById(voteAddDto.getUserId1()))
 			.userId2(userRepository.findByEmail(voteAddDto.getUserId2()).get())
 			.postId(postRepo.getReferenceById(voteAddDto.getPostId()))
+			.doPromise(voteAddDto.getDoPromise())
+			.selectLine(voteAddDto.getSelectLine())
 			.build();
 
 		voteRepo.save(vote);
@@ -47,6 +48,8 @@ public class VoteService {
 		return voteRepo.findByDeadlineLessThan(deadLine);
 	}
 
-
-
+	@Transactional
+	public void deleteVote(int voteId){
+		voteRepo.delete(voteRepo.getReferenceById(voteId));
+	}
 }

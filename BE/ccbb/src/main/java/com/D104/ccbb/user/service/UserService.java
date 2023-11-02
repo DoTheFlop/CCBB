@@ -82,7 +82,6 @@ public class UserService {
 				.email((String)responseBody.getKakao_account().get("email"))
 				.password("asdasdasd")
 				.sex(true)
-				.createDate(LocalDateTime.now())
 				.point(0)
 				.build();
 			log.info(user.toString());
@@ -106,11 +105,12 @@ public class UserService {
 		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
 
 		User user = User.builder()
+			.nickname(userLoginDto.getNickname())
 			.name(userLoginDto.getName())
 			.email(userLoginDto.getEmail())
 			.password(encodedPassword)
 			.sex(userLoginDto.getSex())
-			.point(0)
+			.point(10000)
 			.createDate(LocalDateTime.now())
 			.state((byte)1)
 			.voteCount(0)

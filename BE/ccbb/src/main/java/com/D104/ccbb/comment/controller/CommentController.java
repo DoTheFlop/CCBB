@@ -26,6 +26,7 @@ import com.D104.ccbb.like.dto.LikesDto;
 import com.D104.ccbb.like.repo.LikesRepo;
 import com.D104.ccbb.like.service.LikesService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -40,14 +41,13 @@ public class CommentController {
 	private final LikesService likesService;
 	private final LikesRepo likesRepo;
 	private final CommentRepo commentRepo;
-
+	private final UserService userService;
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody CommentDto commentDto) {
 		// log.info("add: {}", Authorization);
 		commentDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -87,8 +87,7 @@ public class CommentController {
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody LikesDto likesDto) {
 		likesDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -131,9 +130,7 @@ public class CommentController {
 		@RequestParam int commentId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (commentRepo.getReferenceById(commentId).getUserId().getUserId() == userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
+		if (commentRepo.getReferenceById(commentId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 			.getUserId()) {
 			try {
 				commentService.deleteComment(commentId);
@@ -154,9 +151,7 @@ public class CommentController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		if (commentRepo.getReferenceById(commentDto.getCommentId()).getUserId().getUserId()
-			== userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
+			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 			.getUserId()) {
 			try {
 				commentService.modifyComment(commentDto);

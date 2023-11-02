@@ -17,4 +17,6 @@ public interface PaymentHistoryRepo extends JpaRepository<PaymentHistory, Intege
 
 	List<PaymentHistory> findByUserId(User user);
 
+	List<PaymentHistory> findAllByVoteId_VoteId(int voteId);
+
 }

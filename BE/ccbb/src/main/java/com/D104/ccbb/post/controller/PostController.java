@@ -30,6 +30,7 @@ import com.D104.ccbb.post.dto.PostLoadDto;
 import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.post.service.PostService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,6 +48,7 @@ public class PostController {
 	private final LikesRepo likesRepo;
 	private final PostRepo postRepo;
 	private final FileService fileService;
+	private final UserService userService;
 	// private final FileService fileService;
 
 	// public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
@@ -63,8 +65,7 @@ public class PostController {
 		}
 
 		postDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -106,15 +107,16 @@ public class PostController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			List<PostLoadDto> voteList = postService.getVote()
-				.stream()
-				.map(m -> PostLoadDto.fromEntity(m))
-				.collect(Collectors.toList());
-			resultMap.put("voteList", voteList);
+			// List<PostLoadDto> voteList = postService.getVote()
+			// 	.stream()
+			// 	.map(m -> PostLoadDto.fromEntity(m))
+			// 	.collect(Collectors.toList());
+
+			resultMap.put("voteList", postService.getVote());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			resultMap.put("message", "fail: " + e.getMessage());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
@@ -124,8 +126,7 @@ public class PostController {
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody LikesDto likesDto) {
 		likesDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -146,10 +147,8 @@ public class PostController {
 		@RequestParam int likesId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				likesService.deleteLikes(likesId);
 				resultMap.put("message", "success");
@@ -168,10 +167,8 @@ public class PostController {
 		@RequestParam int postId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (postRepo.getReferenceById(postId).getUserId().getUserId() == userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+		if (postRepo.getReferenceById(postId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				postService.deletePost(postId);
 				resultMap.put("message", "success");
@@ -191,10 +188,8 @@ public class PostController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		if (postRepo.getReferenceById(postDto.getPostId()).getUserId().getUserId()
-			== userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				postService.modifyPost(postDto);
 				resultMap.put("message", "success");
