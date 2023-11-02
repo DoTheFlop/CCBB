@@ -1,7 +1,6 @@
 import styled from "styled-components";
 
 export const StyledInput = styled.input`
-  border-bottom: 1px solid #ccc;  
   padding: 10px;         
   width: ${(props) => props.width || "100%"};
   height: ${(props) => props.height || "auto"};
@@ -12,7 +11,7 @@ export const StyledInput = styled.input`
 `;
 
 export const Inputlabel = styled.label`
-    color: black;
+    color: ${(props) => props.color || 'black'};
     padding-bottom: 10px;
     font-size: 20px;
     font-weight: bold;
@@ -21,5 +20,5 @@ export const Inputlabel = styled.label`
 export const InputBox = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 20px 0;
+    padding: 10px 0;
 `

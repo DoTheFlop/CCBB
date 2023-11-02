@@ -12,7 +12,6 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Input2 from '../../../../component/common/inputs/input2';
 import Button1 from '../../../../component/common/buttons';
 import InputComment from '../../../../component/common/inputs/inputcomment';
 import CommentBox from '../../../../component/commentBox';

@@ -8,3 +8,27 @@ export const main = styled.main`
   flex-direction: column;
   align-items: center;
 `
+
+export const Actions = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    font-size: 17px;
+`
+export const Dropdown = styled.div`
+    padding-left: 30px;
+    .css-1xc3v61-indicatorContainer{
+        color: white;
+    }
+    .css-1xc3v61-indicatorContainer:hover{
+        color: white;
+    }
+    .css-15lsz6c-indicatorContainer{
+        color: white;
+    }
+    .css-15lsz6c-indicatorContainer:hover{
+        color: white;
+    }
+    
+`
