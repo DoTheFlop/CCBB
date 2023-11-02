@@ -12,9 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VoteAddDto {
-	private Integer voteId;
-	private Integer vote1;
-	private Integer vote2;
 	private String argument;
 	private Boolean accept1;
 	private Boolean accept2;
@@ -26,7 +23,8 @@ public class VoteAddDto {
 	private Integer userId1;
 	private String userId2;
 	private Integer postId;
-
+	private Boolean doPromise;
+	private Integer selectLine;
 	// public static VoteAddDto fromEntity(Vote vote) {
 	// 	return VoteAddDto.builder()
 	// 		.voteId(vote.getVoteId())

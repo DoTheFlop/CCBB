@@ -22,6 +22,7 @@ import com.D104.ccbb.re_comment.dto.ReCommentDto;
 import com.D104.ccbb.re_comment.repo.ReCommentRepo;
 import com.D104.ccbb.re_comment.service.ReCommentService;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -36,14 +37,13 @@ public class ReCommentController {
 	private final LikesService likesService;
 	private final LikesRepo likesRepo;
 	private final ReCommentRepo reCommentRepo;
-
+	private final UserService userService;
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody ReCommentDto reCommentDto) {
 		// log.info("add: {}", Authorization);
 		reCommentDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -63,8 +63,7 @@ public class ReCommentController {
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody LikesDto likesDto) {
 		likesDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -85,10 +84,8 @@ public class ReCommentController {
 		@RequestParam int likesId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				likesService.deleteLikes(likesId);
 				resultMap.put("message", "success");
@@ -107,10 +104,8 @@ public class ReCommentController {
 		@RequestParam int reCommentId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (reCommentRepo.getReferenceById(reCommentId).getUserId().getUserId() == userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+		if (reCommentRepo.getReferenceById(reCommentId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				reCommentService.deleteReComment(reCommentId);
 				resultMap.put("message", "success");
@@ -130,10 +125,8 @@ public class ReCommentController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		if (reCommentRepo.getReferenceById(reCommentDto.getReCommentId()).getUserId().getUserId()
-			== userRepository.findByEmail(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.get()
-			.getUserId()) {
+			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()){
 			try {
 				reCommentService.modifyReComment(reCommentDto);
 				resultMap.put("message", "success");

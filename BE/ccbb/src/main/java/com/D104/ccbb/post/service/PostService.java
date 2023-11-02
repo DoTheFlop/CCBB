@@ -1,6 +1,8 @@
 package com.D104.ccbb.post.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,7 +27,6 @@ public class PostService {
 		Post post = Post.builder()
 			.title(postDto.getTitle())
 			.content(postDto.getContent())
-			.createDate(postDto.getCreateDate())
 			.type(postDto.getType())
 			.userId(userRepository.getReferenceById(postDto.getUserId()))
 			.build();
@@ -37,8 +38,8 @@ public class PostService {
 		return postRepo.findByTypeOrderByPostIdDesc(0);
 	}
 
-	public List<Post> getVote() {
-		return postRepo.findByTypeOrderByPostIdDesc(1);
+	public List<Map<String,Object>> getVote() {
+		return postRepo.getVoteList();
 	}
 
 	public void deletePost(int postId) {

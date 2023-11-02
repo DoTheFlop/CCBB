@@ -29,21 +29,18 @@ public class ReportService {
 	public void setReport(ReportDto reportDto) {
 		if (reportDto.getCommentId() != null) {
 			Report report = Report.builder()
-				.createDate(reportDto.getCreateDate())
 				.userId(userRepository.getReferenceById(reportDto.getUserId()))
 				.commentId(commentRepo.getReferenceById(reportDto.getCommentId()))
 				.build();
 			reportRepo.save(report);
 		} else if (reportDto.getReCommentId() != null) {
 			Report report = Report.builder()
-				.createDate(reportDto.getCreateDate())
 				.userId(userRepository.getReferenceById(reportDto.getUserId()))
 				.reCommentId(reCommentRepo.getReferenceById(reportDto.getReCommentId()))
 				.build();
 			reportRepo.save(report);
 		} else if (reportDto.getPostId() != null) {
 			Report report = Report.builder()
-				.createDate(reportDto.getCreateDate())
 				.userId(userRepository.getReferenceById(reportDto.getUserId()))
 				.postId(postRepo.getReferenceById(reportDto.getPostId()))
 				.build();

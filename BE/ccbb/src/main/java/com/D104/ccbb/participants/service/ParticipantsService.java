@@ -25,7 +25,6 @@ public class ParticipantsService {
 	public void setParticipantsRepo(ParticipantsDto participantsDto) {
 		Participants participants = Participants.builder()
 			.participantsId(participantsDto.getParticipantsId())
-			.createDate(participantsDto.getCreateDate())
 			.userId(userRepository.getReferenceById(participantsDto.getUserId()))
 			.eventId(eventRepo.getReferenceById(participantsDto.getEventId()))
 			.goodsId(goodsRepo.getReferenceById(participantsDto.getGoodsId()))

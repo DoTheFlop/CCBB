@@ -1,5 +1,6 @@
 package com.D104.ccbb.re_comment.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -25,7 +26,6 @@ public class ReCommentService {
 	public void setReCommentRepo(ReCommentDto reCommentDto) {
 		ReComment reComment = ReComment.builder()
 			.content(reCommentDto.getContent())
-			.createDate(reCommentDto.getCreateDate())
 			.userId(userRepository.getReferenceById(reCommentDto.getUserId()))
 			.commentId(commentRepo.getReferenceById(reCommentDto.getCommentId()))
 			.build();
