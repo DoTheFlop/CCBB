@@ -13,16 +13,19 @@ export default function KakaoLoginPage() {
 
   React.useEffect(() => {
     console.log("token: " + token);
-    localStorage.setItem("token", token);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
-    // console.log(ccbbApi.defaults.baseURL);
+    console.log(ccbbApi.defaults.baseURL);
     ccbbApi
       .get("/user/profile", { headers })
       .then((res) => {
         console.log(res);
-        setUserInfo(res.data.user);
+        if (res.data.user) {
+          // 사용자 정보가 유효한지 확인하고, 유효할 때만 토큰 저장
+          setUserInfo(res.data.user);
+          localStorage.setItem("token", token);
+        }
       })
       .catch((e) => console.log(e));
     // 로그인버튼 누를 때 페이지 기억해뒀다가 로그인 성공 후 복원
