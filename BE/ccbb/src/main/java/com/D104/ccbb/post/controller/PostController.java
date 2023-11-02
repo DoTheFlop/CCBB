@@ -107,15 +107,16 @@ public class PostController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			List<PostLoadDto> voteList = postService.getVote()
-				.stream()
-				.map(m -> PostLoadDto.fromEntity(m))
-				.collect(Collectors.toList());
-			resultMap.put("voteList", voteList);
+			// List<PostLoadDto> voteList = postService.getVote()
+			// 	.stream()
+			// 	.map(m -> PostLoadDto.fromEntity(m))
+			// 	.collect(Collectors.toList());
+
+			resultMap.put("voteList", postService.getVote());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+			resultMap.put("message", "fail: " + e.getMessage());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
