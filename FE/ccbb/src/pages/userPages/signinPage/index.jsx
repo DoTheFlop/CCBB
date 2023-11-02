@@ -14,7 +14,6 @@ export default function SigninPage() {
   const setUserInfo = useSetRecoilState(userState);
   const navigate = useNavigate();
   const toUrl = useRecoilValue(UrlAtom);
-  let token =''
 
   const doLogin = async () => {
     console.time("doLogin");
