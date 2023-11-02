@@ -82,7 +82,6 @@ public class UserService {
 				.email((String)responseBody.getKakao_account().get("email"))
 				.password("asdasdasd")
 				.sex(true)
-				.createDate(LocalDateTime.now())
 				.point(0)
 				.build();
 			log.info(user.toString());
@@ -111,7 +110,6 @@ public class UserService {
 			.password(encodedPassword)
 			.sex(userLoginDto.getSex())
 			.point(0)
-			.createDate(LocalDateTime.now())
 			.state((byte)1)
 			.voteCount(0)
 			.voteVictory(0)

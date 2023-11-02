@@ -29,7 +29,6 @@ public class LikesService {
 	public void setPostLike(LikesDto likesDto) {
 		Likes likes = Likes.builder()
 			.type(likesDto.getType())
-			.createDate(likesDto.getCreateDate())
 			.userId(userRepository.getReferenceById(likesDto.getUserId()))
 			.postId(postRepo.getReferenceById(likesDto.getPostId()))
 			.build();

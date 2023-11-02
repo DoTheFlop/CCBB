@@ -4,11 +4,15 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.user.domain.User;
@@ -24,7 +28,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-
+@EntityListeners(AuditingEntityListener.class)
 public class ReComment {
 
 	@Id
@@ -35,6 +39,7 @@ public class ReComment {
 	@Column(nullable = false, columnDefinition = "varchar(1000)")
 	private String content;
 
+	@CreatedDate
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
 	@JsonBackReference
