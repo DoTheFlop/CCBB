@@ -4,6 +4,7 @@ import Button1 from '../../../component/common/buttons';
 import VoteCard from '../../../component/voteBoard/Cardsection';
 import { useState } from 'react';
 import Select from 'react-select';
+import { useNavigate } from 'react-router-dom';
 
 const options = [
     { value: 'Latest', label: '최신순' },
@@ -15,7 +16,7 @@ export default function LoLvoteboardPage() {
 
     const [activeTab, setActiveTab] = useState('ongoing'); // 'ongoing' 또는 'completed'
     const [selectedOption, setSelectedOption] = useState(options[0]);
-
+    const navigate = useNavigate()
     const toggleTab = (tab) => {
         setActiveTab(tab);
     };
@@ -24,23 +25,26 @@ export default function LoLvoteboardPage() {
         setSelectedOption(selected);
       };
     
+    const handleCreateButtonClick = () => {
+      navigate('/lolvote/create')
+    }
     
-      const customStyles = {
-        control: (provided) => ({
-          ...provided,
-          background: 'transparent', // 배경을 투명색으로 설정
-          borderColor: 'transparent', // 테두리를 투명으로 설정 (선택 시 테두리 제거)
-          boxShadow: 'none', // 테두리 그림자 제거
-          '&:hover': { borderColor: 'transparent' },
-        }),
-        option: (provided, state) => ({
-          ...provided,
-          backgroundColor: state.isFocused ? '#154C61' : 'transparent', // 마우스 호버 상태일 때 배경 색상 변경
-          color: state.isFocused ? 'white' : 'black', // 마우스 호버 상태일 때 글자색 변경
-          border: 'none', // 구분선 제거
-        }),
-        indicatorSeparator: () => null, // 구분선 숨기기
-      };
+    const customStyles = {
+      control: (provided) => ({
+        ...provided,
+        background: 'transparent', // 배경을 투명색으로 설정
+        borderColor: 'transparent', // 테두리를 투명으로 설정 (선택 시 테두리 제거)
+        boxShadow: 'none', // 테두리 그림자 제거
+        '&:hover': { borderColor: 'transparent' },
+      }),
+      option: (provided, state) => ({
+        ...provided,
+        backgroundColor: state.isFocused ? '#154C61' : 'transparent', // 마우스 호버 상태일 때 배경 색상 변경
+        color: state.isFocused ? 'white' : 'black', // 마우스 호버 상태일 때 글자색 변경
+        border: 'none', // 구분선 제거
+      }),
+      indicatorSeparator: () => null, // 구분선 숨기기
+    };
 
     const customControlStyles = {
     singleValue: (provided) => ({
@@ -193,7 +197,7 @@ export default function LoLvoteboardPage() {
                         </S.Dropdown>
                         <S.A_1>
                             <p style={{paddingRight:'10px'}}>00건</p>
-                            <Button1 text={"글 작성"} width={"75px"} height={"30px"} />
+                            <Button1 text={"글 작성"} width={"75px"} height={"30px"} onClick={handleCreateButtonClick}/>
                         </S.A_1>
                     </S.Actions>
                 </S.Headbottom>
