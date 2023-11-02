@@ -9,6 +9,6 @@ export const Button1 = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  font-size: ${(props) => props.fontsize || '18px'};
+  font-size: ${(props) => props.size || '18px'};
   font-weight: bold;
 `;

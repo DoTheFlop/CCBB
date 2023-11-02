@@ -14,6 +14,7 @@ import { theme } from "./styles/Theme";
 import Headermain from "./component/common/headers/headermain";
 import * as S from "./style";
 import LoLvoteDetailPage from "./pages/boardPages/lolvoteBoard/lolvoteDetail";
+import LoLvoteCreatePage from "./pages/boardPages/lolvoteBoard/lolvoteCreate";
 
 export default function App() {
   return (
@@ -26,12 +27,15 @@ export default function App() {
           <Route path="/signin" element={<SigninPage />}></Route>
           <Route path="/signup" element={<SignupPage />}></Route>
           <Route path="/mypage" element={<MyPage />}></Route>
+
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
+          <Route path="/lolvote/detail" element={<LoLvoteDetailPage />}></Route>
+          <Route path="/lolvote/create" element={<LoLvoteCreatePage />}></Route>
+          
           <Route path="/free" element={<FreeboardPage />}></Route>
           <Route path="/gift" element={<GiftPage />}></Route>
           <Route path="/donate" element={<DonatePage />}></Route>
           <Route path="/kakaologin/:token" element={<KakaoLoginPage />}></Route>
-          <Route path="/lolvote/detail" element={<LoLvoteDetailPage />}></Route>
         </Routes>
       </S.main>
     </ThemeProvider>
