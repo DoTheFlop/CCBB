@@ -110,7 +110,7 @@ public class UserService {
 			.email(userLoginDto.getEmail())
 			.password(encodedPassword)
 			.sex(userLoginDto.getSex())
-			.point(0)
+			.point(10000)
 			.createDate(LocalDateTime.now())
 			.state((byte)1)
 			.voteCount(0)
