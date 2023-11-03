@@ -10,7 +10,7 @@ export const userState = atom({
     email: "",
     name: "",
     nickname: "",
-    imageUrl: "",
+    profileImg: null,
   },
   effects_UNSTABLE: [persistAtom],
 });
