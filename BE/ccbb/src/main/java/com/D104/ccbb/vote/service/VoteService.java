@@ -10,6 +10,7 @@ import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.vote.domain.Vote;
 import com.D104.ccbb.vote.dto.VoteAddDto;
+import com.D104.ccbb.vote.dto.VoteModifyDto;
 import com.D104.ccbb.vote.repo.VoteRepo;
 
 import lombok.RequiredArgsConstructor;
@@ -52,4 +53,15 @@ public class VoteService {
 	public void deleteVote(int voteId){
 		voteRepo.delete(voteRepo.getReferenceById(voteId));
 	}
+
+	@Transactional
+	public void modifyVote(VoteModifyDto voteModifyDto){
+		Vote vote = voteRepo.getReferenceById(voteModifyDto.getVoteId());
+		if(voteModifyDto.getAccept2()!=null)
+			vote.setAccept2(voteModifyDto.getAccept2());
+		if(voteModifyDto.getDoPromise()!=null)
+			vote.setDoPromise(voteModifyDto.getDoPromise());
+		voteRepo.save(vote);
+	}
+
 }
