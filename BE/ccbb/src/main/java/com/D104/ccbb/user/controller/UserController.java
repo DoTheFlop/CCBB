@@ -1,33 +1,25 @@
 package com.D104.ccbb.user.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.parameters.P;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
-import com.D104.ccbb.user.dto.MailDto;
 import com.D104.ccbb.user.dto.UserDto;
 import com.D104.ccbb.user.dto.UserEmailPasDto;
 import com.D104.ccbb.user.dto.UserLoginDto;
-import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.SendEmailService;
 import com.D104.ccbb.user.service.UserService;
 
@@ -51,19 +43,27 @@ public class UserController {
 			HttpStatus.OK);
 	}
 
+	@GetMapping("/find-user")
+	public ResponseEntity<Boolean> findUser(@RequestParam String email) {
+		log.info("유저 검색 : {}", email);
+		try {
+			return new ResponseEntity<>(userService.findUser(email), HttpStatus.OK);
+		} catch (UsernameNotFoundException e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@GetMapping("/sign-up")
 	public ResponseEntity<String> signUp() {
 		return new ResponseEntity<>("회원가입", HttpStatus.OK);
 	}
-
-
 
 	@PostMapping("/esign-up")
 	public ResponseEntity<String> esignup(@RequestBody UserLoginDto userLoginDto) {
 		userService.eSignup(userLoginDto);
 		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
 	}
-	
 
 	@PostMapping("/elogin")
 	public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
@@ -72,7 +72,8 @@ public class UserController {
 	}
 
 	@PutMapping("/modify")
-	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization ,@RequestBody UserDto userDto) {
+	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization,
+		@RequestBody UserDto userDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status;
 
@@ -96,7 +97,8 @@ public class UserController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			UserDto userDto = userService.getUserProfile(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)));
+			UserDto userDto = userService.getUserProfile(
+				jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)));
 			resultMap.put("user", userDto);
 			resultMap.put("message", "success");
 			resultMap.put("Authorization", Authorization);
