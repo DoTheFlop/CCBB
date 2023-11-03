@@ -5,6 +5,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,17 +105,27 @@ public class PostController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
-	@GetMapping("/vote/list")
-	public ResponseEntity<Map<String, Object>> add2() {
+	@GetMapping("/vote/detail")
+	public ResponseEntity<Map<String, Object>> detail(@RequestParam int postId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			// List<PostLoadDto> voteList = postService.getVote()
-			// 	.stream()
-			// 	.map(m -> PostLoadDto.fromEntity(m))
-			// 	.collect(Collectors.toList());
+			resultMap.put("voteList", postService.getDetail(postId));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 
-			resultMap.put("voteList", postService.getVote());
+	@GetMapping("/vote/list")
+	public ResponseEntity<Map<String, Object>> list(@RequestParam int page) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("voteList", postService.getPageList(page));
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {

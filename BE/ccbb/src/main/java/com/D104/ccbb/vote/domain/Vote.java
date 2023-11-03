@@ -13,6 +13,7 @@ import javax.persistence.OneToOne;
 
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -59,14 +60,16 @@ public class Vote {
 
 	@Column(name = "do_promise")
 	private Boolean doPromise;
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
 	private User userId1;
-
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id2", nullable = false)
 	private User userId2;
 
+	@JsonBackReference
 	@OneToOne
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post postId;

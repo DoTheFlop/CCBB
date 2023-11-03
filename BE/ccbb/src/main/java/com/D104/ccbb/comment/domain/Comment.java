@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.re_comment.domain.ReComment;
 import com.D104.ccbb.user.domain.User;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -47,11 +48,12 @@ public class Comment {
 	@CreatedDate
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
-
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	private User userId;
 
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "post_id", nullable = false)
 	private Post postId;
