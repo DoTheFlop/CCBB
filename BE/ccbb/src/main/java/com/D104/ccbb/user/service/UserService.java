@@ -1,7 +1,6 @@
 package com.D104.ccbb.user.service;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -9,13 +8,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
-import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
 import com.D104.ccbb.user.dto.UserDto;
@@ -99,7 +98,7 @@ public class UserService {
 
 	@Transactional
 	public void eSignup(UserLoginDto userLoginDto) {
-		if(userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
+		if (userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
 			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
 		}
 		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
@@ -123,7 +122,7 @@ public class UserService {
 		User user = userRepository.findByEmail(userEmailPasDto.getEmail())
 			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저가 존재하지 않습니다."));
 
-		if(!passwordEncoder.matches(userEmailPasDto.getPassword(), user.getPassword())) {
+		if (!passwordEncoder.matches(userEmailPasDto.getPassword(), user.getPassword())) {
 			throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
 		}
 
@@ -143,8 +142,8 @@ public class UserService {
 	@Transactional
 	public void updateVote(Integer userId, Integer a) {
 		User user = userRepository.getReferenceById(userId);
-		user.setVoteCount(user.getVoteCount()+1);
-		user.setVoteVictory(user.getVoteVictory()+a);
+		user.setVoteCount(user.getVoteCount() + 1);
+		user.setVoteVictory(user.getVoteVictory() + a);
 		userRepository.save(user);
 	}
 
@@ -173,11 +172,18 @@ public class UserService {
 		// }
 
 		User user = userRepository.findByEmail(userEmail).get();
-		if(user!=null && user.getName().equals(userName)) {
+		if (user != null && user.getName().equals(userName)) {
 			return true;
-		}
-		else {
+		} else {
 			return false;
 		}
+	}
+
+	public boolean findUser(String email) {
+		Optional<User> findUserOpt = userRepository.findByEmail(email);
+		if (findUserOpt.isEmpty()) {
+			throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+		}
+		return true;
 	}
 }
