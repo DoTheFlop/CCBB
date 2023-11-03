@@ -1,7 +1,6 @@
 package com.D104.ccbb.profile_img.service;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,50 +42,40 @@ public class ProfileImgService {
 	}
 
 	@Transactional
-	public ProfileImg addImg(String authorization, MultipartFile file) throws Exception {
-		String fileName = getFileNameWithoutExtension(file.getOriginalFilename());
-		String fileExtension = getFileExtension(file.getOriginalFilename());
-		String uuidName = UUID.randomUUID().toString();
-		String profile_path = FILE_PATH + PROFILE_IMG + "/" + uuidName;
-		File dest = new File(profile_path);
-		file.transferTo(dest);
-		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
-		Optional<User> byEmail = userRepository.findByEmail(userEmail);
-		if (byEmail.isEmpty()) {
-			throw new Exception("유저가 존재하지 않습니다.");
-		}
-
-		ProfileImg build = ProfileImg.builder()
-			.name(uuidName)
-			.orgName(fileName)
-			.extension(fileExtension)
-			.userId(byEmail.get())
-			.build();
-		ProfileImg save = profileImgRepo.save(build);
-		return save;
-	}
-
-	@Transactional
-	public ProfileImg modifyImg(String authorization, MultipartFile file, int profileimgId) throws
+	public ProfileImg modifyImg(String authorization, MultipartFile file) throws
 		Exception {
-		Optional<ProfileImg> findImgOpt = profileImgRepo.findById(profileimgId);
-		if (findImgOpt.isEmpty()) {
-			throw new FileNotFoundException("이미지를 찾을 수 없습니다.");
-		}
 		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
 		Optional<User> byEmail = userRepository.findByEmail(userEmail);
 		if (byEmail.isEmpty()) {
 			throw new Exception("유저를 찾을 수 없습니다.");
 		}
-		if (!findImgOpt.get().getUserId().getUserId().equals(byEmail.get().getUserId())) {
-			throw new Exception("본인의 프로필만 바꿀 수 있습니다.");
+
+		ProfileImg byUserIdUserId = profileImgRepo.findByUserId_UserId(byEmail.get().getUserId());
+		if (byUserIdUserId == null) {
+			log.info("신규 등록");
+			String fileName = getFileNameWithoutExtension(file.getOriginalFilename());
+			String fileExtension = getFileExtension(file.getOriginalFilename());
+			String uuidName = UUID.randomUUID().toString();
+			String profile_path = FILE_PATH + PROFILE_IMG + "/" + uuidName;
+			File dest = new File(profile_path);
+			file.transferTo(dest);
+
+			ProfileImg build = ProfileImg.builder()
+				.name(uuidName)
+				.orgName(fileName)
+				.extension(fileExtension)
+				.userId(byEmail.get())
+				.build();
+			ProfileImg save = profileImgRepo.save(build);
+			return save;
 		}
-		ProfileImg findImg = findImgOpt.get();
-		String profile_path = FILE_PATH + PROFILE_IMG + "/" + findImg.getName();
+		String profile_path = FILE_PATH + PROFILE_IMG + "/" + byUserIdUserId.getName();
 		File fileImg = new File(profile_path);
 		fileImg.delete();
 		file.transferTo(fileImg);
-		return findImg;
+		byUserIdUserId.setOrgName(file.getOriginalFilename());
+		profileImgRepo.save(byUserIdUserId);
+		return byUserIdUserId;
 	}
 
 	@Transactional
@@ -109,7 +98,10 @@ public class ProfileImgService {
 		// 이미지도 있고, 유저도 있고, 본인의 이미지인지 확인 했으니 이미지 삭제
 		String file_path = FILE_PATH + PROFILE_IMG + "/" + userProfileImgOpt.get().getName();
 		File file = new File(file_path);
-		file.delete();
+		log.info(file.getName());
+		boolean delete = file.delete();
+		log.info(delete ? "완료" : "실패");
+		profileImgRepo.deleteById(profileimgId);
 		return "삭제완료";
 	}
 
