@@ -20,11 +20,15 @@ public class VoteDto {
 	private Boolean accept2;
 	private LocalDateTime voteStart;
 	private LocalDateTime deadline;
-	private String tier;
+	private String limitTier;
 	private String promise;
 	private Integer deposit;
-	private Integer userId1;
-	private Integer userId2;
+	private String nickname1;
+	private String nickname2;
+	private String tier1;
+	private String tier2;
+	private Byte position1;
+	private Byte position2;
 	private Integer postId;
 
 	public static VoteDto fromEntity(Vote vote) {
@@ -35,11 +39,15 @@ public class VoteDto {
 			.accept2(vote.getAccept2())
 			.voteStart(vote.getVoteStart())
 			.deadline(vote.getDeadline())
-			.tier(vote.getTier())
+			.limitTier(vote.getTier())
 			.promise(vote.getPromise())
 			.deposit(vote.getDeposit())
-			.userId1(vote.getUserId1().getUserId())
-			.userId2(vote.getUserId2().getUserId())
+			.nickname1(vote.getUserId1().getNickname())
+			.nickname2(vote.getUserId2().getNickname())
+			.position1(vote.getUserId1().getMainPosition())
+			.position2(vote.getUserId2().getMainPosition())
+			.tier1(vote.getUserId1().getLol())
+			.tier2(vote.getUserId2().getLol())
 			.postId(vote.getPostId().getPostId())
 			.build();
 	}
