@@ -3,12 +3,20 @@ package com.D104.ccbb.post.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.post.dto.PostDto;
+import com.D104.ccbb.post.dto.PostLoadDto;
+import com.D104.ccbb.post.dto.PostPageDto;
 import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
 
@@ -40,6 +48,19 @@ public class PostService {
 
 	public List<Map<String,Object>> getVote() {
 		return postRepo.getVoteList();
+	}
+
+	public PostLoadDto getDetail(int postId){
+
+		PostLoadDto postLoadDto = PostLoadDto.fromEntity(postRepo.getReferenceById(postId));
+		return postLoadDto;
+	}
+
+	public Page<PostPageDto> getPageList(int page){
+		int pageLimit = 12;
+		Page<Post> postsPages = postRepo.findAll(PageRequest.of(page-1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
+		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m));
+		return postPageDto;
 	}
 
 	public void deletePost(int postId) {
