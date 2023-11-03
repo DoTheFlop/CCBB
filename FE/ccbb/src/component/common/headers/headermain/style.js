@@ -50,3 +50,7 @@ export const usermenu = styled.div`
   flex-direction: row;
   align-items: center;
 `;
+
+export const NotificationWrapper = styled.div`
+  position: relative;
+`;
