@@ -21,19 +21,10 @@ public class VoteResultDto {
 	private Integer win;
 
 	public static VoteResultDto fromEntity(Vote vote){
-		// BallotBoxRepo ballotBoxRepo = null;
-		// if(ballotBoxRepo.countByVote_VoteIdAndPick(vote.getVoteId(), 1)>ballotBoxRepo.countByVote_VoteIdAndPick(vote.getVoteId(), 2)){
-		// 	return VoteResultDto.builder()
-		// 		.voteId(vote.getVoteId())
-		// 		.win(true)
-		// 		.build();
-		// }
-		// else{
 			return VoteResultDto.builder()
 				.voteId(vote.getVoteId())
 				.win(0)
 				.build();
-		// }
 	}
 
 }

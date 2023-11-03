@@ -14,6 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.file.domain.File;
 import com.D104.ccbb.user.domain.User;
+import com.D104.ccbb.vote.domain.Vote;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
@@ -67,4 +69,8 @@ public class Post {
 	@Builder.Default
 	@OneToMany(mappedBy = "postId", cascade = CascadeType.ALL)
 	private List<File> files = new ArrayList<>();
+
+	@JsonManagedReference
+	@OneToOne(mappedBy = "postId")
+	private Vote vote;
 }
