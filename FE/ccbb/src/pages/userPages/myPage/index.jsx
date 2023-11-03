@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import * as S from "./style";
 import Button1 from "../../../component/common/buttons";
 import AccountCard from "../../../component/accountCard";
@@ -7,11 +8,16 @@ import ExpiredVote from "../../../component/myPage/expiredVote";
 import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
 import TollIcon from "@mui/icons-material/Toll";
-import { useRecoilValue } from "recoil";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../recoil/UserAtom";
+import { ccbbApi } from "../../../api/ccbbApi";
 
 export default function MyPage() {
   const user = useRecoilValue(userState);
+  const navigate = useNavigate();
+  const setUserInfo = useSetRecoilState(userState);
+  const [profileImg, setProfileImg] = useState(user.profileImg);
 
   const tabs = [
     { name: "진행중인 투표", component: <OngoingVote key={0} /> },
@@ -21,20 +27,77 @@ export default function MyPage() {
   ];
 
   const [currentTab, setCurrentTab] = useState(0);
+
+  const token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`,
+  };
+  const fileInput = useRef();
+  const onClickUploadImgBtn = () => {
+    if (!fileInput.current) {
+      return;
+    }
+    fileInput.current.click();
+  };
+  const handleChangeProfileImg = (e) => {
+    const file = e.currentTarget.files[0];
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      ccbbApi
+        .post("/profileimg/modify", formData, { headers })
+        .then((res) => {
+          console.log("프사 업데이트됨");
+          console.log(res);
+          //recoil 갱신
+          setUserInfo((prev) => ({
+            ...prev,
+            profileImg: res.data,
+          }));
+          //로컬 state도 갱신
+          setProfileImg(res.data);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  };
+
   return (
     <>
       <S.profileInfo>
         <S.imgSection>
           <S.Img
-            src="https://images.unsplash.com/photo-1580643842201-d1de38d71987?auto=format&fit=crop&q=80&w=1780&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            src={
+              profileImg
+                ? `http://k9d104.p.ssafy.io:8081/api/profileimg/${profileImg.name}`
+                : ""
+            }
             alt="profile-img"
+          />
+          <AddPhotoAlternateIcon onClick={onClickUploadImgBtn} />
+          {/* input은 display: none이고, 아이콘이 버튼 역할을 함 */}
+          <input
+            type="file"
+            ref={fileInput}
+            onChange={handleChangeProfileImg}
+            accept="image/jpeg, image/jpg, image/png"
           />
         </S.imgSection>
         <S.textSection>
           <S.textAndBtn>
             <h1>{user.nickname}</h1>
-            <Button1 text="정보수정" height={"30px"}></Button1>
+            <Button1
+              text="정보수정"
+              height={"30px"}
+              onClick={() => {
+                navigate("/mypage/modify");
+              }}
+            ></Button1>
           </S.textAndBtn>
+          <p>{user.email}</p>
           <S.textAndBtn>
             <TollIcon />
             <div>1,000P</div>
