@@ -44,22 +44,29 @@ public class ProfileImgService {
 	@Transactional
 	public ProfileImg modifyImg(String authorization, MultipartFile file) throws
 		Exception {
+		// 프로필 등록하는 유저 확인
 		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
 		Optional<User> byEmail = userRepository.findByEmail(userEmail);
 		if (byEmail.isEmpty()) {
 			throw new Exception("유저를 찾을 수 없습니다.");
 		}
 
+		// DB에 저장된 프로필 정보 가져오기
+		// 만약 조회되지 않으면 신규로, 조회되면 수정으로 넘어감
 		ProfileImg byUserIdUserId = profileImgRepo.findByUserId_UserId(byEmail.get().getUserId());
 		if (byUserIdUserId == null) {
+			// 신규 등록
 			log.info("신규 등록");
+			// 받은 파일의 이름을 확장자와 원본 이름으로 분리
 			String fileName = getFileNameWithoutExtension(file.getOriginalFilename());
 			String fileExtension = getFileExtension(file.getOriginalFilename());
+			// 랜덤 이름 생성
 			String uuidName = UUID.randomUUID().toString();
+			// 파일 경로에 파일을 저장
 			String profile_path = FILE_PATH + PROFILE_IMG + "/" + uuidName;
 			File dest = new File(profile_path);
 			file.transferTo(dest);
-
+			// 저장한 파일 정보를 DB에 저장
 			ProfileImg build = ProfileImg.builder()
 				.name(uuidName)
 				.orgName(fileName)
@@ -69,10 +76,17 @@ public class ProfileImgService {
 			ProfileImg save = profileImgRepo.save(build);
 			return save;
 		}
-		String profile_path = FILE_PATH + PROFILE_IMG + "/" + byUserIdUserId.getName();
+		log.info("이미지 수정");
+		String profileBasePath = FILE_PATH + PROFILE_IMG + "/";
+		// 기존 파일 정보를 활용해서 서버 DB에서 파일을 삭제
+		String profile_path = profileBasePath + byUserIdUserId.getName();
 		File fileImg = new File(profile_path);
 		fileImg.delete();
-		file.transferTo(fileImg);
+		// 수정할 이미지로 정보 수정
+		String uuidName = UUID.randomUUID().toString();
+		String modifyPath = profileBasePath + uuidName;
+		file.transferTo(new File(modifyPath));
+		byUserIdUserId.setName(uuidName);
 		byUserIdUserId.setOrgName(file.getOriginalFilename());
 		profileImgRepo.save(byUserIdUserId);
 		return byUserIdUserId;
