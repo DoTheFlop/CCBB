@@ -7,6 +7,8 @@ import com.D104.ccbb.notification.repo.EmitterRepo;
 import com.D104.ccbb.notification.repo.NotificationRepo;
 import com.D104.ccbb.user.domain.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -16,6 +18,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class NotificationService {
 
     private final EmitterRepo emitterRepo;
@@ -55,7 +58,6 @@ public class NotificationService {
                     .data(data));
         } catch (IOException e) {
             emitterRepo.deleteById(emitterId);
-            throw new RuntimeException("연결 오류!");
         }
     }
 

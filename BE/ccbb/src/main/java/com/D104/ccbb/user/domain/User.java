@@ -90,4 +90,8 @@ public class User {
 
 	@Column(name = "vote_victory", nullable = false, columnDefinition = "int")
 	private Integer voteVictory;
+
+	public User(Integer l) {
+		this.userId = l;
+	}
 }

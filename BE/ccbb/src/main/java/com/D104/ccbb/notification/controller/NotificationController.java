@@ -20,7 +20,6 @@ public class NotificationController {
 
     @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    @ResponseStatus(HttpStatus.ACCEPTED)
     public SseEmitter subscribe(@RequestHeader String Authorization,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
         Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))

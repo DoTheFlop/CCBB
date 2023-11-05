@@ -19,12 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.comment.dto.CommentDto;
 import com.D104.ccbb.comment.dto.CommentGetDto;
+import com.D104.ccbb.comment.dto.CommentRequestDto;
 import com.D104.ccbb.comment.repo.CommentRepo;
 import com.D104.ccbb.comment.service.CommentService;
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.like.dto.LikesDto;
 import com.D104.ccbb.like.repo.LikesRepo;
 import com.D104.ccbb.like.service.LikesService;
+import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -43,16 +45,12 @@ public class CommentController {
 
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
-		@RequestBody CommentDto commentDto) {
-		// log.info("add: {}", Authorization);
-		commentDto.setUserId(
-			userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.get()
-				.getUserId());
+		@RequestBody CommentRequestDto commentRequestDto) {
+		User writer = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization)))).get();
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			commentService.setComment(commentDto);
+			commentService.setComment(commentRequestDto, writer);
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {

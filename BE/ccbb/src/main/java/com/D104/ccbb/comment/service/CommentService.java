@@ -1,7 +1,9 @@
 package com.D104.ccbb.comment.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import com.D104.ccbb.comment.dto.CommentRequestDto;
 import com.D104.ccbb.notification.domain.NotificationType;
 import com.D104.ccbb.notification.dto.NotificationRequestDto;
 import com.D104.ccbb.notification.service.NotificationService;
@@ -18,10 +20,12 @@ import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CommentService {
 
 	private final CommentRepo commentRepo;
@@ -30,20 +34,19 @@ public class CommentService {
 	private final ApplicationEventPublisher eventPublisher;
 
 	@Transactional
-	public void setComment(CommentDto commentDto) {
-		Post post = postRepo.getReferenceById(commentDto.getPostId());
-		User user = userRepository.getReferenceById(commentDto.getUserId());
+	public void setComment(CommentRequestDto commentRequestDto, User writer) {
+		Post post = postRepo.getReferenceById(commentRequestDto.getPostId());
 
 		Comment comment = Comment.builder()
-			.content(commentDto.getContent())
-			.createDate(commentDto.getCreateDate())
-			.userId(user)
+			.content(commentRequestDto.getContent())
+			.createDate(LocalDateTime.now())
+			.userId(writer)
 			.postId(post)
 			.build();
 		commentRepo.save(comment);
 
 		// 알람 전송
-		eventPublisher.publishEvent(NotificationRequestDto.commentOf(post, user));
+		eventPublisher.publishEvent(NotificationRequestDto.commentOf(post, writer));
 	}
 
 	public List<Comment> getComment(int postId) {

@@ -21,7 +21,7 @@ public class NotificationRequestDto {
     private String url;
     private NotificationType notificationType;
 
-    public static NotificationRequestDto commentOf(Post post, User user) {
+    public static NotificationRequestDto commentOf(Post post, User sender) {
 
 		Integer postId = post.getPostId();
 		User receiver = post.getUserId();
@@ -29,7 +29,7 @@ public class NotificationRequestDto {
 		if (content.length() > 8) {
 			content = content.substring(0, 8) + "...";
 		}
-		content = user.getNickname() + "님이 회원님이 작성하신 \"" + content + "\"에 답변을 달았습니다.";
+		content = sender.getNickname() + "님이 회원님이 작성하신 '" + content + "'에 답변을 달았습니다.";
 		String url = "/lolvote/detail/" + postId;
 
         return new NotificationRequestDto(receiver, content, url, NotificationType.COMMENT);
