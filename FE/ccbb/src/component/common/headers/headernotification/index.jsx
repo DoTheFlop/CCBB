@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import NotificationItem from "../../../notificationItem";
 import { useCallback } from "react";
 import { useState } from "react";
-import { EventSourcePolyfill } from "event-source-polyfill";
 
 export default function Headernotification({ props: { state, setState } }) {
   const [notifications, setNotifications] = useState([
@@ -12,7 +11,6 @@ export default function Headernotification({ props: { state, setState } }) {
       url: "http://testurl1.com",
       isRead: false,
       receiverUsername: "최강삼성",
-      profileImage: "test",
       createDate: "2시간 전",
     },
     {
@@ -20,7 +18,6 @@ export default function Headernotification({ props: { state, setState } }) {
       url: "http://testurl1.com",
       isRead: false,
       receiverUsername: "싸피인",
-      profileImage: "test",
       createDate: "1일 전",
     },
   ]);
@@ -28,41 +25,6 @@ export default function Headernotification({ props: { state, setState } }) {
   const offModal = useCallback(() => {
     setState(false);
   }, [setState]);
-
-  useEffect(() => {
-    let eventSource;
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      const fetchSse = async () => {
-        const url = "http://localhost:8081/api/subscribe";
-        const headers = {
-          Authorization: `Bearer ${token}`,
-          withCredentials: true,
-        };
-
-        eventSource = new EventSourcePolyfill(url, { headers });
-
-        eventSource.onmessage = async (event) => {
-          console.log("hi");
-          console.log(event.data);
-          // const newNotification = JSON.parse(event.data);
-          // setNotifications((oldNotifications) => [
-          //   ...oldNotifications,
-          //   newNotification,
-          // ]);
-        };
-      };
-      fetchSse();
-    }
-
-    return () => {
-      if (eventSource) {
-        eventSource.close();
-        console.log("closed");
-      }
-    };
-  }, []);
 
   useEffect(() => {
     window.addEventListener("click", offModal);
