@@ -42,6 +42,21 @@ public class BallotBoxService {
 		return ballotResultDto;
 	}
 
+	public BallotResultDto getUserPick(int voteId, int userId){
+		BallotResultDto ballotResultDto = new BallotResultDto();
+		if(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 1)!=null)
+			ballotResultDto.setPick1(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 1));
+		else ballotResultDto.setPick1(0L);
+		if(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 2)!=null)
+			ballotResultDto.setPick2(ballotBoxRepo.countByVote_VoteIdAndPick(voteId, 2));
+		else ballotResultDto.setPick1(0L);
+		if(ballotBoxRepo.findByVote_VoteIdAndUserId_UserId(voteId,userId)!=null)
+			ballotResultDto.setUserPick(ballotBoxRepo.findByVote_VoteIdAndUserId_UserId(voteId,userId).getPick());
+		else
+			ballotResultDto.setUserPick(0);
+		return ballotResultDto;
+	}
+
 	public List<BallotBox> getBallotList(int voteId){
 		return ballotBoxRepo.findByVote_VoteId(voteId);
 	}
