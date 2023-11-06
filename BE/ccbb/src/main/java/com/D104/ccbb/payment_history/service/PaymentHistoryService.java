@@ -49,7 +49,7 @@ public class PaymentHistoryService {
 	private final PaymentHistoryRepo paymentHistoryRepo;
 	private final VoteRepo voteRepo;
 
-	public String addPayment(int voteId, int price, String authorization) throws
+	public String addPayment(int postId, int price, String authorization) throws
 		Exception {
 		// 결제하는 유저 정보 불러오기
 		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
@@ -75,7 +75,7 @@ public class PaymentHistoryService {
 		// 성공, 실패, 취소시 리다이렉트 주소 설정
 		// todo: 각 주소를 결제 성공시 db에 결제 정보 넣는 백엔드 API로 설정, 그 후 해당 API에서 프론트 결제 완료창으로 리다이렉트 시키기
 		requestBody.add("approval_url",
-			String.format("https://ccbb.pro/api/payment/success?price=%d&voteId=%d&userId=%d", price, voteId,
+			String.format("https://ccbb.pro/api/payment/success?price=%d&postId=%d&userId=%d", price, postId,
 				byEmail.get().getUserId()));
 		requestBody.add("cancel_url", "https://ccbb.pro/api/payment/cancel");
 		requestBody.add("fail_url", "https://ccbb.pro/api/payment/fail");
@@ -88,7 +88,8 @@ public class PaymentHistoryService {
 		log.info("response body : {}", Kakaoresponse.getBody());
 		Map<String, String> body = Kakaoresponse.getBody();
 		log.info("redirect_uri: {}", body.get("next_redirect_pc_url"));
-		Optional<Vote> byId = voteRepo.findById(voteId);
+
+		Optional<Vote> byId = voteRepo.findByPostId_PostId(postId);
 		if (byId.isEmpty()) {
 			throw new Exception("존재하지 않는 투표입니다.");
 		}
@@ -108,10 +109,14 @@ public class PaymentHistoryService {
 		return body.get("next_redirect_pc_url");
 	}
 
-	public boolean approvePayment(Integer userId, int voteId, int price, String pgToken) {
+	public boolean approvePayment(Integer userId, int postId, int price, String pgToken) throws Exception {
+		Optional<Vote> byPostIdPostId = voteRepo.findByPostId_PostId(postId);
+		if (byPostIdPostId.isEmpty()) {
+			throw new Exception("존재하지 않는 투표입니다.");
+		}
 		// 결제 시도 정보 DB에서 조회
 		PaymentHistory readyPayment = paymentHistoryRepo.findByUserId_UserIdAndVoteId_VoteId(userId,
-			voteId);
+			byPostIdPostId.get().getVoteId());
 		log.info("readyPayment: {}", readyPayment);
 		// 카카오 페이 API에 결제 요청
 		RestTemplate restTemplate = new RestTemplate();
