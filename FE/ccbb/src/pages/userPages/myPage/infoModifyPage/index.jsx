@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../../recoil/UserAtom";
 import * as S from "./style";
 import Input1 from "../../../../component/common/inputs/input1";
@@ -13,10 +13,11 @@ export default function InfoModifyPage() {
     Authorization: `Bearer ${token}`,
   };
   const navigate = useNavigate();
+  const userInfo = useRecoilValue(userState);
   const setUserInfo = useSetRecoilState(userState);
   const handleInfoUpdate = () => {
     ccbbApi
-      .put("/user/modify", JSON.stringify(user), {
+      .put("/user/modify", JSON.stringify(userModi), {
         headers,
         withCredentials: true,
       })
@@ -24,7 +25,7 @@ export default function InfoModifyPage() {
         console.log(res);
         setUserInfo((prev) => ({
           ...prev,
-          nickname: user.nickname,
+          nickname: userModi.nickname,
         }));
         navigate("/mypage");
       })
@@ -32,52 +33,56 @@ export default function InfoModifyPage() {
         console.log(e);
       });
   };
-  const [user, setUser] = useState({
+  const [userModi, setUserModi] = useState({
     email: "",
     nickname: "",
     password: "",
     gender: "",
   });
   const [pwCheck, SetPwCheck] = useState("");
-  const pwSame = user.password === pwCheck;
+  const pwSame = userModi.password === pwCheck;
   return (
     <S.main>
-      <Input1
-        label="새 패스워드"
-        id="newPasswordInput"
-        width="300px"
-        height="40px"
-        type="password"
-        value={user.password}
-        onChange={(e) => {
-          setUser((prev) => ({
-            ...prev,
-            password: e.target.value,
-          }));
-        }}
-      />
-      <Input1
-        label="새 패스워드 확인"
-        id="newPasswordInputCheck"
-        width="300px"
-        height="40px"
-        type="password"
-        value={pwCheck}
-        onChange={(e) => {
-          SetPwCheck(e.target.value);
-        }}
-      />
-      {pwCheck && !pwSame && (
-        <div className="alert-message">패스워드가 일치하지 않습니다.</div>
+      {userInfo.social !== "Kakao" && (
+        <React.Fragment>
+          <Input1
+            label="새 패스워드"
+            id="newPasswordInput"
+            width="300px"
+            height="40px"
+            type="password"
+            value={userModi.password}
+            onChange={(e) => {
+              setUserModi((prev) => ({
+                ...prev,
+                password: e.target.value,
+              }));
+            }}
+          />
+          <Input1
+            label="새 패스워드 확인"
+            id="newPasswordInputCheck"
+            width="300px"
+            height="40px"
+            type="password"
+            value={pwCheck}
+            onChange={(e) => {
+              SetPwCheck(e.target.value);
+            }}
+          />
+          {pwCheck && !pwSame && (
+            <div className="alert-message">패스워드가 일치하지 않습니다.</div>
+          )}
+        </React.Fragment>
       )}
       <Input1
         label="닉네임"
         id="nicknameInput"
         width="300px"
         height="40px"
-        value={user.nickname}
+        value={userModi.nickname}
         onChange={(e) => {
-          setUser((prev) => ({
+          setUserModi((prev) => ({
             ...prev,
             nickname: e.target.value,
           }));

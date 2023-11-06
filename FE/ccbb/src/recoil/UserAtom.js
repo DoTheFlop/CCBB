@@ -11,6 +11,7 @@ export const userState = atom({
     name: "",
     nickname: "",
     profileImg: null,
+    social: "",
   },
   effects_UNSTABLE: [persistAtom],
 });

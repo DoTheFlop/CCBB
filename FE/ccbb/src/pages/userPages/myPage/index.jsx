@@ -93,7 +93,7 @@ export default function MyPage() {
               text="정보수정"
               height={"30px"}
               onClick={() => {
-                navigate("/mypage/modify");
+                navigate("/mypage/pwcheck");
               }}
             ></Button1>
           </S.textAndBtn>
