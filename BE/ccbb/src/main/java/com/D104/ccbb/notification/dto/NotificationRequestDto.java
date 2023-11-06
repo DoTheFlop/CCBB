@@ -26,10 +26,10 @@ public class NotificationRequestDto {
 		Integer postId = post.getPostId();
 		User receiver = post.getUserId();
 		String content = post.getTitle();
-		if (content.length() > 8) {
-			content = content.substring(0, 8) + "...";
+		if (content.length() > 12) {
+			content = content.substring(0, 12) + "...";
 		}
-		content = sender.getNickname() + "님이 회원님이 작성하신 '" + content + "'에 답변을 달았습니다.";
+		content = "님이 회원님이 작성하신 '" + content + "'에 답변을 달았습니다.";
 		String url = "/lolvote/detail/" + postId;
 
         return new NotificationRequestDto(receiver, content, url, NotificationType.COMMENT);

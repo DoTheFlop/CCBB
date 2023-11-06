@@ -21,31 +21,22 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @Slf4j
 public class NotificationController {
 
-    private final UserRepository userRepository;
-    private final JwtTokenService jwtTokenService;
     private final NotificationService notificationService;
 
     @ApiOperation(value = "알림 구독", notes = "알림을 구독한다.")
     @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(@RequestHeader String Authorization,
+    public SseEmitter subscribe(@RequestHeader String authorization,
                                 @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
-        Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-                .get()
-                .getUserId();
-
-        return notificationService.subscribe(userId, lastEventId);
+        return notificationService.subscribe(authorization, lastEventId);
     }
 
     @ApiOperation(value = "알림 목록", notes = "유저의 알림 목록을 받아온다.")
     @GetMapping(value = "/notification/get")
-    public ResponseEntity<Map<String, Object>> getList(@RequestHeader String Authorization) {
+    public ResponseEntity<Map<String, Object>> getList(@RequestHeader String authorization) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
         try {
-            Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-                    .get()
-                    .getUserId();
-            List<NotificationResponseDto> notificationList = notificationService.getList(userId);
+            List<NotificationResponseDto> notificationList = notificationService.getList(authorization);
             resultMap.put("notificationList", notificationList);
             resultMap.put("message", "success");
             status = HttpStatus.ACCEPTED;
@@ -59,14 +50,11 @@ public class NotificationController {
 
     @ApiOperation(value = "알림 읽음 처리", notes = "유저의 알림을 읽었다고 처리한다.")
     @PutMapping(value = "/notification/read/{notificationId}")
-    public ResponseEntity<Map<String, Object>> getList(@RequestHeader String Authorization, @PathVariable Integer notificationId) {
+    public ResponseEntity<Map<String, Object>> getList(@RequestHeader String authorization, @PathVariable Integer notificationId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status;
         try {
-            Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-                    .get()
-                    .getUserId();
-            notificationService.updateIsRead(userId, notificationId);
+            notificationService.updateIsRead(authorization, notificationId);
             resultMap.put("message", "success");
             status = HttpStatus.ACCEPTED;
         } catch (Exception e) {

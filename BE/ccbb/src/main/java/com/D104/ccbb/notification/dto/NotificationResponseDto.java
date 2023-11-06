@@ -21,6 +21,7 @@ public class NotificationResponseDto {
     private Boolean isRead;
     private NotificationType notificationType;
     private LocalDateTime createDate;
+    private String receiverUsername;
 
     public static NotificationResponseDto fromEntity(Notification notification) {
         return NotificationResponseDto.builder()
@@ -30,6 +31,7 @@ public class NotificationResponseDto {
                 .isRead(notification.getIsRead())
                 .notificationType(notification.getNotificationType())
                 .createDate(notification.getCreateDate())
+                .receiverUsername(notification.getReceiver().getNickname())
                 .build();
     }
 

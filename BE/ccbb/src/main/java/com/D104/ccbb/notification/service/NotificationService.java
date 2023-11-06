@@ -1,11 +1,13 @@
 package com.D104.ccbb.notification.service;
 
+import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.notification.domain.Notification;
 import com.D104.ccbb.notification.domain.NotificationType;
 import com.D104.ccbb.notification.dto.NotificationResponseDto;
 import com.D104.ccbb.notification.repo.EmitterRepo;
 import com.D104.ccbb.notification.repo.NotificationRepo;
 import com.D104.ccbb.user.domain.User;
+import com.D104.ccbb.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,11 +27,17 @@ import java.util.stream.Collectors;
 @Slf4j
 public class NotificationService {
 
+
+    private final UserRepository userRepository;
+    private final JwtTokenService jwtTokenService;
     private final EmitterRepo emitterRepo;
     private final NotificationRepo notificationRepo;
     private Long DEFAULT_TIMEOUT = 60L * 1000L * 60L;
 
-    public SseEmitter subscribe(Integer userId, String lastEventId) {
+    public SseEmitter subscribe(String authorization, String lastEventId) {
+        Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(authorization))))
+                .get()
+                .getUserId();
 
         String emitterId = makeTimeIncludeId(userId);
         SseEmitter emitter = emitterRepo.save(emitterId, new SseEmitter(DEFAULT_TIMEOUT));
@@ -113,7 +121,11 @@ public class NotificationService {
     /**
      * 유저의 알림 전체 목록 조회
      */
-    public List<NotificationResponseDto> getList(Integer userId) {
+    public List<NotificationResponseDto> getList(String authorization) {
+        Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(authorization))))
+                .get()
+                .getUserId();
+
         List<Notification> notifications = notificationRepo.findAllByReceiverUserIdOrderByCreateDateDesc(userId);
         return notifications.stream()
                 .map(NotificationResponseDto::fromEntity)
@@ -123,7 +135,11 @@ public class NotificationService {
     /**
      * 유저 알림 읽음 처리
      */
-    public void updateIsRead(Integer userId, Integer notificationId) throws Exception {
+    public void updateIsRead(String authorization, Integer notificationId) throws Exception {
+        Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(authorization))))
+                .get()
+                .getUserId();
+
         Optional<Notification> notification = notificationRepo.findById(notificationId);
         if (userId != notification.get().getReceiver().getUserId()) {
             throw new Exception("유저 정보가 일치하지 않습니다.");
