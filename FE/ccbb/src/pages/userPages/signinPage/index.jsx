@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ccbbApi } from "../../../api/ccbbApi";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../recoil/UserAtom";

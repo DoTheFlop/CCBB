@@ -17,6 +17,7 @@ import Headermain from "./component/common/headers/headermain";
 import * as S from "./style";
 import LoLvoteDetailPage from "./pages/boardPages/lolvoteBoard/lolvoteDetail";
 import LoLvoteCreatePage from "./pages/boardPages/lolvoteBoard/lolvoteCreate";
+import PaymentSuccessPage from "./pages/userPages/paymentSuccess";
 
 export default function App() {
   return (
@@ -31,6 +32,7 @@ export default function App() {
           <Route path="/mypage" element={<MyPage />}></Route>
           <Route path="/mypage/pwcheck" element={<BeforeModifyPage />} />
           <Route path="/mypage/modify" element={<InfoModifyPage />} />
+          <Route path="/payment-success"element={<PaymentSuccessPage/>}></Route>
 
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
           <Route path="/lolvote/detail" element={<LoLvoteDetailPage />}></Route>
