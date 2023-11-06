@@ -3,12 +3,6 @@ package com.D104.ccbb.user.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-
-import com.D104.ccbb.post.domain.Post;
-import com.D104.ccbb.post.dto.PostDto;
 import com.D104.ccbb.user.domain.User;
 
 import lombok.AllArgsConstructor;
@@ -40,6 +34,7 @@ public class UserDto {
 	private Byte subPosition;
 	private Integer voteCount;
 	private Integer voteVictory;
+	private String social;
 
 	public static UserDto fromEntity(User user) {
 		return UserDto.builder()
@@ -62,6 +57,7 @@ public class UserDto {
 			.subPosition(user.getSubPosition())
 			.voteCount(user.getVoteCount())
 			.voteVictory(user.getVoteVictory())
+			.social(user.getSocial())
 			.build();
 	}
 }
