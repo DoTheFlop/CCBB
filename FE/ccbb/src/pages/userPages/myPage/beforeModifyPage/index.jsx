@@ -1,11 +1,20 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../../../recoil/UserAtom";
 import * as S from "./style";
 import Input1 from "../../../../component/common/inputs/input1";
 import Button1 from "../../../../component/common/buttons";
 import { ccbbApi } from "../../../../api/ccbbApi";
 
 export default function BeforeModifyPage() {
+  React.useEffect(() => {
+    if (userInfo.social === "Kakao") {
+      console.log("카카오 회원은 비밀번호 체크하지 않음");
+      navigate("/mypage/modify");
+    }
+  });
+  const userInfo = useRecoilValue(userState);
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
