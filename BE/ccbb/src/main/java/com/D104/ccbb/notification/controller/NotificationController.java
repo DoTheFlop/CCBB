@@ -50,7 +50,27 @@ public class NotificationController {
             resultMap.put("message", "success");
             status = HttpStatus.ACCEPTED;
         } catch (Exception e) {
-            log.error("키워드 검색 실패", e);
+            log.error("알림 검색 실패", e);
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<>(resultMap, status);
+    }
+
+    @ApiOperation(value = "알림 읽음 처리", notes = "유저의 알림을 읽었다고 처리한다.")
+    @PutMapping(value = "/notification/read/{notificationId}")
+    public ResponseEntity<Map<String, Object>> getList(@RequestHeader String Authorization, @PathVariable Integer notificationId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status;
+        try {
+            Integer userId = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                    .get()
+                    .getUserId();
+            notificationService.updateIsRead(userId, notificationId);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            log.error("알림 읽음 처리 실패", e);
             resultMap.put("message", "fail: " + e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }

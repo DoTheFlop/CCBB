@@ -43,4 +43,8 @@ public class Notification {
     @JoinColumn(name = "user_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
+
+    public void setIsReadTrue() {
+        this.isRead = true;
+    }
 }

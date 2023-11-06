@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotificationResponseDto {
 
+    private Integer notificationId;
     private String content;
     private String url;
     private Boolean isRead;
@@ -23,6 +24,7 @@ public class NotificationResponseDto {
 
     public static NotificationResponseDto fromEntity(Notification notification) {
         return NotificationResponseDto.builder()
+                .notificationId(notification.getNotificationId())
                 .content(notification.getContent())
                 .url(notification.getUrl())
                 .isRead(notification.getIsRead())

@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -117,5 +118,18 @@ public class NotificationService {
         return notifications.stream()
                 .map(NotificationResponseDto::fromEntity)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * 유저 알림 읽음 처리
+     */
+    public void updateIsRead(Integer userId, Integer notificationId) throws Exception {
+        Optional<Notification> notification = notificationRepo.findById(notificationId);
+        if (userId != notification.get().getReceiver().getUserId()) {
+            throw new Exception("유저 정보가 일치하지 않습니다.");
+        }
+
+        notification.get().setIsReadTrue();
+        notificationRepo.save(notification.get());
     }
 }
