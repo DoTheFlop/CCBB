@@ -9,6 +9,7 @@ import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { UrlAtom } from "../../../../recoil/UrlAtom";
 import { userState } from "../../../../recoil/UserAtom";
 import { EventSourcePolyfill } from "event-source-polyfill";
+import { ccbbApi } from "../../../../api/ccbbApi";
 
 export default function Headermain() {
   const navigate = useNavigate();
@@ -16,12 +17,15 @@ export default function Headermain() {
   const user = useRecoilValue(userState);
   const resetUserState = useResetRecoilState(userState);
   const [notificationVisible, setNotificationVisible] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+
   const handleSigninClick = () => {
     //로그인페이지로 가기 전 url을 기억하자
     const toUrl = window.location.pathname;
     setToUrl(toUrl);
     navigate("/signin");
   };
+
   const handleLogoutClick = () => {
     localStorage.removeItem("token");
     resetUserState();
@@ -33,13 +37,29 @@ export default function Headermain() {
     setNotificationVisible((state) => !state);
   };
 
+  const fetchNotifications = async (token) => {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
+    ccbbApi
+      .get("/notification/get", { headers })
+      .then((res) => {
+        // console.log(res);
+        setNotifications(res.data.notificationList);
+      })
+      .catch((e) => console.log(e));
+  };
+
   useEffect(() => {
     let eventSource;
     const token = localStorage.getItem("token");
 
     if (token) {
+      fetchNotifications(token);
+
       const fetchSse = async () => {
-        const url = "http://localhost:8081/api/subscribe";
+        const url = `${process.env.REACT_APP_BASE_SERVER}subscribe`;
         const headers = {
           Authorization: `Bearer ${token}`,
           withCredentials: true,
@@ -48,13 +68,18 @@ export default function Headermain() {
         eventSource = new EventSourcePolyfill(url, { headers });
 
         eventSource.onmessage = async (event) => {
-          console.log("hi");
-          console.log(event.data);
-          // const newNotification = JSON.parse(event.data);
-          // setNotifications((oldNotifications) => [
-          //   ...oldNotifications,
-          //   newNotification,
-          // ]);
+          // console.log(event.data);
+          try {
+            if (!event.data.startsWith("EventStream")) {
+              const newNotification = JSON.parse(event.data);
+              setNotifications((oldNotifications) => [
+                newNotification,
+                ...oldNotifications,
+              ]);
+            }
+          } catch (error) {
+            console.error(error);
+          }
         };
 
         eventSource.onerror = async (event) => {
@@ -67,7 +92,7 @@ export default function Headermain() {
     return () => {
       if (eventSource) {
         eventSource.close();
-        console.log("closed");
+        // console.log("closed");
       }
     };
   }, []);
@@ -119,11 +144,14 @@ export default function Headermain() {
               >
                 <path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
               </svg>
+              <S.RedDot isVisible={notifications.some(notification => !notification.isRead)} />
               {notificationVisible && (
                 <Headernotification
                   props={{
                     state: notificationVisible,
                     setState: setNotificationVisible,
+                    notifications: notifications,
+                    setNotifications: setNotifications,
                   }}
                 />
               )}
