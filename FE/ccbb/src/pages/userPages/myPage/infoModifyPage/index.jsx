@@ -1,35 +1,50 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { userState } from "../../../../recoil/UserAtom";
 import * as S from "./style";
 import Input1 from "../../../../component/common/inputs/input1";
 import Button1 from "../../../../component/common/buttons";
+import { ccbbApi } from "../../../../api/ccbbApi";
 
 export default function InfoModifyPage() {
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  const navigate = useNavigate();
+  const setUserInfo = useSetRecoilState(userState);
+  const handleInfoUpdate = () => {
+    ccbbApi
+      .put("/user/modify", JSON.stringify(user), {
+        headers,
+        withCredentials: true,
+      })
+      .then((res) => {
+        console.log(res);
+        setUserInfo((prev) => ({
+          ...prev,
+          nickname: user.nickname,
+        }));
+        navigate("/mypage");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
   const [user, setUser] = useState({
     email: "",
     nickname: "",
-    name: "",
     password: "",
     gender: "",
-    birthdate: "",
   });
-  const [oldPW, setOldPW] = useState("");
-
+  const [pwCheck, SetPwCheck] = useState("");
+  const pwSame = user.password === pwCheck;
   return (
     <S.main>
       <Input1
-        label="* 현재 패스워드"
-        id="passwordInput"
-        width="300px"
-        height="40px"
-        type="password"
-        value={oldPW}
-        onChange={(e) => {
-          setOldPW(e.target.value);
-        }}
-      />
-      <Input1
         label="새 패스워드"
-        id="passwordInput"
+        id="newPasswordInput"
         width="300px"
         height="40px"
         type="password"
@@ -43,18 +58,18 @@ export default function InfoModifyPage() {
       />
       <Input1
         label="새 패스워드 확인"
-        id="passwordInput"
+        id="newPasswordInputCheck"
         width="300px"
         height="40px"
         type="password"
-        value={user.password}
+        value={pwCheck}
         onChange={(e) => {
-          setUser((prev) => ({
-            ...prev,
-            password: e.target.value,
-          }));
+          SetPwCheck(e.target.value);
         }}
       />
+      {pwCheck && !pwSame && (
+        <div className="alert-message">패스워드가 일치하지 않습니다.</div>
+      )}
       <Input1
         label="닉네임"
         id="nicknameInput"
@@ -72,7 +87,7 @@ export default function InfoModifyPage() {
         text={"수정"}
         width={"300px"}
         height={"50px"}
-        // onClick={doLogin}
+        onClick={handleInfoUpdate}
       />
     </S.main>
   );

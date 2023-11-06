@@ -5,6 +5,7 @@ import SigninPage from "./pages/userPages/signinPage";
 import SignupPage from "./pages/userPages/siginupPage";
 import MyPage from "./pages/userPages/myPage";
 import InfoModifyPage from "./pages/userPages/myPage/infoModifyPage";
+import BeforeModifyPage from "./pages/userPages/myPage/beforeModifyPage";
 import LoLvoteboardPage from "./pages/boardPages/lolvoteBoard";
 import FreeboardPage from "./pages/boardPages/freeBoard";
 import GiftPage from "./pages/giftPage";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/signin" element={<SigninPage />}></Route>
           <Route path="/signup" element={<SignupPage />}></Route>
           <Route path="/mypage" element={<MyPage />}></Route>
+          <Route path="/mypage/pwcheck" element={<BeforeModifyPage />} />
           <Route path="/mypage/modify" element={<InfoModifyPage />} />
 
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
