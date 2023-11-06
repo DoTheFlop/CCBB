@@ -91,7 +91,7 @@ public class FileService {
 			headers.setContentDispositionFormData("inline", file.getOrgName() + "." + file.getExtension());
 
 		}
-		if (file.getType().startsWith("application")) {
+		if (file.getType().startsWith("replay")) {
 			log.info("리플레이 파일");
 			path += REPLAY_PATH;
 			headers.setContentDispositionFormData("attachment", file.getOrgName() + "." + file.getExtension());
@@ -113,7 +113,7 @@ public class FileService {
 			.orgName(fileNameWithoutExtension)
 			.name(uuidName)
 			.extension(fileExtension)
-			.type(contentType)
+			.type("replay")
 			.isPromise(false)
 			.build();
 		Optional<Post> byId = postRepo.findById(id);
