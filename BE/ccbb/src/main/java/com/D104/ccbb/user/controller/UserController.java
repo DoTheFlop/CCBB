@@ -129,4 +129,22 @@ public class UserController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@GetMapping("/checkPw")
+	public ResponseEntity<Map<String, Object>> checkPw(@RequestHeader String Authorization, @RequestParam String userPw) {
+		Map<String,Object> json = new HashMap<>();
+		HttpStatus status;
+		try {
+			boolean pwCheck = userService.userPwCheck(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),userPw);
+			json.put("check", pwCheck);
+			json.put("Authorization", Authorization);
+			status = HttpStatus.OK;
+		} catch (Exception e) {
+			json.put("message", "fail: " + e);
+			json.put("Authorization", Authorization);
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<>(json, status);
+	}
+
+
 }

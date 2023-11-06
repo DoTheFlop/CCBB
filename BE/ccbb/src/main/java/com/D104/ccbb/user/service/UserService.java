@@ -136,6 +136,7 @@ public class UserService {
 			.orElseThrow(() -> new IllegalStateException(" No User"));
 		user.setNickname(userDto.getNickname());
 		user.setSex(userDto.getSex());
+		user.setPassword(userDto.getPassword());
 		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
 
@@ -162,21 +163,19 @@ public class UserService {
 	}
 
 	public boolean userEmailCheck(String userEmail, String userName) {
-
-		// User user = userRepository.findUserByUserId(userEmail).get();
-		// if(user!=null && user.getName().equals(userName)) {
-		// 	return true;
-		// }
-		// else {
-		// 	return false;
-		// }
-
 		User user = userRepository.findByEmail(userEmail).get();
 		if (user != null && user.getName().equals(userName)) {
 			return true;
 		} else {
 			return false;
 		}
+
+	}
+
+	public boolean userPwCheck(String userEmail, String pw) {
+		User user = userRepository.findByEmail(userEmail).get();
+
+		return passwordEncoder.matches(pw, user.getPassword());
 	}
 
 	public boolean findUser(String email) {
