@@ -163,3 +163,9 @@ export const VoteRange = styled.div`
     position: relative;
     
 `
+
+export const UserWrapper = styled.div`
+    position: relative;
+    display: flex;
+    flex-direction: column;
+`
