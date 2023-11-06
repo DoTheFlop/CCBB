@@ -9,12 +9,15 @@ import com.D104.ccbb.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -104,5 +107,15 @@ public class NotificationService {
                 .isRead(false)
                 .createDate(LocalDateTime.now())
                 .build();
+    }
+
+    /**
+     * 유저의 알림 전체 목록 조회
+     */
+    public List<NotificationResponseDto> getList(Integer userId) {
+        List<Notification> notifications = notificationRepo.findAllByReceiverUserIdOrderByCreateDateDesc(userId);
+        return notifications.stream()
+                .map(NotificationResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 }
