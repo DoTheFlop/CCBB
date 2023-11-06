@@ -140,6 +140,14 @@ public class PaymentHistoryService {
 		log.info("response body : {}", Kakaoresponse.getBody());
 		readyPayment.setApprove(true);
 		paymentHistoryRepo.save(readyPayment);
+		Vote vote = byPostIdPostId.get();
+		if (vote.getUserId1().getUserId().equals(userId)) {
+			vote.setAccept1(true);
+		}
+		if (vote.getUserId2().getUserId().equals(userId)) {
+			vote.setAccept2(true);
+		}
+		voteRepo.save(vote);
 		return true;
 	}
 
