@@ -3,6 +3,7 @@ import styled from "styled-components";
 export const Img = styled.img`
   border-radius: 50%;
   width: 180px;
+  height: 180px;
 `;
 //마이페이지 상단영역
 export const profileInfo = styled.div`
@@ -19,6 +20,19 @@ export const profileInfo = styled.div`
 export const imgSection = styled.div`
   width: fit-content;
   height: fit-content;
+  position: relative;
+  svg {
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    margin-left: -20px;
+    width: 36px;
+    height: 36px;
+  }
+  input {
+    /* visibility: hidden; */
+    display: none;
+  }
 `;
 
 //닉네임, 포인트영역
@@ -26,7 +40,7 @@ export const textSection = styled.div`
   width: auto;
   display: flex;
   flex: 1;
-  padding-left: 2%;
+  padding-left: 4%;
   flex-direction: column;
   color: white;
 `;
@@ -38,6 +52,12 @@ export const textAndBtn = styled.div`
   align-items: center;
   svg {
     color: gold;
+  }
+  h1 {
+    margin: 0;
+  }
+  button {
+    margin-left: 10px;
   }
 `;
 
