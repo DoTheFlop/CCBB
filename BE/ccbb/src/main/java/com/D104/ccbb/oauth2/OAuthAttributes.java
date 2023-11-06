@@ -63,6 +63,7 @@ public class OAuthAttributes {
 			.point(0)
 			.voteCount(0)
 			.voteVictory(0)
+			.social("Kakao")
 			.build();
 	}
 }
