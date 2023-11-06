@@ -13,5 +13,5 @@ public class BallotResultDto {
 
 	private Long pick1;
 	private Long pick2;
-
+	private Integer userPick;
 }
