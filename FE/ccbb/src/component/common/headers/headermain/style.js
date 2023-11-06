@@ -53,4 +53,16 @@ export const usermenu = styled.div`
 
 export const NotificationWrapper = styled.div`
   position: relative;
+  margin-right: 10px;
+`;
+
+export const RedDot = styled.span`
+  position: absolute;
+  top: 25px;
+  right: 0px;
+  width: 7px;
+  height: 7px;
+  background-color: red;
+  border-radius: 50%;
+  display: ${(props) => (props.isVisible ? "block" : "none")};
 `;

@@ -3,8 +3,14 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   padding: 10px 20px 0px 20px;
-  border-bottom: 1px solid;
+  // border-bottom: 1px solid;
   display: flex;
+  cursor: pointer;
+  background-color: ${(props) => (props.$isRead ? "white" : "#ECF2FF")};
+
+  &:last-child {
+    border-radius: 20px;
+  }
 `;
 
 export const TopSection = styled.div`
