@@ -72,7 +72,9 @@ export default function MyPage() {
           <S.Img
             src={
               profileImg
-                ? `${process.env.REACT_APP_BASE_SERVER}/profileimg/${profileImg.name}`
+                ? `${process.env.REACT_APP_BASE_SERVER}profileimg/${
+                    user.userId
+                  }?${Date.now()}`
                 : ""
             }
             alt="profile-img"
