@@ -11,12 +11,17 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import Button1 from "../../../../component/common/buttons";
+import { Link, useParams } from "react-router-dom";
 import InputComment from "../../../../component/common/inputs/inputcomment";
 import CommentBox from "../../../../component/commentBox";
+import { ccbbApi } from "../../../../api/ccbbApi";
 
 export default function LoLvoteDetailPage() {
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+  const postId = useParams().postId;
   const [isPromisePageOpen, setIsPromisePageOpen] = useState(false);
   const [isWard, setIsWard] = useState(false);
   const [isThumbUp, setIsThumbup] = useState(false);
@@ -35,6 +40,31 @@ export default function LoLvoteDetailPage() {
   };
   const togglePromisePage = () => {
     setIsPromisePageOpen(!isPromisePageOpen);
+  };
+
+  const [myComment, SetMyComment] = useState({
+    content: "",
+    //파라미터에서 글번호 가져오기
+    postId: null,
+  });
+
+  const handleOnKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey && myComment) {
+      e.preventDefault();
+      console.log("엔터키입력", postId, myComment);
+      //   postComment(); // Enter 입력시 댓글 등록
+      e.target.value = "";
+    }
+  };
+
+  const postComment = () => {
+    ccbbApi
+      .post("/comment/add", JSON.stringify(myComment), { headers })
+      .then((res) => {
+        console.log(res);
+        SetMyComment("");
+      })
+      .catch((e) => console.log(e));
   };
 
   const dummyData = [
@@ -115,7 +145,7 @@ export default function LoLvoteDetailPage() {
               )}
             </S.PromiseP>
 
-            <S.PromisePageWrapper isOpen={isPromisePageOpen}>
+            <S.PromisePageWrapper $opened={isPromisePageOpen}>
               <PromisePage promise={dummyData1[0].promise} />
             </S.PromisePageWrapper>
 
@@ -123,7 +153,7 @@ export default function LoLvoteDetailPage() {
               <h3>{dummyData1[0].argument}</h3>
               <h4>옳다고 생각하는 유저에 투표해주세요</h4>
               <S.Votebutton>
-                <S.ProfileBox backgroundColor="#97A7FF">
+                <S.ProfileBox $bgcolor="#97A7FF">
                   <UserProfile name={"챌우혁"} color={"black"} />
                   <S.ImgTier
                     src="../resource/silver.png"
@@ -136,7 +166,7 @@ export default function LoLvoteDetailPage() {
                   alt="VS Logo"
                   style={{ height: "50px" }}
                 />
-                <S.ProfileBox backgroundColor="#FF9797">
+                <S.ProfileBox $bgcolor="#FF9797">
                   <UserProfile name={"브우혁"} color={"black"} />
                   <S.ImgTier
                     src="../resource/challenger.png"
@@ -191,20 +221,18 @@ export default function LoLvoteDetailPage() {
           <S.BodyBottom>
             <S.Createcomment>
               <InputComment
+                className="comment-input"
                 label="댓글작성"
                 id="댓글작성"
-                width="100%"
-                height="50px"
+                height="60px"
+                value={myComment}
+                onKeyPress={handleOnKeyPress}
+                onChange={(e) => {
+                  SetMyComment(e.target.value);
+                }}
+                onClick={postComment}
               />
             </S.Createcomment>
-            <S.Createcomment1>
-              <Button1
-                text={"등록"}
-                width={"80px"}
-                height={"40px"}
-                onClick={""}
-              />
-            </S.Createcomment1>
 
             <h4>댓글 00개</h4>
             <S.CommentBody>
