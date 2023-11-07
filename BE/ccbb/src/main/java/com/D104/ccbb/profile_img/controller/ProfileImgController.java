@@ -40,10 +40,10 @@ public class ProfileImgController {
 		}
 	}
 
-	@GetMapping("/{imgName}")
-	public ResponseEntity<byte[]> getProfileImg(@PathVariable String imgName) {
+	@GetMapping("/{userId}")
+	public ResponseEntity<byte[]> getProfileImg(@PathVariable int userId) {
 		try {
-			byte[] img = profileImgService.getProfileImg(imgName);
+			byte[] img = profileImgService.getProfileImg(userId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.IMAGE_JPEG);
 			return new ResponseEntity<>(img, headers, HttpStatus.OK);

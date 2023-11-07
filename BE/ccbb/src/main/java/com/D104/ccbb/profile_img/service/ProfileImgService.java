@@ -1,7 +1,6 @@
 package com.D104.ccbb.profile_img.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -35,8 +34,14 @@ public class ProfileImgService {
 	@Value("${file.profileImg}")
 	private String PROFILE_IMG;
 
-	public byte[] getProfileImg(String imgName) throws IOException {
-		String file_path = FILE_PATH + PROFILE_IMG + "/" + imgName;
+	public byte[] getProfileImg(int userId) throws Exception {
+		Optional<User> userOpt = userRepository.findById(userId);
+		if (userOpt.isEmpty()) {
+			throw new Exception("없는 유저입니다.");
+		}
+		ProfileImg userProfileImg = profileImgRepo.findByUserId_UserId(userId);
+
+		String file_path = FILE_PATH + PROFILE_IMG + "/" + userProfileImg.getName();
 		File file = new File(file_path);
 		return FileUtil.readAsByteArray(file);
 	}
