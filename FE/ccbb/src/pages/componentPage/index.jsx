@@ -2,6 +2,7 @@ import { Select } from '@mui/material';
 import CommentBox from '../../component/commentBox';
 import Button1 from '../../component/common/buttons';
 import Headermenu from '../../component/common/headers/headermenu';
+import Headernotification from '../../component/common/headers/headernotification';
 import Input1 from '../../component/common/inputs/input1';
 import Input2 from '../../component/common/inputs/input2';
 import UserProfile from '../../component/common/profile';
@@ -64,6 +65,7 @@ export default function ComponentPage() {
                         />
                         </S.Dropdown>
                     </S.Actions>
+            {/* <Headernotification></Headernotification> */}
         </S.main>  
     )
 }
