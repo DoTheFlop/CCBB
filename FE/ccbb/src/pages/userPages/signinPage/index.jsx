@@ -2,17 +2,49 @@ import React, { useState } from "react";
 import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { ccbbApi } from "../../../api/ccbbApi";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { userState } from "../../../recoil/UserAtom";
+import { UrlAtom } from "../../../recoil/UrlAtom";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const setUserInfo = useSetRecoilState(userState);
+  const navigate = useNavigate();
+  const toUrl = useRecoilValue(UrlAtom);
 
-  const doLogin = () => {
-    console.log("로그인합시다");
-    console.log("id: " + email);
-    console.log("pw: " + password);
+  const doLogin = async () => {
+    console.time("doLogin");
+    const body = {
+      "email": email,
+      "password": password,
+    }
+  
+    try {
+      const res = await ccbbApi.post("/user/elogin", body);
+      console.log(res);
+      const token = res.data;
+      localStorage.setItem('token', token);
+      // 유저정보 조회하기전에 보내놓고 
+      navigate(toUrl);
+      // console.timeEnd("doLogin");
+      
+      if (token) {
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+        const profileRes = await ccbbApi.get("/user/profile", { headers });
+        console.log(profileRes);
+        setUserInfo(profileRes.data.user);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   };
+  
+  
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter") {
       //이메일, 패스워드 중 하나라도 비어있으면 리턴시킴
