@@ -33,7 +33,10 @@ export default function App() {
           <Route path="/mypage/modify" element={<InfoModifyPage />} />
 
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
-          <Route path="/lolvote/detail" element={<LoLvoteDetailPage />}></Route>
+          <Route
+            path="/lolvote/:postId"
+            element={<LoLvoteDetailPage />}
+          ></Route>
           <Route path="/lolvote/create" element={<LoLvoteCreatePage />}></Route>
 
           <Route path="/free" element={<FreeboardPage />}></Route>
