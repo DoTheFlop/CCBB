@@ -38,7 +38,7 @@ public class JwtTokenService implements InitializingBean {
 	@Value("${jwt.secretKey}")
 	private String secret;
 
-	private final long tokenValidityInMilliseconds = 8640000;
+	private final long tokenValidityInMilliseconds = 86400000;
 	private final long refreshTokenExpirationPeriod = 86400000;
 	private Key key;
 

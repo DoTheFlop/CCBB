@@ -46,4 +46,12 @@ public class PaymentHistory {
 	@JoinColumn(name = "vote_id", nullable = false)
 	private Vote voteId;
 
+	@Column(name = "tid", nullable = false)
+	private String tid;
+
+	@Column(name = "is_approve", nullable = false)
+	private boolean isApprove;
+
+	@Column(name = "partner_order_id", nullable = false)
+	private String partnerOrderId;
 }

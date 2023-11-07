@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Event {
 
 	@Id
@@ -31,6 +36,7 @@ public class Event {
 	@Column(columnDefinition = "varchar(2000)")
 	private String content;
 
+	@CreatedDate
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
 

@@ -14,17 +14,24 @@ import lombok.NoArgsConstructor;
 public class GoodsDto {
 	private Integer goodsId;
 	private String name;
-	private Integer count;
+	private Integer winPercent;
+	private Integer winCount;
 	private Integer price;
 	private Integer eventId;
 
 	public static GoodsDto fromEntity(Goods goods) {
+
+		Integer eventId = null;
+		if (goods.getEventId() != null) {
+			eventId = goods.getEventId().getEventId();
+		}
 		return GoodsDto.builder()
 			.goodsId(goods.getGoodsId())
 			.name(goods.getName())
-			.count(goods.getCount())
+			.winPercent(goods.getWinPercent())
+			.winCount(goods.getWinCount())
 			.price(goods.getPrice())
-			.eventId(goods.getEventId().getEventId())
+			.eventId(eventId)
 			.build();
 	}
 }

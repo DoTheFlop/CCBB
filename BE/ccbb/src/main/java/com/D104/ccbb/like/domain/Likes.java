@@ -4,12 +4,15 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.post.domain.Post;
@@ -26,8 +29,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "likes")
-public class Like {
+@EntityListeners(AuditingEntityListener.class)
+public class Likes {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +40,7 @@ public class Like {
 	@Column(nullable = false)
 	private Boolean type;
 
+	@CreatedDate
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
 
