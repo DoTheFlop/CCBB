@@ -15,6 +15,5 @@ public interface CommentRepo extends JpaRepository<Comment, Integer> {
 
 	Long countByPostId_PostId(int postId);
 
-	@EntityGraph(attributePaths = {"reComment", "userId"})
-	void delete(int commentId);
+	void deleteByCommentId(int commentId);
 }
