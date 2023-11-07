@@ -10,4 +10,5 @@ import com.D104.ccbb.comment.domain.Comment;
 @Repository
 public interface CommentRepo extends JpaRepository<Comment, Integer> {
 	List<Comment> findByPostId_PostId(int postId);
+	Long countByPostId_PostId(int postId);
 }

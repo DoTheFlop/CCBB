@@ -34,6 +34,10 @@ import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.post.service.PostService;
 import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.UserService;
+import com.D104.ccbb.vote.dto.VoteAcceptDto;
+import com.D104.ccbb.vote.dto.VoteListDto;
+import com.D104.ccbb.vote.repo.VoteRepo;
+import com.D104.ccbb.vote.service.VoteService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +56,7 @@ public class PostController {
 	private final PostRepo postRepo;
 	private final FileService fileService;
 	private final UserService userService;
+	private final VoteService voteService;
 	// private final FileService fileService;
 
 	// public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
@@ -127,6 +132,40 @@ public class PostController {
 		HttpStatus status = null;
 		try {
 			resultMap.put("voteList", postService.getPageList(page));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@GetMapping("/vote/participationList")
+	public ResponseEntity<Map<String, Object>> participationList(@RequestHeader String Authorization) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		List<VoteListDto> partList = voteService.getParticipationList(userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+				.getUserId());
+		try {
+			resultMap.put("participationList",partList);
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
+	@GetMapping("/vote/acceptList")
+	public ResponseEntity<Map<String, Object>> acceptList(@RequestHeader String Authorization) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		List<VoteAcceptDto> acceptList = voteService.getNotAccept(userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId());
+		try {
+			resultMap.put("participationList",acceptList);
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {

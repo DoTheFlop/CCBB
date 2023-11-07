@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class VoteModifyDto {
 
-	private Integer voteId;
+	private Integer postId;
 	private Boolean accept2;
 	private Boolean doPromise;
 
