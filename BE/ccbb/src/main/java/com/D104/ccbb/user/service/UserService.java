@@ -8,12 +8,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.dto.KakaoUserDto;
+import com.D104.ccbb.user.dto.UserDto;
+import com.D104.ccbb.user.dto.UserEmailPasDto;
+import com.D104.ccbb.user.dto.UserLoginDto;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -26,6 +32,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final JwtTokenService jwtTokenService;
+	private final PasswordEncoder passwordEncoder;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String USER_INFO_URI;
@@ -74,7 +81,6 @@ public class UserService {
 				.email((String)responseBody.getKakao_account().get("email"))
 				.password("asdasdasd")
 				.sex(true)
-				.createDate(LocalDateTime.now())
 				.point(0)
 				.build();
 			log.info(user.toString());
@@ -88,5 +94,98 @@ public class UserService {
 		}
 
 		return createdToken;
+	}
+
+	@Transactional
+	public void eSignup(UserLoginDto userLoginDto) {
+		if (userRepository.findByEmail(userLoginDto.getEmail()).isPresent()) {
+			throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+		}
+		String encodedPassword = passwordEncoder.encode(userLoginDto.getPassword());
+
+		User user = User.builder()
+			.nickname(userLoginDto.getNickname())
+			.name(userLoginDto.getName())
+			.email(userLoginDto.getEmail())
+			.password(encodedPassword)
+			.sex(userLoginDto.getSex())
+			.point(10000)
+			.createDate(LocalDateTime.now())
+			.state((byte)1)
+			.voteCount(0)
+			.voteVictory(0)
+			.build();
+		userRepository.save(user);
+	}
+
+	public String elogin(UserEmailPasDto userEmailPasDto) {
+		User user = userRepository.findByEmail(userEmailPasDto.getEmail())
+			.orElseThrow(() -> new IllegalArgumentException("해당 이메일의 유저가 존재하지 않습니다."));
+
+		if (!passwordEncoder.matches(userEmailPasDto.getPassword(), user.getPassword())) {
+			throw new IllegalArgumentException("비밀번호가 틀렸습니다.");
+		}
+
+		// 토큰 생성 및 반환
+		return jwtTokenService.createToken(user.getEmail());
+	}
+
+	@Transactional
+	public void updateUser(String email, UserDto userDto) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException(" No User"));
+		if(user.getNickname() != null)
+			user.setNickname(userDto.getNickname());
+		if(user.getSex() != null)
+			user.setSex(userDto.getSex());
+		if(user.getPassword() != null)
+			user.setPassword(userDto.getPassword());
+		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
+	}
+
+	@Transactional
+	public void updateVote(Integer userId, Integer a) {
+		User user = userRepository.getReferenceById(userId);
+		user.setVoteCount(user.getVoteCount() + 1);
+		user.setVoteVictory(user.getVoteVictory() + a);
+		userRepository.save(user);
+	}
+
+	public UserDto getUserProfile(String email) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException(" No User"));
+
+		return UserDto.fromEntity(user);
+	}
+
+	public void deleteUser(String email) {
+		User user = userRepository.findByEmail(email)
+			.orElseThrow(() -> new IllegalStateException("No user found with the provided email"));
+
+		userRepository.delete(user);
+	}
+
+	public boolean userEmailCheck(String userEmail, String userName) {
+		User user = userRepository.findByEmail(userEmail).get();
+		if (user != null && user.getName().equals(userName)) {
+			return true;
+		} else {
+			return false;
+		}
+
+	}
+
+	public boolean userPwCheck(String userEmail, String pw) {
+		User user = userRepository.findByEmail(userEmail).get();
+
+		return passwordEncoder.matches(pw, user.getPassword());
+	}
+
+	public boolean findUser(String email) {
+		Optional<User> findUserOpt = userRepository.findByEmail(email);
+		if (findUserOpt.isEmpty()) {
+			throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
+		}
+		return true;
 	}
 }

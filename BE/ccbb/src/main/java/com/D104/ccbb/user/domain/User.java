@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import com.D104.ccbb.user.dto.Role;
 
@@ -28,6 +31,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @DynamicInsert
 @DynamicUpdate
+@EntityListeners(AuditingEntityListener.class)
 public class User {
 
 	@Id
@@ -47,7 +51,7 @@ public class User {
 	@Column(nullable = false, columnDefinition = "varchar(1000)")
 	private String password;
 
-	@Column(name = "sex", nullable = false)
+	@Column(name = "sex")
 	private Boolean sex;
 
 	@Column(name = "birthyear", columnDefinition = "DATE")
@@ -62,6 +66,7 @@ public class User {
 	@Column(nullable = false, columnDefinition = "int")
 	private Integer point;
 
+	@CreatedDate
 	@Column(name = "create_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime createDate;
 
@@ -71,7 +76,30 @@ public class User {
 	@Column(name = "val_tier", columnDefinition = "varchar(50)")
 	private String val;
 
+	// 0 = 관리자 // 1 = 일반 유저 // 2 = 정지 유저
+	@Column(nullable = false, columnDefinition = "tinyint")
+	private Byte state;
+
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private Role role;
+
+	@Column(name = "main_position", columnDefinition = "tinyint")
+	private Byte mainPosition;
+
+	@Column(name = "sub_position", columnDefinition = "tinyint")
+	private Byte subPosition;
+
+	@Column(name = "vote_count", nullable = false, columnDefinition = "int")
+	private Integer voteCount;
+
+	@Column(name = "vote_victory", nullable = false, columnDefinition = "int")
+	private Integer voteVictory;
+
+	@Column(name = "social", columnDefinition = "varchar(20)")
+	private String social;
+
+	public User(Integer l) {
+		this.userId = l;
+	}
 }

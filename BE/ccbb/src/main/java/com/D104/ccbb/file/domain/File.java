@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import com.D104.ccbb.event.domain.Event;
 import com.D104.ccbb.goods.domain.Goods;
 import com.D104.ccbb.post.domain.Post;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +46,7 @@ public class File {
 	private Boolean isPromise;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "post_id")
 	private Post postId;
 
