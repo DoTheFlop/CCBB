@@ -134,9 +134,12 @@ public class UserService {
 	public void updateUser(String email, UserDto userDto) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalStateException(" No User"));
-		user.setNickname(userDto.getNickname());
-		user.setSex(userDto.getSex());
-		user.setPassword(userDto.getPassword());
+		if(user.getNickname() != null)
+			user.setNickname(userDto.getNickname());
+		if(user.getSex() != null)
+			user.setSex(userDto.getSex());
+		if(user.getPassword() != null)
+			user.setPassword(userDto.getPassword());
 		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
 
