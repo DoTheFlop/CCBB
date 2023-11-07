@@ -27,7 +27,7 @@ export default function KakaoLoginPage() {
           localStorage.setItem("token", token);
           // 추가로 프사 있는지 확인
           ccbbApi
-            .get("/profileimg/meta", { headers })
+            .get(`/profileimg/${res.data.user.userId}`)
             .then((res) => {
               console.log("프사는?");
               console.log(res);

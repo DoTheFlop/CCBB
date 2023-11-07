@@ -11,8 +11,8 @@ export default function UserProfile({
   return (
     <S.Profile direction={direction}>
       <S.Img
-        src={imgUrl || "/resource/squareyoon.png"}
-        alt="리그 오브 레전드 이미지"
+        src={imgUrl || "/resource/LoL.png"}
+        alt="profile-img"
         style={{ width: size, height: size }}
       />
       <S.Name color={color} size={size}>
