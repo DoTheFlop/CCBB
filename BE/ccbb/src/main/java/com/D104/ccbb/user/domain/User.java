@@ -98,4 +98,8 @@ public class User {
 
 	@Column(name = "social", columnDefinition = "varchar(20)")
 	private String social;
+
+	public User(Integer l) {
+		this.userId = l;
+	}
 }
