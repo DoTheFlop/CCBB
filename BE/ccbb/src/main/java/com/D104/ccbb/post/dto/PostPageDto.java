@@ -28,6 +28,7 @@ public class PostPageDto {
 	private Integer type;
 	private String nickname;
 	private String userEmail;
+	private String tier;
 	private LocalDateTime deadline;
 	private Long voteCount;
 	private List<FileDto> fileId;
@@ -40,6 +41,7 @@ public class PostPageDto {
 			.type(post.getType())
 			.nickname(post.getUserId().getNickname())
 			.userEmail(post.getUserId().getEmail())
+			.tier(vote.getTier())
 			.deadline(vote.getDeadline())
 			.voteCount(ballotBoxRepo.countByVote_VoteId(vote.getVoteId()))
 			.fileId(post.getFiles().stream().map(FileDto::fromEntity).collect(Collectors.toList()))
