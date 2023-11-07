@@ -19,16 +19,16 @@ public class EventService {
 	private final EventRepo eventRepo;
 
 	@Transactional
-	public void setEvent(EventDto eventDto) {
+	public Event setEvent(EventDto eventDto) {
 		Event event = Event.builder()
 			.eventId(eventDto.getEventId())
 			.title(eventDto.getTitle())
 			.content(eventDto.getContent())
-			.createDate(eventDto.getCreateDate())
 			.startDate(eventDto.getStartDate())
 			.endDate(eventDto.getEndDate())
 			.build();
-		eventRepo.save(event);
+		Event save = eventRepo.save(event);
+		return save;
 	}
 
 	@Transactional
