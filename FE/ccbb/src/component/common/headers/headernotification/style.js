@@ -12,7 +12,7 @@ export const Container = styled.div`
   right: 0;
   color: black;
   z-index: 2;
-  max-height: 500px;
+  max-height: 400px;
   overflow: auto;
   box-shadow: 0px 0px 20px rgba(1, 1, 1, 0.5);
   opacity: ${(props) => (props.$isVisible ? 1 : 0)};
@@ -37,7 +37,7 @@ export const Container = styled.div`
 `;
 
 export const Top = styled.div`
-  padding: 10px 20px;
+  padding: 10px 30px;
   font-weight: bold;
   // border-bottom: 1px solid;
   background-color: #ddd;
