@@ -46,7 +46,7 @@ public class CommentService {
 		commentRepo.save(comment);
 
 		// 알람 전송
-		eventPublisher.publishEvent(NotificationRequestDto.commentOf(post, writer));
+		eventPublisher.publishEvent(NotificationRequestDto.commentOf(post));
 	}
 
 	public List<Comment> getComment(int postId) {
