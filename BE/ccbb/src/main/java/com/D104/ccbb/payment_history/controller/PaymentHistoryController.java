@@ -40,11 +40,11 @@ public class PaymentHistoryController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<String> addPayment(@RequestParam int voteId, @RequestParam int price,
+	public ResponseEntity<String> addPayment(@RequestParam int postId, @RequestParam int price,
 		@RequestHeader String Authorization) {
 
 		try {
-			String paymentUrl = paymentHistoryService.addPayment(voteId, price, Authorization);
+			String paymentUrl = paymentHistoryService.addPayment(postId, price, Authorization);
 			log.info("결제 준비 완료");
 			return new ResponseEntity<>(paymentUrl, HttpStatus.OK);
 		} catch (Exception e) {
@@ -55,12 +55,12 @@ public class PaymentHistoryController {
 
 	//price=%d&voteId=%d
 	@GetMapping("/success")
-	public ResponseEntity<String> successPayment(@RequestParam int voteId, @RequestParam int price,
+	public ResponseEntity<String> successPayment(@RequestParam int postId, @RequestParam int price,
 		@RequestParam int userId,
 		@RequestParam String pg_token, HttpServletResponse response) {
 
 		try {
-			boolean result = paymentHistoryService.approvePayment(userId, voteId, price, pg_token);
+			boolean result = paymentHistoryService.approvePayment(userId, postId, price, pg_token);
 			response.sendRedirect("https://ccbb.pro/payment-success");
 			return new ResponseEntity<>("결제 완료", HttpStatus.OK);
 		} catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.D104.ccbb.ballot_box.dto;
+package com.D104.ccbb.comment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BallotResultDto {
+public class CommentRequestDto {
 
-	private Long pick1;
-	private Long pick2;
-	private Integer userPick;
+	private String content;
+	private Integer postId;
+
 }

@@ -95,4 +95,11 @@ public class User {
 
 	@Column(name = "vote_victory", nullable = false, columnDefinition = "int")
 	private Integer voteVictory;
+
+	@Column(name = "social", columnDefinition = "varchar(20)")
+	private String social;
+
+	public User(Integer l) {
+		this.userId = l;
+	}
 }
