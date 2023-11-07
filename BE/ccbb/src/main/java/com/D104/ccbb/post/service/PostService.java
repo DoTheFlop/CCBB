@@ -61,7 +61,7 @@ public class PostService {
 
 	public Page<PostPageDto> getPageList(int page){
 		int pageLimit = 12;
-		Page<Post> postsPages = postRepo.findAll(PageRequest.of(page-1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
+		Page<Post> postsPages = postRepo.findByVote_Accept1AndVote_Accept2(true,true,PageRequest.of(page-1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
 		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m,m.getVote(),ballotBoxRepo));
 		return postPageDto;
 	}
