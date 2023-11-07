@@ -155,7 +155,6 @@ public class FileService {
 				Event event = byId.orElseThrow(() -> new Exception("게시글이 없습니다."));
 				build.setEventId(event);
 			}
-			fileRepo.save(build);
 			String url = FILE_PATH;
 			if (contentType.startsWith("image")) {
 				url += IMAGE_PATH;
@@ -163,8 +162,13 @@ public class FileService {
 			if (contentType.startsWith("video")) {
 				url += VIDEO_PATH;
 			}
+			if (!contentType.startsWith("image") || contentType.startsWith("video")) {
+				build.setType("replay");
+				url += REPLAY_PATH;
+			}
 			url = url + "/" + uuidName + "." + fileExtension;
 			Path path = Paths.get(url);
+			fileRepo.save(build);
 			file.transferTo(path);
 		}
 	}
