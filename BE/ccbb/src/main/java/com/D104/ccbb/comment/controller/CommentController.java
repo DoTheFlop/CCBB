@@ -55,8 +55,8 @@ public class CommentController {
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
     }
 
-    @GetMapping("/")
-    public ResponseEntity<Map<String, Object>> add(@RequestParam int postId) {
+    @GetMapping("/{postId}")
+    public ResponseEntity<Map<String, Object>> add(@PathVariable int postId) {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         try {
