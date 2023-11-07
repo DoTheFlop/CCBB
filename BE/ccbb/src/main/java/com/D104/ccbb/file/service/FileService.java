@@ -48,6 +48,9 @@ public class FileService {
 	@Value("${file.image}")
 	private String IMAGE_PATH;
 
+	@Value("${file.replay}")
+	private String REPLAY_PATH;
+
 	// 파일 이름과 확장자를 분리하여 파일 이름 반환
 	private String getFileNameWithoutExtension(String filename) {
 		int lastDotIndex = filename.lastIndexOf(".");
@@ -75,21 +78,53 @@ public class FileService {
 		}
 		File file = fileOpt.get();
 		String path = FILE_PATH;
+		HttpHeaders headers = new HttpHeaders();
 		if (file.getType().startsWith("image")) {
 			log.info("이미지 파일");
 			path += IMAGE_PATH;
+			headers.setContentDispositionFormData("inline", file.getOrgName() + "." + file.getExtension());
+
 		}
 		if (file.getType().startsWith("video")) {
 			log.info("비디오 파일");
 			path += VIDEO_PATH;
+			headers.setContentDispositionFormData("inline", file.getOrgName() + "." + file.getExtension());
+
+		}
+		if (file.getType().startsWith("replay")) {
+			log.info("리플레이 파일");
+			path += REPLAY_PATH;
+			headers.setContentDispositionFormData("attachment", file.getOrgName() + "." + file.getExtension());
 		}
 		path = path + "/" + file.getName() + "." + file.getExtension();
 		log.info("path: {}", path);
 		FileSystemResource video = new FileSystemResource(path);
-		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM));
-		headers.setContentDispositionFormData("inline", file.getOrgName() + "." + file.getExtension());
 		return new ResponseEntity<>(video, headers, HttpStatus.OK);
+	}
+
+	public boolean saveReplayFile(MultipartFile replay, int id) throws Exception {
+		String fileExtension = getFileExtension(replay.getOriginalFilename());
+		String fileNameWithoutExtension = getFileNameWithoutExtension(replay.getOriginalFilename());
+		String contentType = replay.getContentType();
+		log.info("content type : {}", contentType);
+		String uuidName = UUID.randomUUID().toString();
+		File build = File.builder()
+			.orgName(fileNameWithoutExtension)
+			.name(uuidName)
+			.extension(fileExtension)
+			.type("replay")
+			.isPromise(false)
+			.build();
+		Optional<Post> byId = postRepo.findById(id);
+		Post post = byId.orElseThrow(() -> new Exception("게시글이 없습니다."));
+		build.setPostId(post);
+		fileRepo.save(build);
+		String url = FILE_PATH + REPLAY_PATH;
+		url = url + "/" + uuidName + "." + fileExtension;
+		Path path = Paths.get(url);
+		replay.transferTo(path);
+		return true;
 	}
 
 	public void saveFile(List<MultipartFile> files, String type, int id) throws Exception {
@@ -120,7 +155,6 @@ public class FileService {
 				Event event = byId.orElseThrow(() -> new Exception("게시글이 없습니다."));
 				build.setEventId(event);
 			}
-			fileRepo.save(build);
 			String url = FILE_PATH;
 			if (contentType.startsWith("image")) {
 				url += IMAGE_PATH;
@@ -128,8 +162,13 @@ public class FileService {
 			if (contentType.startsWith("video")) {
 				url += VIDEO_PATH;
 			}
+			if (!contentType.startsWith("image") || contentType.startsWith("video")) {
+				build.setType("replay");
+				url += REPLAY_PATH;
+			}
 			url = url + "/" + uuidName + "." + fileExtension;
 			Path path = Paths.get(url);
+			fileRepo.save(build);
 			file.transferTo(path);
 		}
 	}
