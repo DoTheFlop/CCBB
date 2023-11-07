@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilValue, useSetRecoilState, useResetRecoilState } from "recoil";
 import { UrlAtom } from "../../../../recoil/UrlAtom";
 import { userState } from "../../../../recoil/UserAtom";
+import { ccbbApi } from "../../../../api/ccbbApi";
 
 export default function Headermain() {
   const navigate = useNavigate();
@@ -55,7 +56,15 @@ export default function Headermain() {
         {localStorage.getItem("token") ? (
           <S.usermenu>
             <Link to="/mypage">
-              <UserProfile name={user.nickname} size={42} />
+              <UserProfile
+                name={user.nickname}
+                size={42}
+                imgUrl={
+                  user.profileImg
+                    ? `http://k9d104.p.ssafy.io:8081/api/profileimg/${user.profileImg.name}`
+                    : ""
+                }
+              />
             </Link>
             <Button1
               text={"로그아웃"}
