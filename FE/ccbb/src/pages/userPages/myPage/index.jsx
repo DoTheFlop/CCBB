@@ -72,7 +72,7 @@ export default function MyPage() {
           <S.Img
             src={
               profileImg
-                ? `http://k9d104.p.ssafy.io:8081/api/profileimg/${profileImg.name}`
+                ? `${process.env.REACT_APP_BASE_SERVER}/profileimg/${profileImg.name}`
                 : ""
             }
             alt="profile-img"

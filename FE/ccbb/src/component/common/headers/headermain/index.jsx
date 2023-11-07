@@ -133,7 +133,7 @@ export default function Headermain() {
                 size={42}
                 imgUrl={
                   user.profileImg
-                    ? `http://k9d104.p.ssafy.io:8081/api/profileimg/${user.profileImg.name}`
+                    ? `${process.env.REACT_APP_BASE_SERVER}/profileimg/${user.profileImg.name}`
                     : ""
                 }
               />
