@@ -5,7 +5,6 @@ export const Main = styled.main`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   width: 100%;
 `;
 
@@ -37,6 +36,7 @@ export const Votebodycover = styled.div`
   align-items: center;
   width: 100%;
   background-color: white;
+  padding-bottom: 5vh;
 `;
 
 export const Headbottom = styled.div`
@@ -131,6 +131,9 @@ export const PromisePageWrapper = styled.div`
 export const BodyBottom = styled.div`
   border-top: 1px solid #ccc;
   margin: 0 10%;
+  h4 {
+    margin-top: 0;
+  }
 `;
 
 export const Createcomment = styled.div`
@@ -141,11 +144,6 @@ export const Createcomment = styled.div`
   textarea {
     flex: 1;
   }
-`;
-export const Createcomment1 = styled.div`
-  display: grid;
-  grid-template-columns: 12fr;
-  justify-items: end;
 `;
 
 export const CommentBody = styled.div``;
