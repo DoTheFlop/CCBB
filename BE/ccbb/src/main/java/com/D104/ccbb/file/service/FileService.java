@@ -162,7 +162,7 @@ public class FileService {
 			if (contentType.startsWith("video")) {
 				url += VIDEO_PATH;
 			}
-			if (!contentType.startsWith("image") || contentType.startsWith("video")) {
+			if (!contentType.startsWith("image") && contentType.startsWith("video")) {
 				build.setType("replay");
 				url += REPLAY_PATH;
 			}
