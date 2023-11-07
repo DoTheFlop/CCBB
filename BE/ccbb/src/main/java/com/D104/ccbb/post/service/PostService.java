@@ -13,12 +13,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.D104.ccbb.ballot_box.repo.BallotBoxRepo;
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.post.dto.PostDto;
 import com.D104.ccbb.post.dto.PostLoadDto;
 import com.D104.ccbb.post.dto.PostPageDto;
 import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.vote.repo.VoteRepo;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +31,8 @@ public class PostService {
 
 	private final PostRepo postRepo;
 	private final UserRepository userRepository;
-
+	private final BallotBoxRepo ballotBoxRepo;
+	private final VoteRepo voteRepo;
 	public Post setPost(PostDto postDto) {
 
 		Post post = Post.builder()
@@ -59,7 +62,7 @@ public class PostService {
 	public Page<PostPageDto> getPageList(int page){
 		int pageLimit = 12;
 		Page<Post> postsPages = postRepo.findAll(PageRequest.of(page-1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
-		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m));
+		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m,m.getVote(),ballotBoxRepo));
 		return postPageDto;
 	}
 
