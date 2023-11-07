@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.D104.ccbb.comment.domain.Comment;
-import com.D104.ccbb.re_comment.domain.ReComment;
-import com.D104.ccbb.re_comment.dto.ReCommentDto;
 import com.D104.ccbb.re_comment.dto.ReCommentGetDto;
 
 import lombok.AllArgsConstructor;
@@ -26,6 +24,7 @@ public class CommentGetDto {
 	private String tier;
 	private Byte position;
 	private String nickname;
+	private Integer userId;
 	private Integer postId;
 	private List<ReCommentGetDto> reComment;
 
@@ -41,6 +40,7 @@ public class CommentGetDto {
 			.tier(comment.getUserId().getLol())
 			.position(comment.getUserId().getMainPosition())
 			.nickname(comment.getUserId().getNickname())
+			.userId(comment.getUserId().getUserId())
 			.postId(comment.getPostId().getPostId())
 			.reComment(reCommentGetDto)
 			.build();
