@@ -28,7 +28,7 @@ function NotificationItem({ notification }) {
     <S.Container $isRead={notification.isRead} onClick={handleRead}>
       <S.RightSection>
         <S.TopSection>
-          <S.Username>{notification.receiverUsername}</S.Username>
+          <S.Username>{notification.senderUserNickname}</S.Username>
           {timeAgo}
         </S.TopSection>
         <S.Content>{notification.content}</S.Content>
