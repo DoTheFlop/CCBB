@@ -155,7 +155,7 @@ public class CommentController {
 		@RequestBody CommentDto commentDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (commentRepo.getReferenceById(commentDto.getCommentId()).getUserId().getUserId()
+		if (commentRepo.findById(commentDto.getCommentId()).get().getUserId().getUserId()
 			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 			.getUserId()) {
 			try {
