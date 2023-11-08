@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,10 +32,12 @@ import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/comment")
 @RequiredArgsConstructor
+@Slf4j
 public class CommentController {
 
 	private final CommentService commentService;
@@ -64,8 +67,8 @@ public class CommentController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
-	@GetMapping("/")
-	public ResponseEntity<Map<String, Object>> add(@RequestParam int postId) {
+	@GetMapping("/{postId}")
+	public ResponseEntity<Map<String, Object>> add(@PathVariable int postId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
@@ -77,7 +80,7 @@ public class CommentController {
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
-			//            logger.error("질문 검색 실패", e);
+			log.error("댓글 검색 실패", e);
 			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
