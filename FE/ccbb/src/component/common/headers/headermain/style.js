@@ -64,5 +64,5 @@ export const RedDot = styled.span`
   height: 7px;
   background-color: red;
   border-radius: 50%;
-  display: ${(props) => (props.isVisible ? "block" : "none")};
+  display: ${(props) => (props.$isvisible ? "block" : "none")};
 `;
