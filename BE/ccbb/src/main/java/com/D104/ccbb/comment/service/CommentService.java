@@ -52,7 +52,7 @@ public class CommentService {
 	}
 
 	public void deleteComment(int commentId) {
-		commentRepo.deleteByCommentId(commentId);
+		commentRepo.deleteById(commentId);
 	}
 
 	public void modifyComment(CommentDto commentDto) {
