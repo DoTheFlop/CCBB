@@ -66,6 +66,14 @@ public class PostService {
 		return postPageDto;
 	}
 
+	public Page<PostPageDto> getPopularityPage(int page){
+		int pageLimit = 12;
+		Page<Map<String,Object>> postsPages = voteRepo.popularPage(PageRequest.of(page-1, pageLimit));
+		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(postRepo.getReferenceById((Integer)m.get("post_id")),voteRepo.getReferenceById((Integer)m.get("vote_id")),ballotBoxRepo));
+		return postPageDto;
+	}
+
+
 	public void deletePost(int postId) {
 		postRepo.delete(postRepo.getReferenceById(postId));
 	}
