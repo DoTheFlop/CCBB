@@ -6,6 +6,7 @@ export const Main = styled.main`
     align-items: center;
     justify-content: center;
     color: white;
+    width: 1200px;
 `
 export const Head = styled.header`
     margin-top: 20px;
@@ -18,6 +19,7 @@ export const Head = styled.header`
 export const Headtop = styled.header`
     background-color: #0B123F;
     margin-bottom: 20px;
+    width: fit-content;
 `
 export const Headbottom = styled.header`
     background-color: #154C61;
@@ -58,11 +60,19 @@ export const A_1 = styled.div`
 
 export const Votebodycover = styled.div`
     display: flex;
-    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    background-color: #C6D8D0;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    width: 1200px;
+    padding-top: 10px;
 `
 export const Votebody = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-columns:1fr 1fr 1fr;
     background-color: #C6D8D0;
     justify-content: start;
 `
@@ -84,3 +94,25 @@ export const Dropdown = styled.div`
     
 `
 
+export const PaginationBox = styled.div`
+  .pagination { display: flex; justify-content: center; margin-top: 15px;}
+  ul { list-style: none; padding: 0; }
+  ul.pagination li {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 1px solid #e2e2e2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem; 
+    color: white;
+  }
+  ul.pagination li:first-child{ border-radius: 5px 0 0 5px; }
+  ul.pagination li:last-child{ border-radius: 0 5px 5px 0; }
+  ul.pagination li a { text-decoration: none; color: #337ab7; font-size: 1rem; }
+  ul.pagination li.active a { color: white; }
+  ul.pagination li.active { background-color: #337ab7; }
+  ul.pagination li a:hover,
+  ul.pagination li a.active { color: blue; }
+`
