@@ -15,7 +15,7 @@ public class NotificationListener {
     @TransactionalEventListener
     @Async
     public void handleNotification(NotificationRequestDto requestDto) {
-        notificationService.send(requestDto.getReceiver(), requestDto.getNotificationType(),
+        notificationService.send(requestDto.getReceiver(), requestDto.getSender(), requestDto.getNotificationType(),
                 requestDto.getContent(), requestDto.getUrl());
     }
 }

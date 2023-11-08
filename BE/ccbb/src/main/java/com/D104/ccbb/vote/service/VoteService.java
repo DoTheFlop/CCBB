@@ -58,7 +58,7 @@ public class VoteService {
 
         voteRepo.save(vote);
 
-        eventPublisher.publishEvent(NotificationRequestDto.voteRequestOf(post, receiver));
+        eventPublisher.publishEvent(NotificationRequestDto.voteRequestOf(post, receiver, producer));
     }
 
     public List<Vote> getVoteList(LocalDateTime deadLine) {
