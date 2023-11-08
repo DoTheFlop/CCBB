@@ -23,10 +23,12 @@ import com.D104.ccbb.goods.service.GoodsService;
 import com.D104.ccbb.jwt.service.JwtTokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("event/goods")
 @RequiredArgsConstructor
+@Slf4j
 public class GoodsController {
 
 	private final GoodsService goodsService;
@@ -66,7 +68,7 @@ public class GoodsController {
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
-			//            logger.error("질문 검색 실패", e);
+			log.error("상품조회 실패: ", e);
 			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
