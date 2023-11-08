@@ -18,6 +18,7 @@ public class GoodsDto {
 	private Integer winCount;
 	private Integer price;
 	private Integer eventId;
+	private Integer fileId;
 
 	public static GoodsDto fromEntity(Goods goods) {
 
@@ -25,6 +26,11 @@ public class GoodsDto {
 		if (goods.getEventId() != null) {
 			eventId = goods.getEventId().getEventId();
 		}
+		Integer fileId = null;
+		if(goods.getFileId() != null) {
+			fileId = goods.getFileId().getFileId();
+		}
+
 		return GoodsDto.builder()
 			.goodsId(goods.getGoodsId())
 			.name(goods.getName())
@@ -32,6 +38,7 @@ public class GoodsDto {
 			.winCount(goods.getWinCount())
 			.price(goods.getPrice())
 			.eventId(eventId)
+			.fileId(fileId)
 			.build();
 	}
 }

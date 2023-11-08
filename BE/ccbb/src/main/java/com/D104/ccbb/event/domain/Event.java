@@ -1,16 +1,24 @@
 package com.D104.ccbb.event.domain;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import com.D104.ccbb.file.domain.File;
+import com.D104.ccbb.goods.domain.Goods;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,5 +53,10 @@ public class Event {
 
 	@Column(name = "end_date", nullable = false, columnDefinition = "DATETIME")
 	private LocalDateTime endDate;
+
+	@JsonManagedReference
+	@Builder.Default
+	@OneToMany(mappedBy = "eventId", cascade = CascadeType.ALL)
+	private List<Goods> goods = new ArrayList<>();
 
 }
