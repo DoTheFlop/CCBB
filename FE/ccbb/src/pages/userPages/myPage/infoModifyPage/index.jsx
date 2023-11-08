@@ -75,7 +75,13 @@ export default function InfoModifyPage() {
             text={"수정"}
             width={"300px"}
             height={"50px"}
-            onClick={() => handleInfoUpdate("password")}
+            onClick={() => {
+              setUserModi((prev) => ({
+                ...prev,
+                nickname: "",
+              }));
+              handleInfoUpdate("password");
+            }}
           />
         </S.ModifyBox>
       )}
@@ -98,7 +104,13 @@ export default function InfoModifyPage() {
           text={"수정"}
           width={"300px"}
           height={"50px"}
-          onClick={() => handleInfoUpdate("nickname")}
+          onClick={() => {
+            setUserModi((prev) => ({
+              ...prev,
+              password: "",
+            }));
+            handleInfoUpdate("nickname");
+          }}
         />
       </S.ModifyBox>
     </S.main>
