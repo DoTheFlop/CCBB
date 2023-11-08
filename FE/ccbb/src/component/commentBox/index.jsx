@@ -1,21 +1,90 @@
-import Button1 from '../common/buttons';
-import UserProfile from '../common/profile';
-import * as S from './style';
+import React, { useState } from "react";
+import UserProfile from "../common/profile";
+import * as S from "./style";
 
-export default function CommentBox({ bgcolor, comment, userId, date }) {
+export default function CommentBox({
+  isMine = false,
+  userId,
+  bgcolor,
+  comment,
+  nickname,
+  date,
+  position,
+  onClickModify,
+  onClickDelete,
+}) {
+  //댓글 수정 상태를 위한 값
+  const [isEditing, setIsEditing] = useState(false);
+  const [newComment, setNewComment] = useState(comment);
+
+  const handleModifyClick = () => {
+    setIsEditing(true);
+  };
+
+  const handleSaveClick = () => {
+    setIsEditing(false);
+    onClickModify(newComment);
+  };
+
+  const handleCancelClick = () => {
+    setIsEditing(false);
+    setNewComment(comment); // 원본 comment로 복원
+  };
+
   return (
     <S.Box bgcolor={bgcolor}>
       <S.CommentHead>
-        <UserProfile name={userId} color={'black'} iconSize={'30px'} fontsize={'15px'}/>
+        <UserProfile
+          name={nickname}
+          imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId}`}
+          color={"black"}
+          iconSize={"30px"}
+          fontsize={"15px"}
+        />
         <p>{date}</p>
       </S.CommentHead>
       <S.CommentBody>
-        <p>{comment}</p>
+        {isEditing ? (
+          <S.StyledInput
+            value={newComment}
+            onChange={(e) => setNewComment(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" && !e.shiftKey && newComment) {
+                e.preventDefault();
+                e.target.value = "";
+                handleSaveClick();
+              }
+            }}
+          />
+        ) : (
+          <p>{comment}</p>
+        )}
       </S.CommentBody>
-      <S.CommentBottom>
-        <Button1 text={'수정'} height={'30px'} width={'50px'} fontsize={'15px'} />
-        <Button1 text={'삭제'} color={'red'} height={'30px'} width={'50px'} fontsize={'15px'}/>
-      </S.CommentBottom>
+      {isMine && (
+        <S.CommentBottom>
+          {isEditing ? (
+            <div>
+              <span className="save-comment" onClick={handleSaveClick}>
+                저장
+              </span>
+              <span className="divider">|</span>
+              <span className="cancel-comment" onClick={handleCancelClick}>
+                취소
+              </span>
+            </div>
+          ) : (
+            <div>
+              <span className="modify-comment" onClick={handleModifyClick}>
+                수정
+              </span>
+              <span className="divider">|</span>
+              <span className="delete-comment" onClick={onClickDelete}>
+                삭제
+              </span>
+            </div>
+          )}
+        </S.CommentBottom>
+      )}
     </S.Box>
   );
 }
