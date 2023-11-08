@@ -7,6 +7,7 @@ export const Img = styled.img`
 
 export const main = styled.main`
   margin-top: 100px;
+  min-height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -29,10 +30,11 @@ export const ModifyBox = styled.div`
   border-color: white;
   border-radius: 10px;
   position: relative;
+  box-sizing: border-box;
   h4 {
     color: white;
-    margin-top: -80px;
-    margin-left: -30px;
+    margin-top: -20%;
+    margin-left: -10%;
     background-color: #0b123f;
     position: absolute;
     padding: 10px;
