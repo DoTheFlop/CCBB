@@ -1,5 +1,7 @@
 import styled from "styled-components";
+import { StyledInput } from "../common/inputs/inputcomment/style";
 
+export { StyledInput };
 export const Box = styled.div`
   background-color: ${(props) => props.bgcolor || "transparent"};
   border-radius: 10px;
@@ -27,6 +29,9 @@ export const CommentBottom = styled.div`
   .divider {
     margin-left: 3px;
     margin-right: 3px;
+  }
+  .save-comment:hover {
+    text-decoration: underline;
   }
   .modify-comment:hover {
     text-decoration: underline;

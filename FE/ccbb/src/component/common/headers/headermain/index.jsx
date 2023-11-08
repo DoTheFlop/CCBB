@@ -132,7 +132,7 @@ export default function Headermain() {
                 name={user.nickname}
                 size={42}
                 imgUrl={
-                  user.profileImg
+                  user
                     ? `${process.env.REACT_APP_BASE_SERVER}profileimg/${
                         user.userId
                       }?${Date.now()}`

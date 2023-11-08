@@ -9,15 +9,13 @@ import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
 import TollIcon from "@mui/icons-material/Toll";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
 import { userState } from "../../../recoil/UserAtom";
 import { ccbbApi } from "../../../api/ccbbApi";
 
 export default function MyPage() {
   const user = useRecoilValue(userState);
   const navigate = useNavigate();
-  const setUserInfo = useSetRecoilState(userState);
-  const [profileImg, setProfileImg] = useState(user.profileImg);
 
   const tabs = [
     { name: "진행중인 투표", component: <OngoingVote key={0} /> },
@@ -51,13 +49,6 @@ export default function MyPage() {
         .then((res) => {
           console.log("프사 업데이트됨");
           console.log(res);
-          //recoil 갱신
-          setUserInfo((prev) => ({
-            ...prev,
-            profileImg: res.data,
-          }));
-          //로컬 state도 갱신
-          setProfileImg(res.data);
         })
         .catch((e) => {
           console.log(e);
@@ -70,13 +61,9 @@ export default function MyPage() {
       <S.profileInfo>
         <S.imgSection>
           <S.Img
-            src={
-              profileImg
-                ? `${process.env.REACT_APP_BASE_SERVER}profileimg/${
-                    user.userId
-                  }?${Date.now()}`
-                : ""
-            }
+            src={`${process.env.REACT_APP_BASE_SERVER}profileimg/${
+              user.userId
+            }?${Date.now()}`}
             alt="profile-img"
           />
           <AddPhotoAlternateIcon onClick={onClickUploadImgBtn} />
