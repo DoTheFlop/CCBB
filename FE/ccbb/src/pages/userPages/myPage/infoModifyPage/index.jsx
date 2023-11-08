@@ -40,7 +40,7 @@ export default function InfoModifyPage() {
   const pwSame = userModi.password === pwCheck;
   return (
     <S.main>
-      {!userInfo.social !== "Kakao" && (
+      {userInfo.social !== "Kakao" && (
         <S.ModifyBox>
           <h4>패스워드 수정</h4>
           <Input1
