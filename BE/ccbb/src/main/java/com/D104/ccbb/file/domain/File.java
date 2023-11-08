@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 import com.D104.ccbb.event.domain.Event;
 import com.D104.ccbb.goods.domain.Goods;
@@ -50,8 +51,9 @@ public class File {
 	@JoinColumn(name = "post_id")
 	private Post postId;
 
-	@ManyToOne
-	@JoinColumn(name = "goods_id")
+	@OneToOne
+	@JsonBackReference
+	@JoinColumn(name = "goods_id", nullable = false)
 	private Goods goodsId;
 
 	@ManyToOne

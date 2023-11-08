@@ -7,9 +7,14 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Version;
 
 import com.D104.ccbb.event.domain.Event;
+import com.D104.ccbb.file.domain.File;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -41,8 +46,13 @@ public class Goods {
 	private Integer price;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "event_id", nullable = false)
 	private Event eventId;
+
+	@JsonManagedReference
+	@OneToOne(mappedBy = "goodsId")
+	private File fileId;
 
 	@Version
 	private int version; // 추가된 부분

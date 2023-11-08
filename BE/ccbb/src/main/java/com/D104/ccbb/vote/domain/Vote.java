@@ -60,10 +60,12 @@ public class Vote {
 
 	@Column(name = "do_promise")
 	private Boolean doPromise;
+
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id1", nullable = false)
 	private User userId1;
+
 	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "user_id2", nullable = false)
