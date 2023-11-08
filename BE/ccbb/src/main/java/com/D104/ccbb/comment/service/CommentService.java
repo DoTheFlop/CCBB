@@ -3,20 +3,18 @@ package com.D104.ccbb.comment.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.D104.ccbb.comment.dto.CommentRequestDto;
-import com.D104.ccbb.notification.domain.NotificationType;
-import com.D104.ccbb.notification.dto.NotificationRequestDto;
-import com.D104.ccbb.notification.service.NotificationService;
-import com.D104.ccbb.post.domain.Post;
-import com.D104.ccbb.user.domain.User;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.comment.dto.CommentDto;
+import com.D104.ccbb.comment.dto.CommentRequestDto;
 import com.D104.ccbb.comment.repo.CommentRepo;
+import com.D104.ccbb.notification.dto.NotificationRequestDto;
+import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.post.repo.PostRepo;
+import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -54,7 +52,7 @@ public class CommentService {
 	}
 
 	public void deleteComment(int commentId) {
-		commentRepo.delete(commentRepo.getReferenceById(commentId));
+		commentRepo.deleteById(commentId);
 	}
 
 	public void modifyComment(CommentDto commentDto) {

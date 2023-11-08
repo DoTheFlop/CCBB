@@ -44,10 +44,12 @@ public class CommentController {
 	private final LikesRepo likesRepo;
 	private final CommentRepo commentRepo;
 	private final UserService userService;
+
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody CommentRequestDto commentRequestDto) {
-		User writer = userRepository.findByEmail(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization)))).get();
+		User writer = userRepository.findByEmail(
+			jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization)))).get();
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
@@ -129,7 +131,8 @@ public class CommentController {
 		@RequestParam int commentId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (commentRepo.getReferenceById(commentId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+		if (commentRepo.findById(commentId).get().getUserId().getUserId() == userService.getUserProfile(
+				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 			.getUserId()) {
 			try {
 				commentService.deleteComment(commentId);
