@@ -10,8 +10,6 @@ import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -90,8 +88,8 @@ public class NotificationService {
     /**
      * 어떤 회원에게 알림을 보낼지에 대해 찾고 알림을 받을 회원의 Emitter들을 모두 찾아 해당 Emitter로 Send 시켜준다.
      */
-    public void send(User receiver, NotificationType notificationType, String content, String url) {
-        Notification notification = notificationRepo.save(createNotification(receiver, notificationType, content, url));
+    public void send(User receiver, User sender, NotificationType notificationType, String content, String url) {
+        Notification notification = notificationRepo.save(createNotification(receiver, sender, notificationType, content, url));
 
         String receiverId = String.valueOf(receiver.getUserId());
         String eventId = receiverId + "_" + System.currentTimeMillis();
@@ -107,9 +105,10 @@ public class NotificationService {
     /**
      * Notification 엔티티를 생성한다.
      */
-    private Notification createNotification(User receiver, NotificationType notificationType, String content, String url) {
+    private Notification createNotification(User receiver, User sender, NotificationType notificationType, String content, String url) {
         return Notification.builder()
                 .receiver(receiver)
+                .sender(sender)
                 .notificationType(notificationType)
                 .content(content)
                 .url(url)

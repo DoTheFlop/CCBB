@@ -44,6 +44,11 @@ public class Notification {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User receiver;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sender_user_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private User sender;
+
     public void setIsReadTrue() {
         this.isRead = true;
     }
