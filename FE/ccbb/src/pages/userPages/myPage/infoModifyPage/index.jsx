@@ -14,8 +14,9 @@ export default function InfoModifyPage() {
   };
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
-  const setUserInfo = useSetRecoilState(userState);
-  const handleInfoUpdate = () => {
+  // const setUserInfo = useSetRecoilState(userState);
+  const handleInfoUpdate = (infoType) => {
+    if (infoType === "password" && !pwSame) return;
     ccbbApi
       .put("/user/modify", JSON.stringify(userModi), {
         headers,
@@ -23,10 +24,6 @@ export default function InfoModifyPage() {
       })
       .then((res) => {
         console.log(res);
-        setUserInfo((prev) => ({
-          ...prev,
-          nickname: userModi.nickname,
-        }));
         navigate("/mypage");
       })
       .catch((e) => {
@@ -43,8 +40,9 @@ export default function InfoModifyPage() {
   const pwSame = userModi.password === pwCheck;
   return (
     <S.main>
-      {userInfo.social !== "Kakao" && (
-        <React.Fragment>
+      {!userInfo.social !== "Kakao" && (
+        <S.ModifyBox>
+          <h4>패스워드 수정</h4>
           <Input1
             label="새 패스워드"
             id="newPasswordInput"
@@ -73,27 +71,36 @@ export default function InfoModifyPage() {
           {pwCheck && !pwSame && (
             <div className="alert-message">패스워드가 일치하지 않습니다.</div>
           )}
-        </React.Fragment>
+          <Button1
+            text={"수정"}
+            width={"300px"}
+            height={"50px"}
+            onClick={() => handleInfoUpdate("password")}
+          />
+        </S.ModifyBox>
       )}
-      <Input1
-        label="닉네임"
-        id="nicknameInput"
-        width="300px"
-        height="40px"
-        value={userModi.nickname}
-        onChange={(e) => {
-          setUserModi((prev) => ({
-            ...prev,
-            nickname: e.target.value,
-          }));
-        }}
-      />
-      <Button1
-        text={"수정"}
-        width={"300px"}
-        height={"50px"}
-        onClick={handleInfoUpdate}
-      />
+      <S.ModifyBox>
+        <h4>닉네임 수정</h4>
+        <Input1
+          label="닉네임"
+          id="nicknameInput"
+          width="300px"
+          height="40px"
+          value={userModi.nickname}
+          onChange={(e) => {
+            setUserModi((prev) => ({
+              ...prev,
+              nickname: e.target.value,
+            }));
+          }}
+        />
+        <Button1
+          text={"수정"}
+          width={"300px"}
+          height={"50px"}
+          onClick={() => handleInfoUpdate("nickname")}
+        />
+      </S.ModifyBox>
     </S.main>
   );
 }
