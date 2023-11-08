@@ -23,8 +23,8 @@ public interface VoteRepo extends JpaRepository<Vote, Integer> {
 	List<Vote> findByUserId1_UserIdOrUserId2_UserId(int userId1, int userId2);
 	List<Vote> findByUserId2_UserIdAndAccept2(int userId, Boolean a);
 
-	@Query(value = "select v.*, count(*) popular\n"
-		+ "from  ballot_box b join vote v on b.vote_id = v.vote_id \n"
+	@Query(value = "select v.*, count(b.vote_id) popular\n"
+		+ "from  ballot_box b right join vote v on b.vote_id = v.vote_id \n"
 		+ "where v.user1_accept = true and v.user2_accept = true\n"
 		+ "group by v.vote_id order by popular desc", countQuery = "select count(*) from ballot_box b join vote v on b.vote_id = v.vote_id where v.user1_accept = 1 and v.user2_accept = 1" ,nativeQuery = true)
 	Page<Map<String, Object>> popularPage(PageRequest pageRequest);
