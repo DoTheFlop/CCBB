@@ -5,13 +5,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +34,6 @@ import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.user.service.UserService;
 import com.D104.ccbb.vote.dto.VoteAcceptDto;
 import com.D104.ccbb.vote.dto.VoteListDto;
-import com.D104.ccbb.vote.repo.VoteRepo;
 import com.D104.ccbb.vote.service.VoteService;
 
 import lombok.RequiredArgsConstructor;
@@ -81,7 +78,7 @@ public class PostController {
 			Post post = postService.setPost(postDto);
 			if (files != null)
 				fileService.saveFile(files, "post", post.getPostId());
-			resultMap.put("postId",post.getPostId());
+			resultMap.put("postId", post.getPostId());
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
@@ -145,10 +142,11 @@ public class PostController {
 	public ResponseEntity<Map<String, Object>> participationList(@RequestHeader String Authorization) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		List<VoteListDto> partList = voteService.getParticipationList(userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+		List<VoteListDto> partList = voteService.getParticipationList(
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId());
 		try {
-			resultMap.put("participationList",partList);
+			resultMap.put("participationList", partList);
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
@@ -162,10 +160,11 @@ public class PostController {
 	public ResponseEntity<Map<String, Object>> acceptList(@RequestHeader String Authorization) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		List<VoteAcceptDto> acceptList = voteService.getNotAccept(userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId());
+		List<VoteAcceptDto> acceptList = voteService.getNotAccept(
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+				.getUserId());
 		try {
-			resultMap.put("participationList",acceptList);
+			resultMap.put("participationList", acceptList);
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
@@ -200,8 +199,9 @@ public class PostController {
 		@RequestParam int likesId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()){
+		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(
+				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()) {
 			try {
 				likesService.deleteLikes(likesId);
 				resultMap.put("message", "success");
@@ -220,8 +220,9 @@ public class PostController {
 		@RequestParam int postId) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
-		if (postRepo.getReferenceById(postId).getUserId().getUserId() == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()){
+		if (postRepo.getReferenceById(postId).getUserId().getUserId() == userService.getUserProfile(
+				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+			.getUserId()) {
 			try {
 				postService.deletePost(postId);
 				resultMap.put("message", "success");
@@ -242,7 +243,7 @@ public class PostController {
 		HttpStatus status = null;
 		if (postRepo.getReferenceById(postDto.getPostId()).getUserId().getUserId()
 			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()){
+			.getUserId()) {
 			try {
 				postService.modifyPost(postDto);
 				resultMap.put("message", "success");
@@ -256,4 +257,14 @@ public class PostController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@DeleteMapping("/reject/{postId}")
+	public ResponseEntity<String> reject(@RequestHeader String Authorization, @PathVariable int postId) {
+		try {
+			postService.rejectPost(postId, Authorization);
+			return new ResponseEntity<>("success", HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

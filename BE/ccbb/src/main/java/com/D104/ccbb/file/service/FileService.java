@@ -187,6 +187,9 @@ public class FileService {
 		if (file.getType().startsWith("image")) {
 			path += IMAGE_PATH;
 		}
+		if (file.getType().startsWith("replay")) {
+			path += REPLAY_PATH;
+		}
 		path = path + file.getName() + "." + file.getExtension();
 		fileRepo.deleteById(fileId);
 		boolean delete = new java.io.File(path).delete();
