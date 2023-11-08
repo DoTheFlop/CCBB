@@ -7,6 +7,7 @@ export const userState = atom({
   key: "user",
   default: {
     userId: null,
+    point: 0,
     email: "",
     name: "",
     nickname: "",
