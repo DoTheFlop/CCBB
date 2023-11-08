@@ -111,8 +111,21 @@ export default function LoLvoteDetailPage() {
   };
 
   //댓글 수정
-  const handleModifyComment = () => {
+  const handleModifyComment = (commentId, newContent) => {
     console.log("댓글 수정");
+    ccbbApi
+      .put(
+        "/comment/modify",
+        JSON.stringify({
+          commentId: commentId,
+          content: newContent,
+        }),
+        { headers }
+      )
+      .then((res) => {
+        fetchComments();
+      })
+      .catch((e) => console.log(e));
   };
   //댓글 삭제
   const handleDeleteComment = (commentId) => {
@@ -312,11 +325,14 @@ export default function LoLvoteDetailPage() {
                   <CommentBox
                     key={index}
                     isMine={userInfo.userId === cmt.userId}
+                    userId={cmt.userId}
                     nickname={cmt.nickname}
                     comment={cmt.content}
                     date={cmt.createDate}
                     position={cmt.position}
-                    onClickModify={handleModifyComment}
+                    onClickModify={(newContent) =>
+                      handleModifyComment(cmt.commentId, newContent)
+                    }
                     onClickDelete={() => handleDeleteComment(cmt.commentId)}
                   />
                 );
