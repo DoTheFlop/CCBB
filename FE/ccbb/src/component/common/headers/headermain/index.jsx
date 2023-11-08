@@ -21,8 +21,9 @@ export default function Headermain() {
 
   const handleSigninClick = () => {
     //로그인페이지로 가기 전 url을 기억하자
-    const toUrl = window.location.pathname;
-    setToUrl(toUrl);
+    let beforeUrl = window.location.pathname;
+    if (beforeUrl.includes("sign")) beforeUrl = "/";
+    setToUrl(beforeUrl);
     navigate("/signin");
   };
 
@@ -153,7 +154,11 @@ export default function Headermain() {
               >
                 <path d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0"></path>
               </svg>
-              <S.RedDot $isvisible={notifications.some(notification => !notification.isRead)} />
+              <S.RedDot
+                $isvisible={notifications.some(
+                  (notification) => !notification.isRead
+                )}
+              />
               {notificationVisible && (
                 <Headernotification
                   props={{
