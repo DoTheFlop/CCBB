@@ -40,6 +40,7 @@ export default function SignupPage() {
       "createDate" : createDate,
       "email" : user.email,
       "name" : user.name,
+      "nickname" : user.nickname,
       "password" : user.password,
       "point" : 0,
       "sex" : user.gender,
