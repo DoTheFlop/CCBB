@@ -25,21 +25,21 @@ export default function KakaoLoginPage() {
           // 사용자 정보가 유효한지 확인하고, 유효할 때만 토큰 저장
           setUserInfo(res.data.user);
           localStorage.setItem("token", token);
-          // 추가로 프사 있는지 확인
-          ccbbApi
-            .get("/profileimg/meta", { headers })
-            .then((res) => {
-              console.log("프사는?");
-              console.log(res);
-              setUserInfo((prev) => ({
-                ...prev,
-                profileImg: res.data,
-              }));
-            })
-            .catch((e) => {
-              console.log(e);
-              console.log("프사없음");
-            });
+          // 추가로 프사 있는지 확인 -> userId만으로 프사요청가능하기에 삭제합니다
+          // ccbbApi
+          //   .get(`/profileimg/${res.data.user.userId}`)
+          //   .then((res) => {
+          //     console.log("프사는?");
+          //     console.log(res);
+          //     setUserInfo((prev) => ({
+          //       ...prev,
+          //       profileImg: res.data,
+          //     }));
+          //   })
+          //   .catch((e) => {
+          //     console.log(e);
+          //     console.log("프사없음");
+          //   });
         }
       })
       .catch((e) => console.log(e));

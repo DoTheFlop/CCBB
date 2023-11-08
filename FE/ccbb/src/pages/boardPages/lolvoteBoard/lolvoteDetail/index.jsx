@@ -10,22 +10,62 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import InputComment from "../../../../component/common/inputs/inputcomment";
 import CommentBox from "../../../../component/commentBox";
 import { ccbbApi } from "../../../../api/ccbbApi";
+import { useRecoilValue } from "recoil";
+import { userState } from "../../../../recoil/UserAtom";
 
 export default function LoLvoteDetailPage() {
+  const userInfo = useRecoilValue(userState);
   const token = localStorage.getItem("token");
   const headers = {
     Authorization: `Bearer ${token}`,
   };
   const postId = useParams().postId;
+  const [curPost, SetCurPost] = useState({
+    title: "",
+    content: "",
+    vote: {
+      promise: "",
+      argument: "",
+    },
+  });
+  const [comments, SetComments] = useState([]);
   const [isPromisePageOpen, setIsPromisePageOpen] = useState(false);
   const [isWard, setIsWard] = useState(false);
   const [isThumbUp, setIsThumbup] = useState(false);
   const [isThumbDown, setIsThumbDown] = useState(false);
+
+  React.useEffect(() => {
+    fetchPost();
+    fetchComments();
+  }, []);
+
+  const fetchPost = () => {
+    ccbbApi
+      .get("/post/vote/detail", {
+        params: { postId: postId },
+      })
+      .then((res) => {
+        console.log(res.data);
+        SetCurPost(res.data.voteList);
+        console.log(curPost);
+      })
+      .catch((e) => console.log(e));
+  };
+
+  const fetchComments = () => {
+    ccbbApi
+      .get(`/comment/${postId}`)
+      .then((res) => {
+        SetComments(res.data.commentList);
+        console.log(res.data);
+      })
+      .catch((e) => console.log(e));
+  };
 
   const toggleThumbUp = () => {
     setIsThumbup(!isThumbUp);
@@ -42,27 +82,63 @@ export default function LoLvoteDetailPage() {
     setIsPromisePageOpen(!isPromisePageOpen);
   };
 
-  const [myComment, SetMyComment] = useState({
-    content: "",
-    //파라미터에서 글번호 가져오기
-    postId: null,
-  });
+  const [myComment, SetMyComment] = useState("");
 
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey && myComment) {
       e.preventDefault();
-      console.log("엔터키입력", postId, myComment);
-      //   postComment(); // Enter 입력시 댓글 등록
+      console.log("엔터키입력", postId);
+      console.log(myComment);
+      postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
   };
 
+  //댓글 전송
   const postComment = () => {
     ccbbApi
-      .post("/comment/add", JSON.stringify(myComment), { headers })
+      .post(
+        "/comment/add",
+        JSON.stringify({ content: myComment, postId: postId }),
+        { headers }
+      )
       .then((res) => {
         console.log(res);
         SetMyComment("");
+        fetchComments();
+      })
+      .catch((e) => console.log(e));
+  };
+
+  //댓글 수정
+  const handleModifyComment = (commentId, newContent) => {
+    console.log("댓글 수정");
+    ccbbApi
+      .put(
+        "/comment/modify",
+        JSON.stringify({
+          commentId: commentId,
+          content: newContent,
+        }),
+        { headers }
+      )
+      .then((res) => {
+        fetchComments();
+      })
+      .catch((e) => console.log(e));
+  };
+  //댓글 삭제
+  const handleDeleteComment = (commentId) => {
+    ccbbApi
+      .delete("/comment/delete", {
+        headers,
+        params: {
+          commentId: commentId,
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        fetchComments();
       })
       .catch((e) => console.log(e));
   };
@@ -107,7 +183,7 @@ export default function LoLvoteDetailPage() {
               <Link to="/lolvote">
                 <ArrowBackIosNewIcon style={{ padding: "5px" }} />
               </Link>
-              <h1>{dummyData[0].title}</h1>
+              <h1>{curPost.title}</h1>
             </S.Headtop>
             <S.Headbottom></S.Headbottom>
           </S.HeadLeft>
@@ -135,7 +211,7 @@ export default function LoLvoteDetailPage() {
           </S.Moviebody>
 
           <S.Votebody>
-            {dummyData[0].content}
+            {curPost.content}
             <S.PromiseP>
               <h3 onClick={togglePromisePage}>공약</h3>
               {isPromisePageOpen ? (
@@ -146,11 +222,11 @@ export default function LoLvoteDetailPage() {
             </S.PromiseP>
 
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
-              <PromisePage promise={dummyData1[0].promise} />
+              <PromisePage promise={curPost.vote.promise} />
             </S.PromisePageWrapper>
 
             <S.VoteBodybot>
-              <h3>{dummyData1[0].argument}</h3>
+              <h3>{curPost.vote.argument}</h3>
               <h4>옳다고 생각하는 유저에 투표해주세요</h4>
               <S.Votebutton>
                 <S.ProfileBox $bgcolor="#97A7FF">
@@ -219,20 +295,22 @@ export default function LoLvoteDetailPage() {
             </S.VoteBodybot>
           </S.Votebody>
           <S.BodyBottom>
-            <S.Createcomment>
-              <InputComment
-                className="comment-input"
-                label="댓글작성"
-                id="댓글작성"
-                height="60px"
-                value={myComment}
-                onKeyPress={handleOnKeyPress}
-                onChange={(e) => {
-                  SetMyComment(e.target.value);
-                }}
-                onClick={postComment}
-              />
-            </S.Createcomment>
+            {token && (
+              <S.Createcomment>
+                <InputComment
+                  className="comment-input"
+                  label="댓글작성"
+                  id="댓글작성"
+                  height="60px"
+                  value={myComment}
+                  onKeyPress={handleOnKeyPress}
+                  onChange={(e) => {
+                    SetMyComment(e.target.value);
+                  }}
+                  onClick={postComment}
+                />
+              </S.Createcomment>
+            )}
 
             <h4>댓글 00개</h4>
             <S.CommentBody>
@@ -242,36 +320,23 @@ export default function LoLvoteDetailPage() {
                 userId="user123"
                 date="2023-10-31"
               />
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
+              {comments.map((cmt, index) => {
+                return (
+                  <CommentBox
+                    key={index}
+                    isMine={userInfo.userId === cmt.userId}
+                    userId={cmt.userId}
+                    nickname={cmt.nickname}
+                    comment={cmt.content}
+                    date={cmt.createDate}
+                    position={cmt.position}
+                    onClickModify={(newContent) =>
+                      handleModifyComment(cmt.commentId, newContent)
+                    }
+                    onClickDelete={() => handleDeleteComment(cmt.commentId)}
+                  />
+                );
+              })}
             </S.CommentBody>
           </S.BodyBottom>
         </S.DetailBody>
