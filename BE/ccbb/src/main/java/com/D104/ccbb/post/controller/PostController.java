@@ -138,6 +138,21 @@ public class PostController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
+	@GetMapping("/vote/popularList")
+	public ResponseEntity<Map<String, Object>> popularList(@RequestParam int page) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("voteList", postService.getPopularityPage(page));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
 	@GetMapping("/vote/participationList")
 	public ResponseEntity<Map<String, Object>> participationList(@RequestHeader String Authorization) {
 		Map<String, Object> resultMap = new HashMap<>();
