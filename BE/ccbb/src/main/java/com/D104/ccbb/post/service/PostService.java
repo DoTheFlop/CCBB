@@ -1,29 +1,33 @@
 package com.D104.ccbb.post.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.D104.ccbb.ballot_box.repo.BallotBoxRepo;
+import com.D104.ccbb.file.domain.File;
+import com.D104.ccbb.file.repo.FileRepo;
+import com.D104.ccbb.file.service.FileService;
+import com.D104.ccbb.payment_history.service.PaymentHistoryService;
 import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.post.dto.PostDto;
 import com.D104.ccbb.post.dto.PostLoadDto;
 import com.D104.ccbb.post.dto.PostPageDto;
 import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.vote.domain.Vote;
 import com.D104.ccbb.vote.repo.VoteRepo;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -33,6 +37,10 @@ public class PostService {
 	private final UserRepository userRepository;
 	private final BallotBoxRepo ballotBoxRepo;
 	private final VoteRepo voteRepo;
+	private final PaymentHistoryService paymentHistoryService;
+	private final FileRepo fileRepo;
+	private final FileService fileService;
+
 	public Post setPost(PostDto postDto) {
 
 		Post post = Post.builder()
@@ -49,20 +57,21 @@ public class PostService {
 		return postRepo.findByTypeOrderByPostIdDesc(0);
 	}
 
-	public List<Map<String,Object>> getVote() {
+	public List<Map<String, Object>> getVote() {
 		return postRepo.getVoteList();
 	}
 
-	public PostLoadDto getDetail(int postId){
+	public PostLoadDto getDetail(int postId) {
 
 		PostLoadDto postLoadDto = PostLoadDto.fromEntity(postRepo.getReferenceById(postId));
 		return postLoadDto;
 	}
 
-	public Page<PostPageDto> getPageList(int page){
+	public Page<PostPageDto> getPageList(int page) {
 		int pageLimit = 12;
-		Page<Post> postsPages = postRepo.findByVote_Accept1AndVote_Accept2(true,true,PageRequest.of(page-1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
-		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m,m.getVote(),ballotBoxRepo));
+		Page<Post> postsPages = postRepo.findByVote_Accept1AndVote_Accept2(true, true,
+			PageRequest.of(page - 1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
+		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m, m.getVote(), ballotBoxRepo));
 		return postPageDto;
 	}
 
@@ -77,4 +86,22 @@ public class PostService {
 		postRepo.save(post);
 	}
 
+	@Transactional
+	public void rejectPost(int postId, String authorization) throws Exception {
+		Optional<Vote> voteOpt = voteRepo.findByPostId_PostId(postId);
+		if (voteOpt.isEmpty()) {
+			throw new Exception("투표 게시글이 없습니다.");
+		}
+		String result = paymentHistoryService.returnAllPayment(voteOpt.get().getVoteId());
+		log.info("환불 결과: {}", result);
+
+		List<File> fileList = fileRepo.findByPostId_PostId(postId);
+
+		for (File file : fileList) {
+			boolean fileDeleteResult = fileService.deleteFile(file.getFileId());
+			log.info("File Id {} remove result : {}", file.getFileId(), fileDeleteResult);
+		}
+		voteRepo.deleteById(voteOpt.get().getVoteId());
+		postRepo.deleteById(postId);
+	}
 }

@@ -184,6 +184,7 @@ public class PaymentHistoryService {
 				Map.class);
 			log.info("response body : {}", Kakaoresponse.getBody());
 			foundPayment.setIsReturned(true);
+			foundPayment.setVoteId(null);
 			paymentHistoryRepo.save(foundPayment);
 		}
 
@@ -233,6 +234,7 @@ public class PaymentHistoryService {
 			Map.class);
 		log.info("response body : {}", Kakaoresponse.getBody());
 		foundPayment.setIsReturned(true);
+		foundPayment.setVoteId(null);
 		paymentHistoryRepo.save(foundPayment);
 		return "환불완료";
 	}
