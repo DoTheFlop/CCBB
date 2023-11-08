@@ -181,11 +181,12 @@ export default function LoLvoteCreatePage() {
         const response = await ccbbApi.get(
           `/user/find-user?email=${voteArticle.userId2}`
         );
-
+            console.log(response)
         if (response) {
           setUserSearch(true);
           alert("확인되었습니다.");
         }
+        
       } else {
         alert("다른사람의 이메일을 입력해주세요");
         return;
@@ -206,7 +207,10 @@ export default function LoLvoteCreatePage() {
     } else if (!article.content) {
       alert("내용을 작성하시오.");
       return;
-    } else if (uploadedFiles.length < 1) {
+    } else if (!uploadedVideo) {
+      alert("동영상파일을 첨부하시오.");
+      return;
+    } else if (!uploadedReplay) {
       alert("파일을 첨부하시오.");
       return;
     } else if (!voteArticle.promise) {
@@ -387,82 +391,6 @@ export default function LoLvoteCreatePage() {
               onChange={handleVideoUpload}
               style={{ display: "none" }}
             />
-            {/* {uploadedFiles.length > 0 && (
-              <div>
-                <div
-                  style={{
-                    display: "flex",
-                    overflowX: "auto",
-                    height: "162px",
-                    maxHeight: "200px",
-                    position: "relative",
-                    scrollbarGutter: "start",
-                  }}
-                >
-                  {uploadedFiles.map((uploadedFile, index) => (
-                    <div
-                      key={index}
-                      style={{
-                        listStyleType: "none",
-                        padding: "0 30px 0 30px",
-                        position: "relative",
-                        border: "1px solid #ccc",
-                      }}
-                    >
-                      {uploadedFile.file.type.startsWith("image/") ? (
-                        <div>
-                          <img
-                            src={uploadedFile.preview}
-                            alt={uploadedFile.file.name}
-                            width="102.3"
-                            height="100"
-                          />
-                        </div>
-                      ) : uploadedFile.file.type.startsWith("video/") ? (
-                        <div>
-                          <video width="102.3" height="100">
-                            <source
-                              src={uploadedFile.preview}
-                              type={uploadedFile.file.type}
-                            />
-                          </video>
-                        </div>
-                      ) : (
-                        <p>Unsupported File Type</p>
-                      )}
-                      <p
-                        style={{
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
-                          maxWidth: "100px",
-                        }}
-                      >
-                        {uploadedFile.file.name}
-                      </p>
-                      <button
-                        style={{
-                          marginLeft: "100px",
-                          marginTop: "-150px",
-                        }}
-                        className="delete-button"
-                        onClick={() => handleDeleteFile(index)}
-                      >
-                        <RemoveCircleIcon />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-            <input
-              type="file"
-              accept="image/*, video/*"
-              id="input-file"
-              multiple
-              onChange={handleFileUpload}
-              style={{ display: "none" }}
-            /> */}
           </S.Uploadfile>
           <label className="input-file-button" htmlFor="input-file">
             영상 업로드
@@ -555,7 +483,6 @@ export default function LoLvoteCreatePage() {
                 ))}
               </Select>
               <div>
-                {/* Checkbox for each role */}
                 <label>Roles:</label>
                 <input
                   type="checkbox"
