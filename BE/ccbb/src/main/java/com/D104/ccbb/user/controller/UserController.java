@@ -129,6 +129,7 @@ public class UserController {
         try {
             boolean pwCheck = userService.userPwCheck(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userPw);
             json.put("check", pwCheck);
+            json.put("message", "success");
             json.put("Authorization", Authorization);
             status = HttpStatus.OK;
         } catch (Exception e) {
