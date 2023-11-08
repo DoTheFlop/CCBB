@@ -53,7 +53,7 @@ public class File {
 
 	@OneToOne
 	@JsonBackReference
-	@JoinColumn(name = "goods_id", nullable = false)
+	@JoinColumn(name = "goods_id")
 	private Goods goodsId;
 
 	@ManyToOne
