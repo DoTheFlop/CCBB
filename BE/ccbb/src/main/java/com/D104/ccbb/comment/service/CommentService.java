@@ -56,7 +56,7 @@ public class CommentService {
 	}
 
 	public void modifyComment(CommentDto commentDto) {
-		Comment comment = commentRepo.getReferenceById(commentDto.getCommentId());
+		Comment comment = commentRepo.findById(commentDto.getCommentId()).get();
 		comment.setContent(commentDto.getContent());
 		commentRepo.save(comment);
 	}
