@@ -17,6 +17,8 @@ import CommentBox from "../../../../component/commentBox";
 import { ccbbApi } from "../../../../api/ccbbApi";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../../../recoil/UserAtom";
+import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
+import Button1 from "../../../../component/common/buttons";
 
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
@@ -39,6 +41,8 @@ export default function LoLvoteDetailPage() {
   const [isThumbUp, setIsThumbup] = useState(false);
   const [isThumbDown, setIsThumbDown] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [payment, setPayment] = useState(null);
 
   React.useEffect(() => {
     fetchPost();
@@ -53,8 +57,6 @@ export default function LoLvoteDetailPage() {
       .then((res) => {
         // console.log(res.data);
         SetCurPost(res.data.voteList);
-        // console.log(curPost);
-        // alert(res.data.voteList.vote.accept2)
         setIsApproved(res.data.voteList.vote.accept2);
       })
       .catch((e) => console.log(e));
@@ -65,9 +67,24 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((e) => console.log(e));
+  };
+
+  const payresponse = () => {
+    ccbbApi
+      .post(
+        `/payment/add?postId=${curPost.postId}&price=${curPost.vote.deposit}`,
+        {},
+        { headers }
+      )
+      .then((res) => {
+        setPayment(res.data);
+        // console.log(payment);
+        console.log(res.data);
+        openModalHandler();
+      });
   };
 
   const toggleThumbUp = () => {
@@ -95,6 +112,10 @@ export default function LoLvoteDetailPage() {
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
+  };
+
+  const openModalHandler = () => {
+    setIsOpen(!isOpen);
   };
 
   //댓글 전송
@@ -301,6 +322,25 @@ export default function LoLvoteDetailPage() {
             ) : (
               <S.VoteBodybot>
                 <h4>해당 투표를 진행하시겠습니까?</h4>
+                <S.VoteBodyButtonBox>
+                  <Button1
+                    onClick={payresponse}
+                    text="수락"
+                    width="150px"
+                    height="50px"
+                  ></Button1>
+                  <Button1
+                    text="거절"
+                    width="150px"
+                    height="50px"
+                    color="#8B0000"
+                  ></Button1>
+                </S.VoteBodyButtonBox>
+                <VotePaymentModal
+                  isOpen={isOpen}
+                  onClose={openModalHandler}
+                  payment={payment}
+                />
               </S.VoteBodybot>
             )}
           </S.Votebody>
