@@ -17,6 +17,7 @@ import CommentBox from "../../../../component/commentBox";
 import { ccbbApi } from "../../../../api/ccbbApi";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../../../recoil/UserAtom";
+import TierImg from "../../../../component/tier";
 
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
@@ -50,9 +51,8 @@ export default function LoLvoteDetailPage() {
         params: { postId: postId },
       })
       .then((res) => {
-        console.log(res.data);
+        console.log(res.data.voteList);
         SetCurPost(res.data.voteList);
-        console.log(curPost);
       })
       .catch((e) => console.log(e));
   };
@@ -62,7 +62,6 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        console.log(res.data);
       })
       .catch((e) => console.log(e));
   };
@@ -103,7 +102,6 @@ export default function LoLvoteDetailPage() {
         { headers }
       )
       .then((res) => {
-        console.log(res);
         SetMyComment("");
         fetchComments();
       })
@@ -143,15 +141,6 @@ export default function LoLvoteDetailPage() {
       .catch((e) => console.log(e));
   };
 
-  const dummyData2 = [
-    {
-      id: 1,
-      videoUrl: "../resource/LoLsample.mp4",
-      title: "Video 1 Title",
-      amount: 100,
-    },
-  ];
-
   return (
     <S.Main>
       <S.Head>
@@ -171,27 +160,25 @@ export default function LoLvoteDetailPage() {
             <S.Headbottom></S.Headbottom>
           </S.HeadLeft>
           <S.HeadRight>
-            <img
-              src="../resource/silver.png"
-              alt=""
-              style={{ height: "100px", paddingRight: "50px" }}
-            />
+            <TierImg tier={curPost.vote.limitTier} size={"100px"} />
           </S.HeadRight>
         </S.Menuhead>
         <S.DetailBody>
-          <S.Moviebody>
-            <ReactPlayer
-              url={dummyData2[0].videoUrl}
-              controls
-              width="80%"
-              height=""
-              style={{
-                border: "3px solid #ccc",
-                borderRadius: "30px",
-                overflow: "hidden",
-              }}
-            />
-          </S.Moviebody>
+        <S.Moviebody>
+  {curPost.fileId && curPost.fileId.length > 0 && (
+    <ReactPlayer
+      url={`https://ccbb.pro/api/file/get/${curPost.fileId[0].fileId}`}
+      controls
+      width="80%"
+      height=""
+      style={{
+        border: "3px solid #ccc",
+        borderRadius: "30px",
+        overflow: "hidden",
+      }}
+    />
+  )}
+</S.Moviebody>
 
           <S.Votebody>
             {curPost.content}
@@ -213,12 +200,12 @@ export default function LoLvoteDetailPage() {
               <h4>옳다고 생각하는 유저에 투표해주세요</h4>
               <S.Votebutton>
                 <S.ProfileBox $bgcolor="#97A7FF">
-                  <UserProfile name={"챌우혁"} color={"black"} />
-                  <S.ImgTier
+                  <UserProfile name={curPost.vote.nickname1} color={"black"} />
+                  {/* <S.ImgTier
                     src="../resource/silver.png"
                     alt="VS Logo"
                     style={{ height: "50px" }}
-                  />
+                  /> */}
                 </S.ProfileBox>
                 <S.ImgVS
                   src="../resource/VSlogo.png"
@@ -226,12 +213,12 @@ export default function LoLvoteDetailPage() {
                   style={{ height: "50px" }}
                 />
                 <S.ProfileBox $bgcolor="#FF9797">
-                  <UserProfile name={"브우혁"} color={"black"} />
-                  <S.ImgTier
+                  <UserProfile name={curPost.vote.nickname2} color={"black"} />
+                  {/* <S.ImgTier
                     src="../resource/challenger.png"
                     alt="VS Logo"
                     style={{ height: "50px" }}
-                  />
+                  /> */}
                 </S.ProfileBox>
               </S.Votebutton>
               <S.ArticleMenu>
@@ -295,7 +282,7 @@ export default function LoLvoteDetailPage() {
               </S.Createcomment>
             )}
 
-            <h4>댓글 00개</h4>
+            <h4>댓글 {curPost.comment.length}개</h4>
             <S.CommentBody>
               <CommentBox
                 bgcolor="#97A7FF"
