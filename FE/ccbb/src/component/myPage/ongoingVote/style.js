@@ -11,6 +11,11 @@ export const main = styled.main`
   h1 {
     width: fit-content;
   }
+  .total-count {
+    font-size: 1.5rem;
+    border-bottom: solid 1px;
+    padding-bottom: 2%;
+  }
 `;
 
 export const processChart = styled.div`

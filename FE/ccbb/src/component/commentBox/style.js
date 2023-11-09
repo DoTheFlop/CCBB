@@ -21,7 +21,11 @@ export const CommentHead = styled.div`
   }
 `;
 
-export const CommentBody = styled.div``;
+export const CommentBody = styled.div`
+  p {
+    white-space: pre-line;
+  }
+`;
 
 export const CommentBottom = styled.div`
   display: flex;
