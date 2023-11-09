@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as S from "./style";
 import ProcessBtn from "../processBtn";
@@ -7,9 +7,11 @@ import HowToVoteOutlinedIcon from "@mui/icons-material/HowToVoteOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
 import CurrencyExchangeOutlinedIcon from "@mui/icons-material/CurrencyExchangeOutlined";
 import DoubleArrowOutlinedIcon from "@mui/icons-material/DoubleArrowOutlined";
-import VoteRate from "../../voteBoard/voteRate";
+import { ccbbApi } from "../../../api/ccbbApi";
+// import VoteRate from "../../voteBoard/voteRate";
 
 export default function OngoingVote() {
+  const [voteList, SetVoteList] = useState([]);
   const processList = [
     {
       icon: HandshakeOutlinedIcon,
@@ -56,7 +58,7 @@ export default function OngoingVote() {
           );
         })}
       </S.processChart>
-      <VoteRate />
+      {/* <VoteRate /> */}
     </S.main>
   );
 }
