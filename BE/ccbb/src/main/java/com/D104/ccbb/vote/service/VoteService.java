@@ -82,7 +82,15 @@ public class VoteService {
 
     public List<VoteListDto> getParticipationList(int userId) {
 
-        List<VoteListDto> partList = voteRepo.findByUserId1_UserIdOrUserId2_UserId(userId, userId)
+        List<VoteListDto> partList = voteRepo.participateList(userId,userId)
+                .stream()
+                .map(m -> VoteListDto.fromEntity(m, commentRepo, ballotBoxRepo))
+                .collect(Collectors.toList());
+        return partList;
+    }
+    public List<VoteListDto> getParticipationPastList(int userId) {
+
+        List<VoteListDto> partList = voteRepo.participatePastList(userId,userId)
                 .stream()
                 .map(m -> VoteListDto.fromEntity(m, commentRepo, ballotBoxRepo))
                 .collect(Collectors.toList());
