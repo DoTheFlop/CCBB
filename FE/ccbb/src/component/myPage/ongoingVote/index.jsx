@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import * as S from "./style";
 import ProcessBtn from "../processBtn";
+import VotePreview from "../../votePreview";
 import HandshakeOutlinedIcon from "@mui/icons-material/HandshakeOutlined";
 import HowToVoteOutlinedIcon from "@mui/icons-material/HowToVoteOutlined";
 import DirectionsWalkOutlinedIcon from "@mui/icons-material/DirectionsWalkOutlined";
@@ -11,7 +12,7 @@ import { ccbbApi } from "../../../api/ccbbApi";
 // import VoteRate from "../../voteBoard/voteRate";
 
 export default function OngoingVote() {
-  const [voteList, SetVoteList] = useState([]);
+  const [myVoteList, SetMyVoteList] = useState([]);
   const processList = [
     {
       icon: HandshakeOutlinedIcon,
@@ -31,9 +32,58 @@ export default function OngoingVote() {
     },
   ];
 
+  const token = localStorage.getItem("token");
+  const headers = {
+    Authorization: `Bearer ${token}`,
+  };
+
+  React.useEffect(() => {
+    ccbbApi
+      .get("/post/vote/participationList", { headers })
+      .then((res) => {
+        SetMyVoteList(res.data.participationList);
+      })
+      .catch((e) => console.log(e));
+  }, []);
+
+  const dummyVotes = [
+    {
+      title: "aaa",
+      postId: 1,
+      createDate: "2023-11-09",
+      commentCount: 10,
+      userCount: 100,
+    },
+    {
+      title: "aaa",
+      postId: 1,
+      createDate: "2023-11-09",
+      commentCount: 10,
+      userCount: 100,
+    },
+    {
+      title: "aaa",
+      postId: 1,
+      createDate: "2023-11-09",
+      commentCount: 10,
+      userCount: 100,
+    },
+    {
+      title: "aaa",
+      postId: 1,
+      createDate: "2023-11-09",
+      commentCount: 10,
+      userCount: 100,
+    },
+  ];
+
   return (
     <S.main>
-      <Link to="/lolvote">
+      <span className="total-count">{dummyVotes.length}건</span>
+      {dummyVotes.map((vote, index) => {
+        return <VotePreview key={index} {...vote} />;
+      })}
+      {/* <Link to="/lolvote">
         <h1>이거누구탓임</h1>
       </Link>
       <S.processChart>
@@ -58,7 +108,7 @@ export default function OngoingVote() {
           );
         })}
       </S.processChart>
-      {/* <VoteRate /> */}
+      <VoteRate /> */}
     </S.main>
   );
 }
