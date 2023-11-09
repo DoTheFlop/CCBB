@@ -9,12 +9,30 @@ import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
 import TollIcon from "@mui/icons-material/Toll";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../recoil/UserAtom";
 import { ccbbApi } from "../../../api/ccbbApi";
 
 export default function MyPage() {
+  const token = localStorage.getItem("token");
+  const headers = {
+    "Content-Type": "multipart/form-data",
+    Authorization: `Bearer ${token}`,
+  };
   const user = useRecoilValue(userState);
+  const setRecoilUser = useSetRecoilState(userState);
+  React.useEffect(() => {
+    ccbbApi
+      .get("/user/profile", { headers })
+      .then((res) => {
+        console.log(res);
+        if (res.data.user) {
+          console.log("프로필정보: ", res.data);
+          setRecoilUser(res.data.user);
+        }
+      })
+      .catch((e) => console.log(e));
+  }, [setRecoilUser]);
   const navigate = useNavigate();
 
   const tabs = [
@@ -26,11 +44,6 @@ export default function MyPage() {
 
   const [currentTab, setCurrentTab] = useState(0);
 
-  const token = localStorage.getItem("token");
-  const headers = {
-    "Content-Type": "multipart/form-data",
-    Authorization: `Bearer ${token}`,
-  };
   const fileInput = useRef();
   const onClickUploadImgBtn = () => {
     if (!fileInput.current) {
@@ -89,7 +102,7 @@ export default function MyPage() {
           <p>{user.email}</p>
           <S.textAndBtn>
             <TollIcon />
-            <div>1,000P</div>
+            <div>{user.point}P</div>
             <Button1 text="내역보기" height={"30px"}></Button1>
           </S.textAndBtn>
         </S.textSection>

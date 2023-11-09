@@ -48,7 +48,7 @@ export default function SignupPage() {
       "voteCount" : 0,
       "voteVictory":0
     }
-
+//
     ccbbApi
       .post("/user/esign-up",JSON.stringify(body))
       .then((res) => {
