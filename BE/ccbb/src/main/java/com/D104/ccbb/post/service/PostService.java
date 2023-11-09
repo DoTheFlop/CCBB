@@ -75,9 +75,24 @@ public class PostService {
         Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m, m.getVote(), ballotBoxRepo));
         return postPageDto;
     }
+
+    public Page<PostPageDto> getPastPageList(int page) {
+        int pageLimit = 12;
+        Page<Vote> postsPages = voteRepo.pastList(
+            PageRequest.of(page - 1, pageLimit, Sort.by(Sort.Direction.DESC, "post_id")));
+        Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m.getPostId(), m, ballotBoxRepo));
+        return postPageDto;
+    }
+
 	public Page<PostPageDto> getPopularityPage(int page){
 		int pageLimit = 12;
 		Page<Map<String,Object>> postsPages = voteRepo.popularPage(PageRequest.of(page-1, pageLimit));
+		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(postRepo.getReferenceById((Integer)m.get("post_id")),voteRepo.getReferenceById((Integer)m.get("vote_id")),ballotBoxRepo));
+		return postPageDto;
+	}
+    public Page<PostPageDto> getPopularityPastPage(int page){
+		int pageLimit = 12;
+		Page<Map<String,Object>> postsPages = voteRepo.popularPastPage(PageRequest.of(page-1, pageLimit));
 		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(postRepo.getReferenceById((Integer)m.get("post_id")),voteRepo.getReferenceById((Integer)m.get("vote_id")),ballotBoxRepo));
 		return postPageDto;
 	}
