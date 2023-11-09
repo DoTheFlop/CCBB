@@ -107,16 +107,16 @@ export default function Headermain() {
           <Link to="/lolvote">
             <p>LoL</p>
           </Link>
-          <Link to="/1">
+          {/* <Link to="/1">
             <p>컴포넌트</p>
-          </Link>
+          </Link> */}
         </S.gamemenu>
       </S.leftmenu>
       <S.rightmenu>
         <S.webmenu>
-          <Link to="/free">
+          {/* <Link to="/free">
             <p>자유게시판</p>
-          </Link>
+          </Link> */}
           <Link to="/gift">
             <p>경품추첨</p>
           </Link>
