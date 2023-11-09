@@ -130,11 +130,13 @@ public class UserController {
 	}
 
 	@GetMapping("/checkPw")
-	public ResponseEntity<Map<String, Object>> checkPw(@RequestHeader String Authorization, @RequestParam String userPw) {
-		Map<String,Object> json = new HashMap<>();
+	public ResponseEntity<Map<String, Object>> checkPw(@RequestHeader String Authorization,
+		@RequestParam String userPw) {
+		Map<String, Object> json = new HashMap<>();
 		HttpStatus status;
 		try {
-			boolean pwCheck = userService.userPwCheck(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)),userPw);
+			boolean pwCheck = userService.userPwCheck(
+				jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userPw);
 			json.put("check", pwCheck);
 			json.put("Authorization", Authorization);
 			status = HttpStatus.OK;
@@ -146,5 +148,16 @@ public class UserController {
 		return new ResponseEntity<>(json, status);
 	}
 
-
+	@PostMapping("/lol/tier")
+	public ResponseEntity<Boolean> updateLolTier(@RequestHeader String Authorization,
+		@RequestParam String lolName) {
+		try {
+			log.info(lolName);
+			boolean result = userService.updateLolTier(Authorization, lolName);
+			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
