@@ -35,6 +35,7 @@ export default function App() {
           <Route path="/payment-success"element={<PaymentSuccessPage/>}></Route>
 
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
+          <Route path="/statistic" element={<statisticPage />}></Route>
           <Route
             path="/lolvote/:postId"
             element={<LoLvoteDetailPage />}
