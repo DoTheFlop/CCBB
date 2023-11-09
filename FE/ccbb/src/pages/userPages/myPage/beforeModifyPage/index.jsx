@@ -27,11 +27,17 @@ export default function BeforeModifyPage() {
         params: { userPw: pwCheck },
       })
       .then((res) => {
-        console.log(res);
-        navigate("/mypage/modify");
+        if (res.data.message == "success") {
+          if (res.data.check) {
+            navigate("/mypage/modify");
+          } else {
+            alert("비밀번호가 일치하지 않습니다.");
+          }
+        }
       })
       .catch((e) => {
         console.log(e);
+        alert("서버에러");
       });
   };
   const [pwCheck, SetPwCheck] = useState("");
