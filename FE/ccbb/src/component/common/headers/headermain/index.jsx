@@ -108,6 +108,9 @@ export default function Headermain() {
           <Link to="/lolvote">
             <p>LoL</p>
           </Link>
+          <Link to="/statistic">
+            <p>통계</p>
+          </Link>
           {/* <Link to="/1">
             <p>컴포넌트</p>
           </Link> */}
