@@ -137,6 +137,20 @@ public class PostController {
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
+	@GetMapping("/vote/pastList")
+	public ResponseEntity<Map<String, Object>> pastList(@RequestParam int page) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("voteList", postService.getPastPageList(page));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 
 	@GetMapping("/vote/popularList")
 	public ResponseEntity<Map<String, Object>> popularList(@RequestParam int page) {
@@ -144,6 +158,20 @@ public class PostController {
 		HttpStatus status = null;
 		try {
 			resultMap.put("voteList", postService.getPopularityPage(page));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+	@GetMapping("/vote/popularPastList")
+	public ResponseEntity<Map<String, Object>> popularPastList(@RequestParam int page) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		try {
+			resultMap.put("voteList", postService.getPopularityPastPage(page));
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
