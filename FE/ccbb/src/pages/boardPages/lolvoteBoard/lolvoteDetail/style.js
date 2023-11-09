@@ -96,9 +96,6 @@ export const ImgVS = styled.img`
 `;
 export const Imgward = styled.img``;
 
-export const ImgTier = styled.img`
-  padding-left: 10px;
-`;
 
 export const ProfileBox = styled.div`
   display: flex;
