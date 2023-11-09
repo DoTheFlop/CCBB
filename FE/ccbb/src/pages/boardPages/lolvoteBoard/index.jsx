@@ -32,55 +32,66 @@ export default function LoLvoteboardPage() {
   const customStyles = {
     control: (provided) => ({
       ...provided,
-      background: "transparent", // 배경을 투명색으로 설정
-      borderColor: "transparent", // 테두리를 투명으로 설정 (선택 시 테두리 제거)
-      boxShadow: "none", // 테두리 그림자 제거
+      background: "transparent",
+      borderColor: "transparent",
+      boxShadow: "none",
       "&:hover": { borderColor: "transparent" },
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isFocused ? "#154C61" : "transparent", // 마우스 호버 상태일 때 배경 색상 변경
-      color: state.isFocused ? "white" : "black", // 마우스 호버 상태일 때 글자색 변경
-      border: "none", // 구분선 제거
+      backgroundColor: state.isFocused ? "#154C61" : "transparent",
+      color: state.isFocused ? "white" : "black",
+      border: "none",
     }),
-    indicatorSeparator: () => null, // 구분선 숨기기
+    indicatorSeparator: () => null,
   };
 
   const customControlStyles = {
     singleValue: (provided) => ({
       ...provided,
-      color: "white", // 텍스트 색상을 흰색으로 설정
-      fontSize: "18px", // 텍스트 크기를 18px로 설정
-      fontWeight: "bold", // 글자를 굵게 표시
+      color: "white",
+      fontSize: "18px",
+      fontWeight: "bold",
     }),
   };
 
   const [pages, setPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [total, setTotal] =useState(null)
+  const [total, setTotal] = useState(null);
   const [voteData, setVoteData] = useState([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await ccbbApi.get(
-          `/post/vote/list?page=${currentPage}`
-        );
-        setPages(response.data.voteList.totalPages);
-        setVoteData(response.data.voteList.content);
-        console.log(response.data.voteList.totalElements);
-        setTotal(response.data.voteList.totalElements)
-
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const fetchData = async () => {
+    try {
+      let endpoint = "";
+      if (activeTab === "ongoing") {
+        endpoint =
+          selectedOption.value === "Latest"
+            ? `/post/vote/list?page=${currentPage}`
+            : `/post/vote/popularList?page=${currentPage}`;
+      } else if (activeTab === "completed") {
+        endpoint =
+          selectedOption.value === "Latest"
+            ? `/post/vote/pastList?page=${currentPage}`
+            : `/post/vote/popularPastList?page=${currentPage}`;
       }
-    };
+  
+      console.log(endpoint);
+      const response = await ccbbApi.get(endpoint);
+  
+      setPages(response.data.voteList.totalPages);
+      setVoteData(response.data.voteList.content);
+      console.log(response.data.voteList.totalElements);
+      setTotal(response.data.voteList.totalElements);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchData();
-  }, [currentPage,selectedOption]);
+  }, [currentPage, selectedOption, activeTab]);
 
   const handlePageChange = (event, newPage) => {
-    console.log(newPage);
     setCurrentPage(newPage);
   };
 
@@ -127,12 +138,22 @@ export default function LoLvoteboardPage() {
         </S.Headbottom>
       </S.Head>
       <S.Votebodycover>
-        <S.Votebody>
-          {voteData.length > 0 &&
-            voteData.map((item, idx) => (
-              <VoteCard key={idx} title={item.title} postId={item.postId} voteCount = {item.voteCount} deadline={item.deadline} fileId={item.fileId[0].fileId} tier={item.tier}/>
-            ))}
-        </S.Votebody>
+        <S.VotebodyC>
+          <S.Votebody>
+            {voteData.length > 0 &&
+              voteData.map((item, idx) => (
+                <VoteCard
+                  key={idx}
+                  title={item.title}
+                  postId={item.postId}
+                  voteCount={item.voteCount}
+                  deadline={item.deadline}
+                  fileId={item.fileId[0].fileId}
+                  tier={item.tier}
+                />
+              ))}
+          </S.Votebody>
+        </S.VotebodyC>
         <S.PaginationBox>
           <Pagination
             count={pages}
