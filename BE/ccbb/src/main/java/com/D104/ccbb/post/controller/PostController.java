@@ -198,6 +198,23 @@ public class PostController {
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
+	@GetMapping("/vote/participationPastList")
+	public ResponseEntity<Map<String, Object>> participationPastList(@RequestHeader String Authorization) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		List<VoteListDto> partList = voteService.getParticipationPastList(
+			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+				.getUserId());
+		try {
+			resultMap.put("participationList", partList);
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
 
 	@GetMapping("/vote/acceptList")
 	public ResponseEntity<Map<String, Object>> acceptList(@RequestHeader String Authorization) {
