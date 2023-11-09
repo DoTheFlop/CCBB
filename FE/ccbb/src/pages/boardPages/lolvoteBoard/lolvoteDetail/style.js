@@ -72,6 +72,7 @@ export const Votebody = styled.div`
   margin: 2% 10%;
   font-size: large;
   padding-bottom: 20px;
+  white-space: pre-line;
 `;
 
 export const VoteBodybot = styled.div`
