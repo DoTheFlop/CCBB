@@ -160,7 +160,7 @@ public class UserController {
 		try {
 			log.info(lolName);
 			boolean result = userService.updateLolTier(Authorization, lolName);
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
