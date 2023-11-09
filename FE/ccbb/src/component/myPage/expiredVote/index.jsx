@@ -125,7 +125,7 @@ export default function ExpiredVote() {
       <Link to="/lolvote">
         <h1>누구탓이냐고</h1>
       </Link>
-      <S.VoteGrid>
+      {/* <S.VoteGrid>
         {dummyData.map((item) => (
           <VoteCard
             key={item.id}
@@ -134,7 +134,7 @@ export default function ExpiredVote() {
             amount={item.amount}
           />
         ))}
-      </S.VoteGrid>
+      </S.VoteGrid> */}
     </S.main>
   );
 }
