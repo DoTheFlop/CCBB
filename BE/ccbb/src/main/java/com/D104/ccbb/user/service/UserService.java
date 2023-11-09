@@ -1,6 +1,8 @@
 package com.D104.ccbb.user.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.D104.ccbb.jwt.service.JwtTokenService;
@@ -33,6 +36,9 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final JwtTokenService jwtTokenService;
 	private final PasswordEncoder passwordEncoder;
+
+	@Value("${riot.api.key}")
+	private String RIOT_API_KEY;
 
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String USER_INFO_URI;
@@ -134,11 +140,11 @@ public class UserService {
 	public void updateUser(String email, UserDto userDto) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalStateException(" No User"));
-		if(user.getNickname() != null)
+		if (user.getNickname() != null)
 			user.setNickname(userDto.getNickname());
-		if(user.getSex() != null)
+		if (user.getSex() != null)
 			user.setSex(userDto.getSex());
-		if(user.getPassword() != null)
+		if (user.getPassword() != null)
 			user.setPassword(userDto.getPassword());
 		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
@@ -186,6 +192,38 @@ public class UserService {
 		if (findUserOpt.isEmpty()) {
 			throw new UsernameNotFoundException("존재하지 않는 유저입니다.");
 		}
+		return true;
+	}
+
+	public boolean updateLolTier(String authorization, String lolName) throws Exception {
+		String userEmail = jwtTokenService.getUserEmail(jwtTokenService.extractToken(authorization));
+		Optional<User> foundUser = userRepository.findByEmail(userEmail);
+		if (foundUser.isEmpty()) {
+			throw new Exception("존재하지 않는 유저입니다.");
+		}
+		User user = foundUser.get();
+		HttpHeaders headers = new HttpHeaders();
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(headers);
+		RestTemplate requestRiot = new RestTemplate();
+		ResponseEntity<Map> response = requestRiot.getForEntity(
+			"https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/" + lolName + "?api_key=" + RIOT_API_KEY,
+			Map.class
+		);
+		String id = response.getBody().get("id").toString();
+		log.info("id : {} ", id);
+		ResponseEntity<List> response2 = requestRiot.getForEntity(
+			"https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/" + id + "?api_key=" + RIOT_API_KEY,
+			List.class);
+		List<Map<String, String>> tierList = response2.getBody();
+		log.info("tier: {}", tierList);
+		if (tierList.isEmpty()) {
+			user.setLol("unranked");
+		} else {
+			user.setLol(tierList.get(0).get("tier"));
+		}
+		log.info(user.getEmail());
+		log.info(user.getLol());
+		userRepository.save(user);
 		return true;
 	}
 }
