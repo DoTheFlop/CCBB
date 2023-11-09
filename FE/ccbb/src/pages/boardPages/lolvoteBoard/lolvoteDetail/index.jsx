@@ -143,23 +143,6 @@ export default function LoLvoteDetailPage() {
       .catch((e) => console.log(e));
   };
 
-  const dummyData = [
-    {
-      title: "이거 내잘못임??",
-      content:
-        "아니 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구 그래서 내가 잘못임?",
-    },
-  ];
-
-  const dummyData1 = [
-    {
-      argument: "13분10초에 갈리오가 궁을 쓰는게 맞냐?",
-      tier_limit: "브론즈",
-      promise: "지는사람이 번지점프를 하겠습니다.",
-      deposit: "30000",
-    },
-  ];
-
   const dummyData2 = [
     {
       id: 1,
