@@ -308,6 +308,7 @@ export default function LoLvoteDetailPage() {
                     SetMyComment(e.target.value);
                   }}
                   onClick={postComment}
+                  btn="true"
                 />
               </S.Createcomment>
             )}

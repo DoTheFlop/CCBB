@@ -10,6 +10,7 @@ export default function InputComment({
   onKeyPress,
   onChange,
   onClick,
+  btn = false,
 }) {
   return (
     <S.InputBox>
@@ -22,12 +23,14 @@ export default function InputComment({
           onKeyPress={onKeyPress}
           onChange={onChange}
         />
-        <Button1
-          text={"등록"}
-          width={"80px"}
-          height={"40px"}
-          onClick={onClick}
-        />
+        {btn && (
+          <Button1
+            text={"등록"}
+            width={"80px"}
+            height={"40px"}
+            onClick={onClick}
+          />
+        )}
       </S.InputAndButton>
     </S.InputBox>
   );

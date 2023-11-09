@@ -8,7 +8,7 @@ export const StyledInput = styled.textarea`
   font-size: 16px;
   border-radius: 5px;
   resize: none;
-  margin-right: 10px;
+  /* margin-right: 10px; */
   font-family: Pretendard, "Noto Sans KR", sans-serif;
 `;
 
@@ -29,4 +29,7 @@ export const InputAndButton = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
+  button {
+    margin-left: 10px;
+  }
 `;
