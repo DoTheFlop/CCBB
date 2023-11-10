@@ -4,7 +4,7 @@ import Button1 from "../../common/buttons";
 import { ccbbApi } from '../../../api/ccbbApi';
 import { useParams } from 'react-router-dom';
 
-export default function PrizeCard({ stock = 1, title, point, fileId, goodsId, updateGoods }) {
+export default function PrizeCard({ stock = 1, title, point, fileId, goodsId, updateGoods, getUserPoint, setUserPoint, userPoint }) {
   const token1 = localStorage.getItem("token");
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -13,10 +13,13 @@ export default function PrizeCard({ stock = 1, title, point, fileId, goodsId, up
     const headers = {
       Authorization: `Bearer ${token1}`,
     };
+    setUserPoint(userPoint - point);
+    
     ccbbApi
       .post(`/event/goods/entry?goodsId=${goodsId}`, {}, { headers })
       .then((res) => {
         let message = res.data.message;
+        
         if (message === '응모에 성공했습니다.') {
           message = '당첨 되셨습니다. 이주내로 정보에 적은 주소로 전송 할 예정입니다.';
           updateGoods();
@@ -25,6 +28,8 @@ export default function PrizeCard({ stock = 1, title, point, fileId, goodsId, up
         }
         setModalMessage(message);
         setModalOpen(true);
+        getUserPoint();
+        
       })
       .catch((error) => {
         if (error.response && error.response.data) {

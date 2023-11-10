@@ -55,6 +55,9 @@ export default function GiftPage() {
               point={pr.price}
               goodsId={pr.goodsId}
               updateGoods={updateGoods}
+              getUserPoint={getUserPoint}
+              setUserPoint={setUserPoint}  // setUserPoint 함수를 전달합니다.
+              userPoint={userPoint}  // userPoint 상태를 전달합니다.
             />
           );
         })}
