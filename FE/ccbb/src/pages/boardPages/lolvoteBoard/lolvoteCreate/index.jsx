@@ -14,6 +14,7 @@ import { ccbbApi } from "../../../../api/ccbbApi";
 import { userState } from "../../../../recoil/UserAtom";
 import { useRecoilValue } from "recoil";
 import VotePaymentModal from "./votePaymentpage";
+import axios from "axios";
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -241,8 +242,8 @@ export default function LoLvoteCreatePage() {
         "content-type": "multipart/form-data",
       };
 
-      const response = await ccbbApi
-        .post("/post/add", formData, {
+      const response = await axios
+        .post("http://k9d104.p.ssafy.io:8081/api/post/add", formData, {
           headers,
           //cors에러 뜨면 넣어야함
           withCredentials: true,
@@ -276,7 +277,6 @@ export default function LoLvoteCreatePage() {
                         console.log(payment)
                         console.log(payresponse.data)
                         openModalHandler()
-                        
                     }
                     console.log(payresponse.data)
 
