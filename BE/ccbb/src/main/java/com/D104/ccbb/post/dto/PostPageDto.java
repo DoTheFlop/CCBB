@@ -29,6 +29,7 @@ public class PostPageDto {
 	private Integer type;
 	private String nickname;
 	private String userEmail;
+	private String argument;
 	private String tier;
 	private LocalDateTime deadline;
 	private Long voteCount;
@@ -42,27 +43,12 @@ public class PostPageDto {
 			.type(post.getType())
 			.nickname(post.getUserId().getNickname())
 			.userEmail(post.getUserId().getEmail())
+			.argument(vote.getArgument())
 			.tier(vote.getTier())
 			.deadline(vote.getDeadline())
 			.voteCount(ballotBoxRepo.countByVote_VoteId(vote.getVoteId()))
 			.fileId(post.getFiles().stream().map(FileDto::fromEntity).collect(Collectors.toList()))
 			.build();
 	}
-
-	// public static PostPageDto fromEntity2(Post post, Vote vote, BallotBoxRepo ballotBoxRepo) {
-	// 	return PostPageDto.builder()
-	// 		.postId(post.getPostId())
-	// 		.title(post.getTitle())
-	// 		.createDate(post.getCreateDate())
-	// 		.type(post.getType())
-	// 		.nickname(post.getUserId().getNickname())
-	// 		.userEmail(post.getUserId().getEmail())
-	// 		.tier(vote.getTier())
-	// 		.deadline(vote.getDeadline())
-	// 		.voteCount(ballotBoxRepo.countByVote_VoteId(vote.getVoteId()))
-	// 		.fileId(post.getFiles().stream().map(FileDto::fromEntity).collect(Collectors.toList()))
-	// 		.build();
-	// }
-
 
 }
