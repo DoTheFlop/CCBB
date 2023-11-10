@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import UserProfile from "../common/profile";
 import * as S from "./style";
+import { parseDate } from "../../api/dateParse";
 
 export default function CommentBox({
   isMine = false,
@@ -13,6 +14,8 @@ export default function CommentBox({
   onClickModify,
   onClickDelete,
 }) {
+  const createDate = parseDate(date);
+
   //댓글 수정 상태를 위한 값
   const [isEditing, setIsEditing] = useState(false);
   const [newComment, setNewComment] = useState(comment);
@@ -41,7 +44,9 @@ export default function CommentBox({
           iconSize={"30px"}
           fontsize={"15px"}
         />
-        <p>{date}</p>
+        <p>
+          {`${createDate.year}/${createDate.month}/${createDate.day} ${createDate.hours}:${createDate.minutes}`}
+        </p>
       </S.CommentHead>
       <S.CommentBody>
         {isEditing ? (
