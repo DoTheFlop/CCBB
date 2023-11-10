@@ -14,7 +14,6 @@ export default function InputComment({
   return (
     <S.InputBox>
       <S.Inputlabel htmlFor={id}>{label}</S.Inputlabel>
-      <S.InputAndButton>
         <S.StyledInput
           id={id}
           width={width}
@@ -22,13 +21,6 @@ export default function InputComment({
           onKeyPress={onKeyPress}
           onChange={onChange}
         />
-        <Button1
-          text={"등록"}
-          width={"80px"}
-          height={"40px"}
-          onClick={onClick}
-        />
-      </S.InputAndButton>
     </S.InputBox>
   );
 }

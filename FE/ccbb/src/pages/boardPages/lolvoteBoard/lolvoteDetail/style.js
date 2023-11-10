@@ -56,6 +56,7 @@ export const DetailBody = styled.div`
   justify-content: center;
   margin-top: 80px;
   flex-direction: column;
+  width: 85%;
 `;
 
 export const Moviebody = styled.div`
@@ -102,6 +103,7 @@ export const ProfileBox = styled.div`
   background-color: ${(props) => props.$bgcolor};
   border-radius: 8px;
   padding: 5px 10px;
+  cursor: pointer;
 `;
 
 export const ArticleMenu = styled.div`
@@ -145,3 +147,10 @@ export const Createcomment = styled.div`
 `;
 
 export const CommentBody = styled.div``;
+
+
+export const voteUser1Box = styled.div`
+`
+
+export const voteUser2Box = styled.div`
+`
