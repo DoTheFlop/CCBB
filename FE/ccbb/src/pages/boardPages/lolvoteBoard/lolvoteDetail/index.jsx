@@ -10,7 +10,7 @@ import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
 import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import InputComment from "../../../../component/common/inputs/inputcomment";
 import CommentBox from "../../../../component/commentBox";
@@ -39,13 +39,20 @@ export default function LoLvoteDetailPage() {
   const [isWard, setIsWard] = useState(false);
   const [isThumbUp, setIsThumbup] = useState(false);
   const [isThumbDown, setIsThumbDown] = useState(false);
+  const token1 = localStorage.getItem("token");
+  const [userPick, setUserPick] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchPost();
     fetchComments();
-  }, []);
+    console.log(userPick)
+  }, [userPick]);
 
   const fetchPost = () => {
+    const headers = {
+      Authorization: `Bearer ${token1}`,
+    };
+
     ccbbApi
       .get("/post/vote/detail", {
         params: { postId: postId },
@@ -53,6 +60,17 @@ export default function LoLvoteDetailPage() {
       .then((res) => {
         console.log(res.data.voteList);
         SetCurPost(res.data.voteList);
+        ccbbApi
+          .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
+            headers
+          })
+          .then((res) => {
+            console.log(res.data.voteResult.userPick);
+            if (res.data.voteResult.userPick === 1) {
+              setUserPick(true);
+            }
+          })
+          .catch((e) => console.log(e));
       })
       .catch((e) => console.log(e));
   };
@@ -90,6 +108,50 @@ export default function LoLvoteDetailPage() {
       console.log(myComment);
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
+    }
+  };
+
+  const handlevoteUser1 = (e) => {
+    console.log(curPost.vote.voteId);
+    const headers = {
+      Authorization: `Bearer ${token1}`,
+    };
+    const body = {
+      "ballotBoxId": 0,
+      "pick": 1,
+      "userId": 0,
+      "voteId": curPost.vote.voteId,
+    };
+    
+    if (userPick) {
+      alert("이미 투표를 하였습니다.");
+      return;
+    } else {
+      ccbbApi.post("/vote/ballet/add", body , { headers }).then((e) => {
+        console.log(e);
+        setUserPick(true)
+      });
+    }
+  };
+
+  const handlevoteUser2 = (e) => {
+    const headers = {
+      Authorization: `Bearer ${token1}`,
+    };
+    const body = {
+      "ballotBoxId": 0,
+      "pick": 2,
+      "userId": 0,
+      "voteId": curPost.vote.voteId,
+    };
+    if (userPick) {
+      alert("이미 투표를 하였습니다.");
+      return;
+    } else {
+      ccbbApi.post("/vote/ballet/add", body , { headers }).then((e) => {
+        console.log(e);
+        setUserPick(true)
+      });
     }
   };
 
@@ -164,21 +226,21 @@ export default function LoLvoteDetailPage() {
           </S.HeadRight>
         </S.Menuhead>
         <S.DetailBody>
-        <S.Moviebody>
-  {curPost.fileId && curPost.fileId.length > 0 && (
-    <ReactPlayer
-      url={`https://ccbb.pro/api/file/get/${curPost.fileId[0].fileId}`}
-      controls
-      width="80%"
-      height=""
-      style={{
-        border: "3px solid #ccc",
-        borderRadius: "30px",
-        overflow: "hidden",
-      }}
-    />
-  )}
-</S.Moviebody>
+          <S.Moviebody>
+            {curPost.fileId && curPost.fileId.length > 0 && (
+              <ReactPlayer
+                url={`https://ccbb.pro/api/file/get/${curPost.fileId[0].fileId}`}
+                controls
+                width="80%"
+                height=""
+                style={{
+                  border: "3px solid #ccc",
+                  borderRadius: "30px",
+                  overflow: "hidden",
+                }}
+              />
+            )}
+          </S.Moviebody>
 
           <S.Votebody>
             {curPost.content}
@@ -199,7 +261,12 @@ export default function LoLvoteDetailPage() {
               <h3>{curPost.vote.argument}</h3>
               <h4>옳다고 생각하는 유저에 투표해주세요</h4>
               <S.Votebutton>
-                <S.ProfileBox $bgcolor="#97A7FF">
+                <S.ProfileBox
+                  onClick={(e) => {
+                    handlevoteUser1();
+                  }}
+                  $bgcolor="#97A7FF"
+                >
                   <UserProfile name={curPost.vote.nickname1} color={"black"} />
                   {/* <S.ImgTier
                     src="../resource/silver.png"
@@ -212,7 +279,12 @@ export default function LoLvoteDetailPage() {
                   alt="VS Logo"
                   style={{ height: "50px" }}
                 />
-                <S.ProfileBox $bgcolor="#FF9797">
+                <S.ProfileBox
+                  onClick={(e) => {
+                    handlevoteUser2();
+                  }}
+                  $bgcolor="#FF9797"
+                >
                   <UserProfile name={curPost.vote.nickname2} color={"black"} />
                   {/* <S.ImgTier
                     src="../resource/challenger.png"
@@ -282,7 +354,10 @@ export default function LoLvoteDetailPage() {
               </S.Createcomment>
             )}
 
-            <h4>댓글 {curPost.comment.length}개</h4>
+            <h4>
+              댓글 {curPost && curPost.comment && curPost.comment.length}개
+            </h4>
+
             <S.CommentBody>
               <CommentBox
                 bgcolor="#97A7FF"
