@@ -20,6 +20,8 @@ import { userState } from "../../../../recoil/UserAtom";
 import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
 import Button1 from "../../../../component/common/buttons";
 import TierImg from "../../../../component/tier";
+import VoteProcess from "../../../../component/voteBoard/voteProcess";
+import { isBefore } from "date-fns";
 
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
@@ -53,6 +55,24 @@ export default function LoLvoteDetailPage() {
     console.log(userPick);
   }, [userPick]);
 
+  const isMyVote = () => {
+    //(로그인한) 유저가 투표 당사자인지 체크
+    return (
+      userInfo?.userId === curPost?.vote.user1 ||
+      userInfo?.userId === curPost?.vote.user2
+    );
+  };
+
+  const voteStep = () => {
+    //투표 진행단계를 0~3 중 하나의 숫자로 리턴함 (수락대기/투표진행/공약이행/보증금반환)
+    if (!isApproved) return 0;
+    const now = new Date();
+    const endDate = new Date(curPost.vote.deadline);
+    if (isBefore(now, endDate)) return 1;
+    //##### doPromise 넘어오면 수정해야됨 #####
+    return 2;
+  };
+
   const fetchPost = () => {
     const headers = {
       Authorization: `Bearer ${token1}`,
@@ -64,7 +84,6 @@ export default function LoLvoteDetailPage() {
       })
       .then((res) => {
         // console.log(res.data);
-        SetCurPost(res.data.voteList);
         setIsApproved(res.data.voteList.vote.accept2);
         ccbbApi
           .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
@@ -77,6 +96,7 @@ export default function LoLvoteDetailPage() {
             }
           })
           .catch((e) => console.log(e));
+        SetCurPost(res.data.voteList);
       })
       .catch((e) => console.log(e));
   };
@@ -126,7 +146,6 @@ export default function LoLvoteDetailPage() {
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey && myComment) {
       e.preventDefault();
-      console.log("엔터키입력", postId);
       console.log(myComment);
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
@@ -251,6 +270,8 @@ export default function LoLvoteDetailPage() {
           </S.HeadRight>
         </S.Menuhead>
         <S.DetailBody>
+          {/* 투표 당사자일때만 진행상황이 보임 */}
+          {isMyVote() && <VoteProcess step={voteStep()} />}
           <S.Moviebody>
             {curPost.fileId && curPost.fileId.length > 0 && (
               <ReactPlayer
