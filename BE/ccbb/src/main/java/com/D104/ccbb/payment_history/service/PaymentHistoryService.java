@@ -182,15 +182,23 @@ public class PaymentHistoryService {
             requestBody.add("cancel_tax_free_amount", foundPayment.getAmount().toString());
 
             HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(requestBody, headers);
-            ResponseEntity<Map> Kakaoresponse = restTemplate.exchange(
-                    CANCEL_KAKAO_URL,
-                    HttpMethod.POST,
-                    entity,
-                    Map.class);
-            log.info("response body : {}", Kakaoresponse.getBody());
+            ResponseEntity<Map> Kakaoresponse = null;
+            try {
+                Kakaoresponse = restTemplate.exchange(
+                        CANCEL_KAKAO_URL,
+                        HttpMethod.POST,
+                        entity,
+                        Map.class);
+                log.info("response body : {}", Kakaoresponse.getBody());
+
+            } catch (Exception e) {
+                log.error("foundPayment id {} error \n {}", foundPayment.getHistoryId(), Kakaoresponse);
+                continue;
+            }
             foundPayment.setIsReturned(true);
             foundPayment.setVoteId(null);
             paymentHistoryRepo.save(foundPayment);
+
         }
 
         return "환불완료";
