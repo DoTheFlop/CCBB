@@ -35,8 +35,11 @@ export const ModalBtn = styled.button`
 `;
 
 export const buttonWrapper = styled.div`
+    // display: flex;
     display: flex;
-    
+    justify-content: space-between;
+    width: 150px;
+    margin-bottom: 20px;
 `
 
 export const ModalView = styled.div.attrs((props) => ({
