@@ -6,12 +6,12 @@ export const roundBtn = styled.button`
   border: solid 8px;
   border-radius: 50%;
   border-color: ${(props) => (props.$isOngoing ? "lightblue" : "transparent")};
-  width: 10vw;
-  height: 10vw;
+  width: 8vw;
+  height: 8vw;
   max-width: 100px;
   max-height: 100px;
   svg {
-    width: 70%;
-    height: 70%;
+    width: 80%;
+    height: 80%;
   }
 `;

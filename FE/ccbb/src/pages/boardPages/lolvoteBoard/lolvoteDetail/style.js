@@ -54,7 +54,7 @@ export const HeadRight = styled.div``;
 export const DetailBody = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 80px;
+  margin-top: 5vh;
   flex-direction: column;
   white-space: pre-line;
 `;
