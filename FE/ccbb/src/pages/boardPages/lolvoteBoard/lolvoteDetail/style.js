@@ -57,6 +57,7 @@ export const DetailBody = styled.div`
   margin-top: 80px;
   flex-direction: column;
   white-space: pre-line;
+  width: 85%;
 `;
 
 export const Moviebody = styled.div`
@@ -97,15 +98,13 @@ export const ImgVS = styled.img`
 `;
 export const Imgward = styled.img``;
 
-export const ImgTier = styled.img`
-  padding-left: 10px;
-`;
 
 export const ProfileBox = styled.div`
   display: flex;
   background-color: ${(props) => props.$bgcolor};
   border-radius: 8px;
   padding: 5px 10px;
+  cursor: pointer;
 `;
 
 export const ArticleMenu = styled.div`
@@ -155,3 +154,9 @@ export const VoteBodyButtonBox = styled.div`
   justify-content: space-between;
   width: 320px;
 `;
+
+export const voteUser1Box = styled.div`
+`
+
+export const voteUser2Box = styled.div`
+`

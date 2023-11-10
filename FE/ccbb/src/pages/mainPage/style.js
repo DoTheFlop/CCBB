@@ -36,6 +36,7 @@ export const Moviebox = styled.article`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  width: fit-content;
 }
 
 .swiper {
