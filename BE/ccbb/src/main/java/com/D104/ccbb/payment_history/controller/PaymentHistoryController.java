@@ -53,7 +53,7 @@ public class PaymentHistoryController {
 
         try {
             boolean result = paymentHistoryService.approvePayment(userId, postId, price, pg_token);
-            response.sendRedirect("https://ccbb.pro/lolvote/" + "postId");
+            response.sendRedirect("https://ccbb.pro/lolvote/" + postId);
             return new ResponseEntity<>("결제 완료", HttpStatus.OK);
         } catch (Exception e) {
             log.error(e.getMessage());
