@@ -363,11 +363,11 @@ export default function LoLvoteDetailPage() {
                 </S.Createcomment>
               )}
 
-              <h4>댓글 00개</h4>
+              <h4>댓글 {comments.length}개</h4>
               <S.CommentBody>
                 <CommentBox
                   bgcolor="#97A7FF"
-                  comment="This is a comment"
+                  comment="This is a hard-coded sample comment"
                   userId="user123"
                   date="2023-10-31"
                 />
