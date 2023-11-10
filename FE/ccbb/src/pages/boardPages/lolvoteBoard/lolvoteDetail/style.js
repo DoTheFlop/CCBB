@@ -56,6 +56,7 @@ export const DetailBody = styled.div`
   justify-content: center;
   margin-top: 80px;
   flex-direction: column;
+  white-space: pre-line;
 `;
 
 export const Moviebody = styled.div`
@@ -148,3 +149,9 @@ export const Createcomment = styled.div`
 `;
 
 export const CommentBody = styled.div``;
+
+export const VoteBodyButtonBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 320px;
+`;

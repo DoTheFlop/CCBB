@@ -17,6 +17,8 @@ import CommentBox from "../../../../component/commentBox";
 import { ccbbApi } from "../../../../api/ccbbApi";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../../../recoil/UserAtom";
+import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
+import Button1 from "../../../../component/common/buttons";
 
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
@@ -38,6 +40,9 @@ export default function LoLvoteDetailPage() {
   const [isWard, setIsWard] = useState(false);
   const [isThumbUp, setIsThumbup] = useState(false);
   const [isThumbDown, setIsThumbDown] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const [payment, setPayment] = useState(null);
 
   React.useEffect(() => {
     fetchPost();
@@ -50,9 +55,9 @@ export default function LoLvoteDetailPage() {
         params: { postId: postId },
       })
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         SetCurPost(res.data.voteList);
-        console.log(curPost);
+        setIsApproved(res.data.voteList.vote.accept2);
       })
       .catch((e) => console.log(e));
   };
@@ -62,9 +67,24 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((e) => console.log(e));
+  };
+
+  const payresponse = () => {
+    ccbbApi
+      .post(
+        `/payment/add?postId=${curPost.postId}&price=${curPost.vote.deposit}`,
+        {},
+        { headers }
+      )
+      .then((res) => {
+        setPayment(res.data);
+        // console.log(payment);
+        console.log(res.data);
+        openModalHandler();
+      });
   };
 
   const toggleThumbUp = () => {
@@ -92,6 +112,10 @@ export default function LoLvoteDetailPage() {
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
+  };
+
+  const openModalHandler = () => {
+    setIsOpen(!isOpen);
   };
 
   //댓글 전송
@@ -142,6 +166,23 @@ export default function LoLvoteDetailPage() {
       })
       .catch((e) => console.log(e));
   };
+
+  const dummyData = [
+    {
+      title: "이거 내잘못임??",
+      content:
+        "아니 어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구 그래서 내가 잘못임?",
+    },
+  ];
+
+  const dummyData1 = [
+    {
+      argument: "13분10초에 갈리오가 궁을 쓰는게 맞냐?",
+      tier_limit: "브론즈",
+      promise: "지는사람이 번지점프를 하겠습니다.",
+      deposit: "30000",
+    },
+  ];
 
   const dummyData2 = [
     {
@@ -208,121 +249,148 @@ export default function LoLvoteDetailPage() {
               <PromisePage promise={curPost.vote.promise} />
             </S.PromisePageWrapper>
 
-            <S.VoteBodybot>
-              <h3>{curPost.vote.argument}</h3>
-              <h4>옳다고 생각하는 유저에 투표해주세요</h4>
-              <S.Votebutton>
-                <S.ProfileBox $bgcolor="#97A7FF">
-                  <UserProfile name={"챌우혁"} color={"black"} />
-                  <S.ImgTier
-                    src="../resource/silver.png"
+            {isApproved ? (
+              <S.VoteBodybot>
+                <h3>{curPost.vote.argument}</h3>
+                <h4>옳다고 생각하는 유저에게 투표하세요.</h4>
+                <S.Votebutton>
+                  <S.ProfileBox $bgcolor="#97A7FF">
+                    <UserProfile name={"챌우혁"} color={"black"} />
+                    <S.ImgTier
+                      src="../resource/silver.png"
+                      alt="VS Logo"
+                      style={{ height: "50px" }}
+                    />
+                  </S.ProfileBox>
+                  <S.ImgVS
+                    src="../resource/VSlogo.png"
                     alt="VS Logo"
                     style={{ height: "50px" }}
                   />
-                </S.ProfileBox>
-                <S.ImgVS
-                  src="../resource/VSlogo.png"
-                  alt="VS Logo"
-                  style={{ height: "50px" }}
-                />
-                <S.ProfileBox $bgcolor="#FF9797">
-                  <UserProfile name={"브우혁"} color={"black"} />
-                  <S.ImgTier
-                    src="../resource/challenger.png"
-                    alt="VS Logo"
-                    style={{ height: "50px" }}
-                  />
-                </S.ProfileBox>
-              </S.Votebutton>
-              <S.ArticleMenu>
-                {isThumbUp ? (
-                  <ThumbUpAltIcon
-                    onClick={toggleThumbUp}
-                    style={{ fontSize: "50px", cursor: "pointer" }}
-                  />
-                ) : (
-                  <ThumbUpOffAltIcon
-                    onClick={toggleThumbUp}
-                    style={{ fontSize: "50px", cursor: "pointer" }}
-                  />
-                )}
+                  <S.ProfileBox $bgcolor="#FF9797">
+                    <UserProfile name={"브우혁"} color={"black"} />
+                    <S.ImgTier
+                      src="../resource/challenger.png"
+                      alt="VS Logo"
+                      style={{ height: "50px" }}
+                    />
+                  </S.ProfileBox>
+                </S.Votebutton>
 
-                {isWard ? (
-                  <S.Imgward
-                    onClick={toggleWard}
-                    src="../resource/wardafter.png"
-                    alt="VS Logo"
-                    style={{ height: "80px", cursor: "pointer" }}
-                  />
-                ) : (
-                  <S.Imgward
-                    onClick={toggleWard}
-                    src="../resource/wardbefore.png"
-                    alt="VS Logo"
-                    style={{ height: "80px", cursor: "pointer" }}
-                  />
-                )}
+                <S.ArticleMenu>
+                  {isThumbUp ? (
+                    <ThumbUpAltIcon
+                      onClick={toggleThumbUp}
+                      style={{ fontSize: "50px", cursor: "pointer" }}
+                    />
+                  ) : (
+                    <ThumbUpOffAltIcon
+                      onClick={toggleThumbUp}
+                      style={{ fontSize: "50px", cursor: "pointer" }}
+                    />
+                  )}
 
-                {isThumbDown ? (
-                  <ThumbDownAltIcon
-                    onClick={toggleThumbDown}
-                    style={{ fontSize: "50px", cursor: "pointer" }}
-                  />
-                ) : (
-                  <ThumbDownOffAltIcon
-                    onClick={toggleThumbDown}
-                    style={{ fontSize: "50px", cursor: "pointer" }}
-                  />
-                )}
-              </S.ArticleMenu>
-            </S.VoteBodybot>
-          </S.Votebody>
-          <S.BodyBottom>
-            {token && (
-              <S.Createcomment>
-                <InputComment
-                  className="comment-input"
-                  label="댓글작성"
-                  id="댓글작성"
-                  height="60px"
-                  value={myComment}
-                  onKeyPress={handleOnKeyPress}
-                  onChange={(e) => {
-                    SetMyComment(e.target.value);
-                  }}
-                  onClick={postComment}
-                  btn="true"
+                  {isWard ? (
+                    <S.Imgward
+                      onClick={toggleWard}
+                      src="../resource/wardafter.png"
+                      alt="VS Logo"
+                      style={{ height: "80px", cursor: "pointer" }}
+                    />
+                  ) : (
+                    <S.Imgward
+                      onClick={toggleWard}
+                      src="../resource/wardbefore.png"
+                      alt="VS Logo"
+                      style={{ height: "80px", cursor: "pointer" }}
+                    />
+                  )}
+
+                  {isThumbDown ? (
+                    <ThumbDownAltIcon
+                      onClick={toggleThumbDown}
+                      style={{ fontSize: "50px", cursor: "pointer" }}
+                    />
+                  ) : (
+                    <ThumbDownOffAltIcon
+                      onClick={toggleThumbDown}
+                      style={{ fontSize: "50px", cursor: "pointer" }}
+                    />
+                  )}
+                </S.ArticleMenu>
+              </S.VoteBodybot>
+            ) : (
+              <S.VoteBodybot>
+                <h4>해당 투표를 진행하시겠습니까?</h4>
+                <S.VoteBodyButtonBox>
+                  <Button1
+                    onClick={payresponse}
+                    text="수락"
+                    width="150px"
+                    height="50px"
+                  ></Button1>
+                  <Button1
+                    text="거절"
+                    width="150px"
+                    height="50px"
+                    color="#8B0000"
+                  ></Button1>
+                </S.VoteBodyButtonBox>
+                <VotePaymentModal
+                  isOpen={isOpen}
+                  onClose={openModalHandler}
+                  payment={payment}
                 />
-              </S.Createcomment>
+              </S.VoteBodybot>
             )}
-
-            <h4>댓글 00개</h4>
-            <S.CommentBody>
-              <CommentBox
-                bgcolor="#97A7FF"
-                comment="This is a comment"
-                userId="user123"
-                date="2023-10-31"
-              />
-              {comments.map((cmt, index) => {
-                return (
-                  <CommentBox
-                    key={index}
-                    isMine={userInfo.userId === cmt.userId}
-                    userId={cmt.userId}
-                    nickname={cmt.nickname}
-                    comment={cmt.content}
-                    date={cmt.createDate}
-                    position={cmt.position}
-                    onClickModify={(newContent) =>
-                      handleModifyComment(cmt.commentId, newContent)
-                    }
-                    onClickDelete={() => handleDeleteComment(cmt.commentId)}
+          </S.Votebody>
+          {isApproved && (
+            <S.BodyBottom>
+              {token && (
+                <S.Createcomment>
+                  <InputComment
+                    className="comment-input"
+                    label="댓글작성"
+                    id="댓글작성"
+                    height="60px"
+                    value={myComment}
+                    onKeyPress={handleOnKeyPress}
+                    onChange={(e) => {
+                      SetMyComment(e.target.value);
+                    }}
+                    onClick={postComment}
                   />
-                );
-              })}
-            </S.CommentBody>
-          </S.BodyBottom>
+                </S.Createcomment>
+              )}
+
+              <h4>댓글 00개</h4>
+              <S.CommentBody>
+                <CommentBox
+                  bgcolor="#97A7FF"
+                  comment="This is a comment"
+                  userId="user123"
+                  date="2023-10-31"
+                />
+                {comments.map((cmt, index) => {
+                  return (
+                    <CommentBox
+                      key={index}
+                      isMine={userInfo.userId === cmt.userId}
+                      userId={cmt.userId}
+                      nickname={cmt.nickname}
+                      comment={cmt.content}
+                      date={cmt.createDate}
+                      position={cmt.position}
+                      onClickModify={(newContent) =>
+                        handleModifyComment(cmt.commentId, newContent)
+                      }
+                      onClickDelete={() => handleDeleteComment(cmt.commentId)}
+                    />
+                  );
+                })}
+              </S.CommentBody>
+            </S.BodyBottom>
+          )}
         </S.DetailBody>
       </S.Votebodycover>
     </S.Main>
