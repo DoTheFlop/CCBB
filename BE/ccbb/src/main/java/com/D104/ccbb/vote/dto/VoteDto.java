@@ -25,6 +25,8 @@ public class VoteDto {
 	private Integer deposit;
 	private String nickname1;
 	private String nickname2;
+	private Integer user1;
+	private Integer user2;
 	private String tier1;
 	private String tier2;
 	private Byte position1;
@@ -44,6 +46,8 @@ public class VoteDto {
 			.deposit(vote.getDeposit())
 			.nickname1(vote.getUserId1().getNickname())
 			.nickname2(vote.getUserId2().getNickname())
+			.user1(vote.getUserId1().getUserId())
+			.user2(vote.getUserId2().getUserId())
 			.position1(vote.getUserId1().getMainPosition())
 			.position2(vote.getUserId2().getMainPosition())
 			.tier1(vote.getUserId1().getLol())
