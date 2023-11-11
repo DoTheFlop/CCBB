@@ -119,9 +119,9 @@ export default function Headermain() {
       </S.leftmenu>
       <S.rightmenu>
         <S.webmenu>
-          {/* <Link to="/free">
-            <p>자유게시판</p>
-          </Link> */}
+          <Link to="/introduce">
+            <p>사이트 소개</p>
+          </Link>
           <Link to="/gift">
             <p>경품추첨</p>
           </Link>
