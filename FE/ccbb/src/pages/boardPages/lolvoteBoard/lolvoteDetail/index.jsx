@@ -95,10 +95,20 @@ export default function LoLvoteDetailPage() {
               setUserPick(true);
             }
           })
-          .catch((e) => console.log(e));
+          .catch((e) => {
+            console.log(e);
+          });
         SetCurPost(res.data.voteList);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        if (e.response) {
+          alert(e.response.data.message);
+          window.location = "https://ccbb.pro/lolvote";
+        } else {
+          alert("네트워크 오류가 발생했습니다.");
+        }
+      });
   };
 
   const fetchComments = () => {
@@ -402,6 +412,11 @@ export default function LoLvoteDetailPage() {
                     />
                   )}
                 </S.ArticleMenu>
+              </S.VoteBodybot>
+            ) : !isMyVote() ? (
+              <S.VoteBodybot>
+                <h3>{curPost.vote.argument}</h3>
+                <h2>⛔️ 아직 성사되지 않은 게시글입니다. ⛔️</h2>
               </S.VoteBodybot>
             ) : (
               <S.VoteBodybot>

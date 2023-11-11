@@ -105,7 +105,8 @@ public class PostController {
             resultMap.put("message", "success");
             status = HttpStatus.ACCEPTED;
         } catch (Exception e) {
-            resultMap.put("message", "fail: " + e.getMessage());
+            log.error("vote detail 불러오기 오류: {}", e.getMessage());
+            resultMap.put("message", e.getMessage());
             status = HttpStatus.INTERNAL_SERVER_ERROR;
         }
         return new ResponseEntity<Map<String, Object>>(resultMap, status);
