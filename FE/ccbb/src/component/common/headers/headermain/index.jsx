@@ -64,8 +64,12 @@ export default function Headermain() {
           Authorization: `Bearer ${token}`,
           withCredentials: true,
         };
+        const heartbeatTimeout = 60 * 1000 * 60;
 
-        eventSource = new EventSourcePolyfill(url, { headers });
+        eventSource = new EventSourcePolyfill(url, {
+          headers,
+          heartbeatTimeout,
+        });
 
         eventSource.onmessage = async (event) => {
           // console.log(event.data);
