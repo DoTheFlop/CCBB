@@ -11,6 +11,9 @@ export const StyledInput = styled.input`
   color: white;
   font-size: 20px;
   margin-bottom: 20px;
+  &:focus {
+    outline: none;
+  }
 `;
 
 export const Inputlabel = styled.label`

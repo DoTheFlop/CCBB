@@ -67,10 +67,10 @@ export default function LoLvoteDetailPage() {
     //투표 진행단계를 0~3 중 하나의 숫자로 리턴함 (수락대기/투표진행/공약이행/보증금반환)
     if (!isApproved) return 0;
     const now = new Date();
-    const endDate = new Date(curPost.vote.deadline);
+    const endDate = new Date(curPost?.vote.deadline);
     if (isBefore(now, endDate)) return 1;
-    //##### doPromise 넘어오면 수정해야됨 #####
-    return 2;
+    if (!curPost?.vote.doPromise) return 2;
+    return 3;
   };
 
   const fetchPost = () => {
@@ -269,6 +269,7 @@ export default function LoLvoteDetailPage() {
             <TierImg tier={curPost.vote.limitTier} size={"100px"} />
           </S.HeadRight>
         </S.Menuhead>
+
         <S.DetailBody>
           {/* 투표 당사자일때만 진행상황이 보임 */}
           {isMyVote() && <VoteProcess step={voteStep()} />}
@@ -287,7 +288,6 @@ export default function LoLvoteDetailPage() {
               />
             )}
           </S.Moviebody>
-
           <S.Votebody>
             {curPost.content}
             <S.PromiseP>
@@ -389,7 +389,7 @@ export default function LoLvoteDetailPage() {
                   )}
                 </S.ArticleMenu>
               </S.VoteBodybot>
-            ) : (
+            ) : userInfo.userId === curPost?.vote.user2 ? (
               <S.VoteBodybot>
                 <h4>해당 투표를 진행하시겠습니까?</h4>
                 <S.VoteBodyButtonBox>
@@ -412,6 +412,8 @@ export default function LoLvoteDetailPage() {
                   payment={payment}
                 />
               </S.VoteBodybot>
+            ) : (
+              <></>
             )}
           </S.Votebody>
 

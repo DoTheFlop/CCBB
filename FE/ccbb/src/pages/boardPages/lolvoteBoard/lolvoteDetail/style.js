@@ -6,6 +6,7 @@ export const Main = styled.main`
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 100%;
 `;
 
 export const Head = styled.header`
@@ -37,6 +38,7 @@ export const Votebodycover = styled.div`
   width: 100%;
   background-color: white;
   padding-bottom: 5vh;
+  min-height: 100%;
 `;
 
 export const Headbottom = styled.div`
@@ -98,7 +100,6 @@ export const ImgVS = styled.img`
 `;
 export const Imgward = styled.img``;
 
-
 export const ProfileBox = styled.div`
   display: flex;
   background-color: ${(props) => props.$bgcolor};
@@ -155,8 +156,6 @@ export const VoteBodyButtonBox = styled.div`
   width: 320px;
 `;
 
-export const voteUser1Box = styled.div`
-`
+export const voteUser1Box = styled.div``;
 
-export const voteUser2Box = styled.div`
-`
+export const voteUser2Box = styled.div``;
