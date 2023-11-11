@@ -156,7 +156,7 @@ export default function LoLvoteCreatePage() {
     ADCarry: 10,
     Support: 1,
   };
-  const [payment,setPayment] = useState(null)
+  const [payment, setPayment] = useState(null);
 
   const handleRoleCheckboxChange = (role) => {
     const isRoleSelected = voteArticle[role]; // Check if the role is selected
@@ -182,12 +182,11 @@ export default function LoLvoteCreatePage() {
         const response = await ccbbApi.get(
           `/user/find-user?email=${voteArticle.userId2}`
         );
-            console.log(response)
+        console.log(response);
         if (response) {
           setUserSearch(true);
           alert("확인되었습니다.");
         }
-        
       } else {
         alert("다른사람의 이메일을 입력해주세요");
         return;
@@ -196,7 +195,6 @@ export default function LoLvoteCreatePage() {
       console.log(error);
     }
   };
-
 
   const handleSendButton = async () => {
     if (!article.title) {
@@ -243,7 +241,7 @@ export default function LoLvoteCreatePage() {
       };
 
       const response = await axios
-        .post("http://k9d104.p.ssafy.io:8081/api/post/add", formData, {
+        .post("https://ccbb.pro/api/post/add", formData, {
           headers,
           //cors에러 뜨면 넣어야함
           withCredentials: true,
@@ -261,28 +259,27 @@ export default function LoLvoteCreatePage() {
           const responsevote = await ccbbApi
             .post("/vote/add", body, {
               headers,
-            //   withCredentials: true,
+              //   withCredentials: true,
             })
-            .then(async(responsevote) => {
+            .then(async (responsevote) => {
               if (responsevote.data.message === "success") {
-                console.log(voteArticle.deposit)
-                console.log(voteArticle.postId)
-                const payresponse = await ccbbApi.post(
+                console.log(voteArticle.deposit);
+                console.log(voteArticle.postId);
+                const payresponse = await ccbbApi
+                  .post(
                     `/payment/add?postId=${voteArticle.postId}&price=${voteArticle.deposit}`,
                     {},
                     { headers }
-                  ).then(async(payresponse) => {
-                    if (payresponse.data) {
-                        setPayment(payresponse.data)
-                        console.log(payment)
-                        console.log(payresponse.data)
-                        openModalHandler()
-                    }
-                    console.log(payresponse.data)
-
-                  }
-
                   )
+                  .then(async (payresponse) => {
+                    if (payresponse.data) {
+                      setPayment(payresponse.data);
+                      console.log(payment);
+                      console.log(payresponse.data);
+                      openModalHandler();
+                    }
+                    console.log(payresponse.data);
+                  });
               }
             });
         });
@@ -299,7 +296,11 @@ export default function LoLvoteCreatePage() {
         </S.Headtop>
       </S.Head>
       <S.CreateBodyCover>
-      <VotePaymentModal isOpen={isOpen} onClose={openModalHandler} payment={payment}/>
+        <VotePaymentModal
+          isOpen={isOpen}
+          onClose={openModalHandler}
+          payment={payment}
+        />
         <S.CreateBody>
           <Input2
             label="제목"
