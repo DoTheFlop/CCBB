@@ -1,4 +1,6 @@
+import { ccbbApi } from "../../../api/ccbbApi";
 import * as S from "./style";
+import React, { useEffect } from "react";
 
 export default function UserProfile({
   name,
@@ -8,10 +10,30 @@ export default function UserProfile({
   imgUrl,
 }) {
   // const iconSize = "50px";
+  const [profileImg, setProfileImg] = React.useState(imgUrl);
+
+  useEffect(() => {
+    const fetchImage = () => {
+      ccbbApi
+        .get(imgUrl)
+        .then((res) => {
+          if (res.data === "Image not found") {
+            // console.log(res.data);
+            setProfileImg("/resource/LoL.png");
+          } else {
+            setProfileImg(imgUrl);
+          }
+        })
+        .catch((e) => console.log(e));
+    };
+
+    fetchImage();
+  }, [imgUrl]);
+
   return (
     <S.Profile direction={direction}>
       <S.Img
-        src={imgUrl || "/resource/LoL.png"}
+        src={profileImg}
         alt="profile-img"
         style={{ width: size, height: size }}
       />

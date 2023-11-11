@@ -52,7 +52,7 @@ export default function LoLvoteDetailPage() {
   useEffect(() => {
     fetchPost();
     fetchComments();
-    console.log(userPick);
+    // console.log(userPick);
   }, [userPick]);
 
   const isMyVote = () => {
@@ -83,14 +83,14 @@ export default function LoLvoteDetailPage() {
         params: { postId: postId },
       })
       .then((res) => {
-        // console.log(res.data);
+        console.log(res.data);
         setIsApproved(res.data.voteList.vote.accept2);
         ccbbApi
           .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
             headers,
           })
           .then((res) => {
-            console.log(res.data.voteResult.userPick);
+            // console.log(res.data.voteResult.userPick);
             if (res.data.voteResult.userPick === 1) {
               setUserPick(true);
             }
@@ -131,7 +131,7 @@ export default function LoLvoteDetailPage() {
       ccbbApi
         .delete(`/post/reject/${curPost.postId}`, { headers }, {})
         .then((res) => {
-          console.log(res);
+          // console.log(res);
           alert("거절하였습니다.");
           window.location.href = "https://ccbb.pro/lolvote";
         });
@@ -158,7 +158,7 @@ export default function LoLvoteDetailPage() {
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey && myComment) {
       e.preventDefault();
-      console.log(myComment);
+      // console.log(myComment);
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
@@ -168,7 +168,7 @@ export default function LoLvoteDetailPage() {
     setIsOpen(!isOpen);
   };
   const handlevoteUser1 = (e) => {
-    console.log(curPost.vote.voteId);
+    // console.log(curPost.vote.voteId);
     const headers = {
       Authorization: `Bearer ${token1}`,
     };
@@ -253,7 +253,7 @@ export default function LoLvoteDetailPage() {
         },
       })
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         fetchComments();
       })
       .catch((e) => console.log(e));
@@ -327,6 +327,7 @@ export default function LoLvoteDetailPage() {
                     $bgcolor="#97A7FF"
                   >
                     <UserProfile
+                      imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user1}`}
                       name={curPost.vote.nickname1}
                       color={"black"}
                     />
@@ -348,6 +349,7 @@ export default function LoLvoteDetailPage() {
                     $bgcolor="#FF9797"
                   >
                     <UserProfile
+                      imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user2}`}
                       name={curPost.vote.nickname2}
                       color={"black"}
                     />
@@ -453,12 +455,12 @@ export default function LoLvoteDetailPage() {
                 댓글 {curPost && curPost.comment && curPost.comment.length}개
               </h4>
               <S.CommentBody>
-                <CommentBox
+                {/* <CommentBox
                   bgcolor="#97A7FF"
                   comment="This is a hard-coded sample comment"
                   userId="user123"
                   date="2023-10-31"
-                />
+                /> */}
                 {comments.map((cmt, index) => {
                   return (
                     <CommentBox
