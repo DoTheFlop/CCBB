@@ -12,7 +12,7 @@ export default function KakaoLoginPage() {
   const setUserInfo = useSetRecoilState(userState);
 
   React.useEffect(() => {
-    console.log("token: " + token);
+    console.log(token);
     const headers = {
       Authorization: `Bearer ${token}`,
     };
