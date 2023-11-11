@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import styled from "styled-components";
 
 export const Main = styled.main`
@@ -7,6 +7,7 @@ export const Main = styled.main`
   align-items: center;
   justify-content: center;
   width: 100%;
+  min-height: 100%;
 `;
 
 export const Head = styled.header`
@@ -38,6 +39,7 @@ export const Votebodycover = styled.div`
   width: 100%;
   background-color: white;
   padding-bottom: 5vh;
+  min-height: 100%;
 `;
 
 export const Headbottom = styled.div`
@@ -99,7 +101,6 @@ export const ImgVS = styled.img`
 `;
 export const Imgward = styled.img``;
 
-
 export const ProfileBox = styled.div`
   display: flex;
   background-color: ${(props) => props.$bgcolor};
@@ -156,11 +157,9 @@ export const VoteBodyButtonBox = styled.div`
   width: 320px;
 `;
 
-export const voteUser1Box = styled.div`
-`
+export const voteUser1Box = styled.div``;
 
-export const voteUser2Box = styled.div`
-`
+export const voteUser2Box = styled.div``;
 const ModalBackground = styled.div`
   position: fixed;
   top: 0;
@@ -191,26 +190,32 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
 
   return (
     <ModalBackground onClick={onClose}>
-  <ModalContent onClick={(e) => e.stopPropagation()}>
-    <h2>보증금 관련 
-       알림</h2>
-    <p>
-      CC.BB는 게임 내 분쟁의 공정한 해결을 위한 플랫폼입니다. 이를 위해, 투표에서 패배한 당사자는 사전에 동의한 공약을 이행해야 합니다.
-    </p>
-    <p>
-      공약 이행을 위해 미리 보증금을 입금해야 하는데, 이 보증금은 공약 이행을 보장하는 중요한 도구입니다.
-    </p>
-    <p>
-      만약 공약 이행을 하지 않을 경우, 보증금은 반환되지 않습니다. 대신, 이 보증금은 사회적 기부금으로 사용됩니다.
-    </p>
-    <p>
-      이는 게임의 공정성을 유지하고, 공약을 신중하게 설정하도록 돕는 중요한 규칙입니다. 따라서 이 점을 숙지하고, 공약을 설정하실 때 신중하게 결정해주시기 바랍니다.
-    </p>
-    <input type="checkbox" checked={agree} onChange={handleAgree} />
-    <label>위의 보증금 관련 규칙에 동의하십니까?</label>
-    <button disabled={!agree} onClick={onAgree}>동의하고 계속하기</button>
-    <button onClick={onClose}>취소</button>
-  </ModalContent>
-</ModalBackground>
+      <ModalContent onClick={(e) => e.stopPropagation()}>
+        <h2>보증금 관련 알림</h2>
+        <p>
+          CC.BB는 게임 내 분쟁의 공정한 해결을 위한 플랫폼입니다. 이를 위해,
+          투표에서 패배한 당사자는 사전에 동의한 공약을 이행해야 합니다.
+        </p>
+        <p>
+          공약 이행을 위해 미리 보증금을 입금해야 하는데, 이 보증금은 공약
+          이행을 보장하는 중요한 도구입니다.
+        </p>
+        <p>
+          만약 공약 이행을 하지 않을 경우, 보증금은 반환되지 않습니다. 대신, 이
+          보증금은 사회적 기부금으로 사용됩니다.
+        </p>
+        <p>
+          이는 게임의 공정성을 유지하고, 공약을 신중하게 설정하도록 돕는 중요한
+          규칙입니다. 따라서 이 점을 숙지하고, 공약을 설정하실 때 신중하게
+          결정해주시기 바랍니다.
+        </p>
+        <input type="checkbox" checked={agree} onChange={handleAgree} />
+        <label>위의 보증금 관련 규칙에 동의하십니까?</label>
+        <button disabled={!agree} onClick={onAgree}>
+          동의하고 계속하기
+        </button>
+        <button onClick={onClose}>취소</button>
+      </ModalContent>
+    </ModalBackground>
   );
 };

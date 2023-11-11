@@ -70,10 +70,10 @@ export default function LoLvoteDetailPage() {
     //투표 진행단계를 0~3 중 하나의 숫자로 리턴함 (수락대기/투표진행/공약이행/보증금반환)
     if (!isApproved) return 0;
     const now = new Date();
-    const endDate = new Date(curPost.vote.deadline);
+    const endDate = new Date(curPost?.vote.deadline);
     if (isBefore(now, endDate)) return 1;
-    //##### doPromise 넘어오면 수정해야됨 #####
-    return 2;
+    if (!curPost?.vote.doPromise) return 2;
+    return 3;
   };
 
   const fetchPost = () => {
@@ -203,7 +203,6 @@ export default function LoLvoteDetailPage() {
     }
   };
 
-  
   const openModal = (message) => {
     setModalMessage(message);
     setModalOpen(true);
@@ -286,7 +285,6 @@ export default function LoLvoteDetailPage() {
       })
       .catch((e) => console.log(e));
   };
-  
 
   const handleCreateButtonClick = () => {
     setIsOpenModal(true);
@@ -300,7 +298,7 @@ export default function LoLvoteDetailPage() {
     setIsOpenModal(false);
     payresponse();
   };
-  
+
   return (
     <S.Main>
       <S.Head>
@@ -323,6 +321,7 @@ export default function LoLvoteDetailPage() {
             <TierImg tier={curPost.vote.limitTier} size={"100px"} />
           </S.HeadRight>
         </S.Menuhead>
+
         <S.DetailBody>
           {/* 투표 당사자일때만 진행상황이 보임 */}
           {isMyVote() && <VoteProcess step={voteStep()} />}
@@ -341,7 +340,6 @@ export default function LoLvoteDetailPage() {
               />
             )}
           </S.Moviebody>
-  
           <S.Votebody>
             {curPost.content}
             <S.PromiseP>
@@ -352,11 +350,11 @@ export default function LoLvoteDetailPage() {
                 <PlayArrowIcon onClick={togglePromisePage} />
               )}
             </S.PromiseP>
-  
+
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
               <PromisePage promise={curPost.vote.promise} />
             </S.PromisePageWrapper>
-  
+
             {isApproved ? (
               <S.VoteBodybot>
                 <h3>{curPost.vote.argument}</h3>
@@ -392,7 +390,7 @@ export default function LoLvoteDetailPage() {
                     />
                   </S.ProfileBox>
                 </S.Votebutton>
-  
+
                 <S.ArticleMenu>
                   {isThumbUp ? (
                     <ThumbUpAltIcon
@@ -405,7 +403,7 @@ export default function LoLvoteDetailPage() {
                       style={{ fontSize: "50px", cursor: "pointer" }}
                     />
                   )}
-  
+
                   {isWard ? (
                     <S.Imgward
                       onClick={toggleWard}
@@ -421,7 +419,7 @@ export default function LoLvoteDetailPage() {
                       style={{ height: "80px", cursor: "pointer" }}
                     />
                   )}
-  
+
                   {isThumbDown ? (
                     <ThumbDownAltIcon
                       onClick={toggleThumbDown}
@@ -449,7 +447,7 @@ export default function LoLvoteDetailPage() {
                     text="수락"
                     width="150px"
                     height="50px"
-                    onClick={handleCreateButtonClick}  // 변경된 부분: onClick 이벤트 핸들러로 payresponse 함수가 호출됩니다.
+                    onClick={handleCreateButtonClick} // 변경된 부분: onClick 이벤트 핸들러로 payresponse 함수가 호출됩니다.
                   ></Button1>
                   <Button1
                     onClick={voteReject}
@@ -467,7 +465,7 @@ export default function LoLvoteDetailPage() {
               </S.VoteBodybot>
             )}
           </S.Votebody>
-  
+
           {isApproved && (
             <S.BodyBottom>
               {token && (
@@ -487,7 +485,7 @@ export default function LoLvoteDetailPage() {
                   />
                 </S.Createcomment>
               )}
-  
+
               <h4>
                 댓글 {curPost && curPost.comment && curPost.comment.length}개
               </h4>
@@ -520,16 +518,16 @@ export default function LoLvoteDetailPage() {
           )}
         </S.DetailBody>
       </S.Votebodycover>
-      {isModalOpen&&
-      <S.DepositModal 
-        isOpen={isModalOpen} 
-        onClose={handleCancelClick} 
-        onAgree={handleAgreeClick}
-      >
-        공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에 동의하십니까?
-      </S.DepositModal>
-      }
+      {isModalOpen && (
+        <S.DepositModal
+          isOpen={isModalOpen}
+          onClose={handleCancelClick}
+          onAgree={handleAgreeClick}
+        >
+          공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에
+          동의하십니까?
+        </S.DepositModal>
+      )}
     </S.Main>
   );
-  
 }

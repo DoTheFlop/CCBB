@@ -14,6 +14,7 @@ import { userState } from "../../../recoil/UserAtom";
 import { ccbbApi } from "../../../api/ccbbApi";
 
 export default function MyPage() {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "multipart/form-data",
@@ -22,6 +23,7 @@ export default function MyPage() {
   const user = useRecoilValue(userState);
   const setRecoilUser = useSetRecoilState(userState);
   React.useEffect(() => {
+    if (!token) navigate("/");
     ccbbApi
       .get("/user/profile", { headers })
       .then((res) => {
@@ -33,7 +35,6 @@ export default function MyPage() {
       })
       .catch((e) => console.log(e));
   }, [setRecoilUser]);
-  const navigate = useNavigate();
 
   const tabs = [
     { name: "진행중인 투표", component: <OngoingVote key={0} /> },
@@ -106,7 +107,7 @@ export default function MyPage() {
             <Button1 text="내역보기" height={"30px"}></Button1>
           </S.textAndBtn>
         </S.textSection>
-        <AccountCard />
+        <AccountCard loltier={user.lol} />
       </S.profileInfo>
       <S.tabGroup>
         {tabs.map((tab, index) => (
