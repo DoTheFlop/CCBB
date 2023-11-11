@@ -382,7 +382,7 @@ export default function LoLvoteDetailPage() {
               </S.VoteBodybot>
             ) : (
               <S.VoteBodybot>
-                {curPost.vote.argument}
+                <h3>{curPost.vote.argument}</h3>
                 <h4>해당 투표를 진행하시겠습니까?</h4>
                 <S.VoteBodyButtonBox>
                   <Button1
