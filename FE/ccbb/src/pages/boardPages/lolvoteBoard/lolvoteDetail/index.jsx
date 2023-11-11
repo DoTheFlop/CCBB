@@ -48,6 +48,9 @@ export default function LoLvoteDetailPage() {
   const [payment, setPayment] = useState(null);
   const token1 = localStorage.getItem("token");
   const [userPick, setUserPick] = useState(null);
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [isModalOpen, setIsOpenModal] = useState(false);
 
   useEffect(() => {
     fetchPost();
@@ -200,6 +203,21 @@ export default function LoLvoteDetailPage() {
     }
   };
 
+  
+  const openModal = (message) => {
+    setModalMessage(message);
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
+  const voteSuccess = () => {
+    // 기타 코드...
+    openModal("투표가 성공적으로 이루어졌습니다.");
+  };
+
   const handlevoteUser2 = (e) => {
     const headers = {
       Authorization: `Bearer ${token1}`,
@@ -268,7 +286,21 @@ export default function LoLvoteDetailPage() {
       })
       .catch((e) => console.log(e));
   };
+  
 
+  const handleCreateButtonClick = () => {
+    setIsOpenModal(true);
+  };
+
+  const handleCancelClick = () => {
+    setIsOpenModal(false);
+  };
+
+  const handleAgreeClick = () => {
+    setIsOpenModal(false);
+    payresponse();
+  };
+  
   return (
     <S.Main>
       <S.Head>
@@ -309,7 +341,7 @@ export default function LoLvoteDetailPage() {
               />
             )}
           </S.Moviebody>
-
+  
           <S.Votebody>
             {curPost.content}
             <S.PromiseP>
@@ -320,11 +352,11 @@ export default function LoLvoteDetailPage() {
                 <PlayArrowIcon onClick={togglePromisePage} />
               )}
             </S.PromiseP>
-
+  
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
               <PromisePage promise={curPost.vote.promise} />
             </S.PromisePageWrapper>
-
+  
             {isApproved ? (
               <S.VoteBodybot>
                 <h3>{curPost.vote.argument}</h3>
@@ -341,11 +373,6 @@ export default function LoLvoteDetailPage() {
                       name={curPost.vote.nickname1}
                       color={"black"}
                     />
-                    {/* <S.ImgTier
-                    src="../resource/silver.png"
-                    alt="VS Logo"
-                    style={{ height: "50px" }}
-                  /> */}
                   </S.ProfileBox>
                   <S.ImgVS
                     src="../resource/VSlogo.png"
@@ -363,14 +390,9 @@ export default function LoLvoteDetailPage() {
                       name={curPost.vote.nickname2}
                       color={"black"}
                     />
-                    {/* <S.ImgTier
-                    src="../resource/challenger.png"
-                    alt="VS Logo"
-                    style={{ height: "50px" }}
-                  /> */}
                   </S.ProfileBox>
                 </S.Votebutton>
-
+  
                 <S.ArticleMenu>
                   {isThumbUp ? (
                     <ThumbUpAltIcon
@@ -383,7 +405,7 @@ export default function LoLvoteDetailPage() {
                       style={{ fontSize: "50px", cursor: "pointer" }}
                     />
                   )}
-
+  
                   {isWard ? (
                     <S.Imgward
                       onClick={toggleWard}
@@ -399,7 +421,7 @@ export default function LoLvoteDetailPage() {
                       style={{ height: "80px", cursor: "pointer" }}
                     />
                   )}
-
+  
                   {isThumbDown ? (
                     <ThumbDownAltIcon
                       onClick={toggleThumbDown}
@@ -424,10 +446,10 @@ export default function LoLvoteDetailPage() {
                 <h4>해당 투표를 진행하시겠습니까?</h4>
                 <S.VoteBodyButtonBox>
                   <Button1
-                    onClick={payresponse}
                     text="수락"
                     width="150px"
                     height="50px"
+                    onClick={handleCreateButtonClick}  // 변경된 부분: onClick 이벤트 핸들러로 payresponse 함수가 호출됩니다.
                   ></Button1>
                   <Button1
                     onClick={voteReject}
@@ -445,7 +467,7 @@ export default function LoLvoteDetailPage() {
               </S.VoteBodybot>
             )}
           </S.Votebody>
-
+  
           {isApproved && (
             <S.BodyBottom>
               {token && (
@@ -465,7 +487,7 @@ export default function LoLvoteDetailPage() {
                   />
                 </S.Createcomment>
               )}
-
+  
               <h4>
                 댓글 {curPost && curPost.comment && curPost.comment.length}개
               </h4>
@@ -498,6 +520,16 @@ export default function LoLvoteDetailPage() {
           )}
         </S.DetailBody>
       </S.Votebodycover>
+      {isModalOpen&&
+      <S.DepositModal 
+        isOpen={isModalOpen} 
+        onClose={handleCancelClick} 
+        onAgree={handleAgreeClick}
+      >
+        공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에 동의하십니까?
+      </S.DepositModal>
+      }
     </S.Main>
   );
+  
 }

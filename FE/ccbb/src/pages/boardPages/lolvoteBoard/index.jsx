@@ -2,7 +2,7 @@ import * as S from "./style";
 import Headermenu from "../../../component/common/headers/headermenu";
 import Button1 from "../../../component/common/buttons";
 import VoteCard from "../../../component/voteBoard/Cardsection";
-import { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { ccbbApi } from "../../../api/ccbbApi";
@@ -17,16 +17,37 @@ export default function LoLvoteboardPage() {
   const [activeTab, setActiveTab] = useState("ongoing"); // 'ongoing' 또는 'completed'
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const navigate = useNavigate();
+  const [modalOpen, setIsModalOpen] = useState(false);  
+  const [modalMessage, setModalMessage] = useState("");
+
   const toggleTab = (tab) => {
     setActiveTab(tab);
   };
+
+  // const openModal = (message) => {
+  //   setModalMessage(message);
+  //   setModalOpen(true);
+  // };
+
+  // const closeModal = () => {
+  //   setIsModalOpen(false);
+  // };
 
   const handleOptionChange = (selected) => {
     setSelectedOption(selected);
   };
 
   const handleCreateButtonClick = () => {
-    navigate("/lolvote/create");
+    setIsModalOpen(true);
+  };
+
+  const handleAgreeClick = () => {
+    setIsModalOpen(false);
+    navigate("/lolvote/create");  
+  };
+
+  const handleCancelClick = () => {
+    setIsModalOpen(false);
   };
 
   const customStyles = {
@@ -74,13 +95,11 @@ export default function LoLvoteboardPage() {
             ? `/post/vote/pastList?page=${currentPage}`
             : `/post/vote/popularPastList?page=${currentPage}`;
       }
-  
-      console.log(endpoint);
+
       const response = await ccbbApi.get(endpoint);
   
       setPages(response.data.voteList.totalPages);
       setVoteData(response.data.voteList.content);
-      console.log(response.data.voteList.totalElements);
       setTotal(response.data.voteList.totalElements);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -162,6 +181,15 @@ export default function LoLvoteboardPage() {
           />
         </S.PaginationBox>
       </S.Votebodycover>
+      {modalOpen&&
+      <S.DepositModal 
+        isOpen={modalOpen} 
+        onClose={handleCancelClick} 
+        onAgree={handleAgreeClick}
+      >
+        공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에 동의하십니까?
+      </S.DepositModal>
+      }
     </S.Main>
   );
 }
