@@ -196,7 +196,7 @@ public class PaymentHistoryService {
                 continue;
             }
             foundPayment.setIsReturned(true);
-            // foundPayment.setVoteId(null);
+            foundPayment.setVoteId(null);
             paymentHistoryRepo.save(foundPayment);
 
         }
