@@ -33,7 +33,7 @@ public class PaymentHistory {
     private User userId;
 
     @ManyToOne
-    @JoinColumn(name = "vote_id", nullable = false)
+    @JoinColumn(name = "vote_id")
     @ToString.Exclude
     private Vote voteId;
 
