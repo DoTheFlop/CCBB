@@ -121,9 +121,21 @@ export default function LoLvoteDetailPage() {
       .then((res) => {
         setPayment(res.data);
         // console.log(payment);
-        console.log(res.data);
+        // console.log(res.data);
         openModalHandler();
       });
+  };
+
+  const voteReject = () => {
+    if (window.confirm("정말 거절하시겠습니까? 게시글은 삭제됩니다.")) {
+      ccbbApi
+        .delete(`/post/reject/${curPost.postId}`, { headers }, {})
+        .then((res) => {
+          console.log(res);
+          alert("거절하였습니다.");
+          window.location.href = "https://ccbb.pro/lolvote";
+        });
+    }
   };
 
   const toggleThumbUp = () => {
@@ -391,6 +403,7 @@ export default function LoLvoteDetailPage() {
               </S.VoteBodybot>
             ) : (
               <S.VoteBodybot>
+                <h3>{curPost.vote.argument}</h3>
                 <h4>해당 투표를 진행하시겠습니까?</h4>
                 <S.VoteBodyButtonBox>
                   <Button1
@@ -400,6 +413,7 @@ export default function LoLvoteDetailPage() {
                     height="50px"
                   ></Button1>
                   <Button1
+                    onClick={voteReject}
                     text="거절"
                     width="150px"
                     height="50px"

@@ -47,7 +47,6 @@ public class CommentController {
 	private final LikesRepo likesRepo;
 	private final CommentRepo commentRepo;
 	private final UserService userService;
-
 	@PostMapping("/add")
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody CommentRequestDto commentRequestDto) {
@@ -72,11 +71,7 @@ public class CommentController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
 		try {
-			List<CommentGetDto> commentList = commentService.getComment(postId)
-				.stream()
-				.map(m -> CommentGetDto.fromEntity(m))
-				.collect(Collectors.toList());
-			resultMap.put("commentList", commentList);
+			resultMap.put("commentList", commentService.getComment(postId));
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
