@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -173,8 +175,8 @@ public class FileService {
 		}
 	}
 
+	@Transactional
 	public boolean deleteFile(int fileId) throws Exception {
-		log.info("deleteFile fileId: {}", fileId);
 		Optional<File> findFileOpt = fileRepo.findById(fileId);
 		if (findFileOpt.isEmpty()) {
 			throw new Exception("파일이 없습니다.");
@@ -190,12 +192,14 @@ public class FileService {
 		if (file.getType().startsWith("replay")) {
 			path += REPLAY_PATH;
 		}
-		path = path + file.getName() + "." + file.getExtension();
-		fileRepo.deleteById(fileId);
+		path = path + "/" + file.getName() + "." + file.getExtension();
 		boolean delete = new java.io.File(path).delete();
+		fileRepo.deleteById(fileId);
 		if (!delete) {
+			log.error("deleteFile error on path: {}", path);
 			throw new Exception("삭제 실패");
 		}
+		log.info("deleteFile fileId: {}", fileId);
 		return true;
 	}
 }
