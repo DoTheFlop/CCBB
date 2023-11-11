@@ -32,6 +32,7 @@ public class VoteDto {
 	private Byte position1;
 	private Byte position2;
 	private Integer postId;
+	private Boolean doPromise;
 
 	public static VoteDto fromEntity(Vote vote) {
 		return VoteDto.builder()
@@ -52,6 +53,7 @@ public class VoteDto {
 			.position2(vote.getUserId2().getMainPosition())
 			.tier1(vote.getUserId1().getLol())
 			.tier2(vote.getUserId2().getLol())
+			.doPromise(vote.getDoPromise())
 			.postId(vote.getPostId().getPostId())
 			.build();
 	}
