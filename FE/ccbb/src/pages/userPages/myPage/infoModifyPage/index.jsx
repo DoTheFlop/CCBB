@@ -31,7 +31,7 @@ export default function InfoModifyPage() {
       });
   };
   const [userModi, setUserModi] = useState({
-    email: "",
+    // email: "",
     nickname: "",
     password: "",
     gender: "",

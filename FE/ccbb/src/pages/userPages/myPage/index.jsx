@@ -79,6 +79,10 @@ export default function MyPage() {
               user.userId
             }?${Date.now()}`}
             alt="profile-img"
+            onError={(e) => {
+              e.target.onerror = null; // 이벤트 핸들러를 한 번만 호출하도록 설정
+              e.target.src = "/resource/LoL.png"; // 대체 이미지의 URL로 변경
+            }}
           />
           <AddPhotoAlternateIcon onClick={onClickUploadImgBtn} />
           {/* input은 display: none이고, 아이콘이 버튼 역할을 함 */}

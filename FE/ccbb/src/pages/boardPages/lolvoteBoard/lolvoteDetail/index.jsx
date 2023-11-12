@@ -487,7 +487,7 @@ export default function LoLvoteDetailPage() {
               )}
 
               <h4>
-                댓글 {curPost && curPost.comment && curPost.comment.length}개
+                댓글 {curPost && curPost.comment ? curPost.comment.length : 0}개
               </h4>
               <S.CommentBody>
                 {/* <CommentBox

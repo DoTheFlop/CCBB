@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 export default function AccountCard({ loltier }) {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [lolNick, setLolNick] = useState("");
   const [err, SetErr] = useState(false);
   const games = ["LoL", "Valorant", "Runeterra", "Overwatch"];
@@ -39,14 +40,18 @@ export default function AccountCard({ loltier }) {
   };
 
   const handleLoLNicknamePost = () => {
+    setIsLoading(true);
     ccbbApi
       .post(`/user/lol/tier?lolName=${lolNick}`, {}, { headers })
       .then((res) => {
         setIsOpen(false);
-        navigate("/mypage");
+        // navigate("/mypage");
+        window.location.reload();
+        setIsLoading(false);
       })
       .catch((e) => {
         console.log(e);
+        setIsLoading(false);
         SetErr(true);
       });
   };
@@ -84,7 +89,12 @@ export default function AccountCard({ loltier }) {
           <S.ModalWrap>
             <ModalContainer>
               <S.LoLNicknameModal>
-                <CloseIcon onClick={() => setIsOpen(false)} />
+                <CloseIcon
+                  onClick={() => {
+                    setIsOpen(false);
+                    SetErr(false);
+                  }}
+                />
                 <Input1
                   label={"리그오브레전드 닉네임"}
                   value={lolNick}
@@ -97,7 +107,7 @@ export default function AccountCard({ loltier }) {
                   <span>티어 정보를 가져오지 못했습니다.</span>
                 )}
                 <Button1
-                  text="등록"
+                  text={isLoading ? "갱신중..." : "등록"}
                   height={"30px"}
                   width={"100px"}
                   onClick={handleLoLNicknamePost}
