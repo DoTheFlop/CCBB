@@ -11,7 +11,7 @@ import { Pagination } from "@mui/material";
 export default function LoLvoteboardPage() {
   const options = [
     { value: "Latest", label: "최신순" },
-    { value: "Popular", label: "인기순" },
+  { value: "Popular", label: "인기순" },
   ];
 
   const [activeTab, setActiveTab] = useState("ongoing"); // 'ongoing' 또는 'completed'
