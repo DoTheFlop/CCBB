@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import UserProfile from "../common/profile";
 import * as S from "./style";
-import { parseDate } from "../../api/dateParse";
+// import { parseDate } from "../../api/dateParse";
+import { ko } from 'date-fns/locale'
+import {formatDistanceToNow} from "date-fns";
 
 export default function CommentBox({
   isMine = false,
@@ -14,7 +16,9 @@ export default function CommentBox({
   onClickModify,
   onClickDelete,
 }) {
-  const createDate = parseDate(date);
+  const receivedDate = new Date(date);
+  const createDate = formatDistanceToNow(receivedDate, { addSuffix: true, locale: ko });
+  
 
   //댓글 수정 상태를 위한 값
   const [isEditing, setIsEditing] = useState(false);
@@ -45,7 +49,7 @@ export default function CommentBox({
           fontsize={"15px"}
         />
         <p>
-          {`${createDate.year}/${createDate.month}/${createDate.day} ${createDate.hours}:${createDate.minutes}`}
+          {createDate}
         </p>
       </S.CommentHead>
       <S.CommentBody>

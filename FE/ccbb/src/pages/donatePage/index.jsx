@@ -37,28 +37,28 @@ export default function DonatePage({ amount = 1238000 }) {
       donors: "d59 외 3명",
       donation: "120,000",
       date: "2023.11.03",
-      imgSrc: "/resource/DonateSample.png",
+      imgSrc: "/resource/DonateSample4.png",
     },
     {
       title: "2023년 10월 기부현황",
       donors: "김롤붕 외 6명",
       donation: "210,000",
       date: "2023.10.01",
-      imgSrc: "/resource/DonateSample.png",
+      imgSrc: "/resource/DonateSample3.png",
     },
     {
       title: "2023년 09월 기부현황",
       donors: "천밑배종기성 외 13명",
       donation: "408,000",
       date: "2023.09.02",
-      imgSrc: "/resource/DonateSample.png",
+      imgSrc: "/resource/DonateSample2.png",
     },
     {
       title: "2023년 08월 기부현황",
       donors: "그래안해 외 8명",
       donation: "500,000",
       date: "2023.08.01",
-      imgSrc: "/resource/DonateSample.png",
+      imgSrc: "/resource/DonateSample1.png",
     },
   ];
 
