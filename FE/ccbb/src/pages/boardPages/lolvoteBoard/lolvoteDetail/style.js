@@ -215,6 +215,34 @@ export const Bar = styled.div`
   flex-shrink: 0;
   flex-basis: ${(props) => props.$percent || "0"};
 `;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const Button = styled.button`
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  &:first-child {
+    background-color: #337ab7;
+  }
+  &:last-child {
+    background-color: #f44336;
+  }
+`;
+
+const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+`;
 
 export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
   const [agree, setAgree] = useState(false); // 체크박스의 상태를 관리하는 state를 추가합니다.
@@ -244,12 +272,16 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
           규칙입니다. 따라서 이 점을 숙지하고, 공약을 설정하실 때 신중하게
           결정해주시기 바랍니다.
         </p>
-        <input type="checkbox" checked={agree} onChange={handleAgree} />
-        <label>위의 보증금 관련 규칙에 동의하십니까?</label>
-        <button disabled={!agree} onClick={onAgree}>
-          동의하고 계속하기
-        </button>
-        <button onClick={onClose}>취소</button>
+        <CheckboxContainer>
+          <input type="checkbox" checked={agree} onChange={handleAgree} />
+          <label>위의 보증금 관련 규칙에 동의하십니까?</label>
+        </CheckboxContainer>
+        <ButtonContainer>
+          <Button onClick={onAgree} disabled={!agree}>
+            동의하고 계속하기
+          </Button>
+          <Button onClick={onClose}>취소</Button>
+        </ButtonContainer>
       </ModalContent>
     </ModalBackground>
   );
