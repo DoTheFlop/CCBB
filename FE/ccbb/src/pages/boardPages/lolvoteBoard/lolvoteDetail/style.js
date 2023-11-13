@@ -30,6 +30,7 @@ export const Menuhead = styled.div`
   padding-right: 10%;
   width: 80%;
   border-bottom: 1px solid #ccc;
+  position: relative;
 `;
 
 export const Votebodycover = styled.div`
@@ -99,7 +100,9 @@ export const Votebutton = styled.div`
 export const ImgVS = styled.img`
   margin: 0 50px;
 `;
-export const Imgward = styled.img``;
+export const Imgward = styled.img`
+  align-self: center;
+`;
 
 export const ProfileBox = styled.div`
   display: flex;
@@ -181,6 +184,38 @@ const ModalContent = styled.div`
   color: black;
 `;
 
+export const TimeLeft = styled.div`
+  position: relative;
+  font-size: 1.8rem;
+  color: red;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px; // 동영상 파일과의 간격을 조절합니다.
+`;
+
+export const VoteResultDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const Bar = styled.div`
+  display: flex; // 추가
+  align-items: center; // 추가
+  justify-content: center; // 추가
+  height: 100%;
+  background-color: ${(props) => props.color || "#000"};
+
+  /* Flexbox 속성 조정 */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: ${(props) => props.$percent || "0"};
+`;
+
 export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
   const [agree, setAgree] = useState(false); // 체크박스의 상태를 관리하는 state를 추가합니다.
 
@@ -221,14 +256,14 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
 };
 
 export const replaylinkBox = styled.div`
-display: flex;
+  display: flex;
 
-justify-content: end;
-margin-bottom: 10px;
-`
+  justify-content: end;
+  margin-bottom: 10px;
+`;
 export const replaylink = styled.a`
-display: flex;
-padding: 0 10px;
-align-items: center;
-text-decoration: none;
-`
+  display: flex;
+  padding: 0 10px;
+  align-items: center;
+  text-decoration: none;
+`;
