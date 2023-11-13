@@ -7,12 +7,15 @@ export const Main = styled.main`
     justify-content: center;
     width: 100%;
     .input-file-button{
-        padding: 8px 3px 6px 12px;
-        background-color:#1F2A70;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 8px;
         border-radius: 4px;
-        color: white;
+        border: 3px solid black;
+        color: black;
         cursor: pointer;
-        width: 50px;
+        width: 40px;
         margin-left: 93%;
         margin-top: 1%;
         font-weight: bold;
@@ -53,11 +56,8 @@ export const CreateBody = styled.div`
 `
 
 export const Uploadfile = styled.div`
-    width: 100%;
-    border: 2px solid #ccc;
-    height: 162px;
+    width: 18%;
     /* padding: 0 0 10px 0; */
-    border-radius: 5px;
     .delete-button {
         position: absolute;
         /* background-color: red; */
@@ -73,32 +73,48 @@ export const Uploadfile = styled.div`
         cursor: pointer;
     }
 
-    /* Style the delete button when hovering over it */
     .delete-button:hover {
         background-color: darkred;
     }
-    /* Style the container's scrollbar */
+
     div::-webkit-scrollbar {
-    width: 12px; /* Set the width of the scrollbar */
+    width: 12px;
     }
 
-    /* Style the scrollbar track (the area behind the thumb) */
+
     div::-webkit-scrollbar-track {
     background: #f1f1f1;
     }
 
-    /* Style the scrollbar thumb (the draggable part) */
+
     div::-webkit-scrollbar-thumb {
     background: #888;
     border-radius: 6px;
     }
 
-    /* Change scrollbar thumb color on hover */
+
     div::-webkit-scrollbar-thumb:hover {
     background: #555;
     }
 `
-
+export const Replayfile = styled.div`
+    width: 100%;
+    /* padding: 0 0 10px 0; */
+    .delete-button {
+        position: absolute;
+        /* background-color: red; */
+        color: red;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+`
 export const CreateBodybottom = styled.div`
     display: flex;
     justify-content: space-between;
