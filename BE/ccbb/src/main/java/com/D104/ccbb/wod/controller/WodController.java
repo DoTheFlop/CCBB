@@ -81,4 +81,22 @@ public class WodController {
 			return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@GetMapping("/check")
+	public ResponseEntity<Map<String, Object>> detail(@RequestHeader String Authorization,@RequestParam int postId) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status = null;
+		int userId = userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+				.getUserId();
+		try {
+			resultMap.put("voteList", wodService.wodCheck(userId,postId));
+			resultMap.put("message", "success");
+			status = HttpStatus.ACCEPTED;
+		} catch (Exception e) {
+			resultMap.put("message", "fail: " + e.getMessage());
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+	}
+
 }

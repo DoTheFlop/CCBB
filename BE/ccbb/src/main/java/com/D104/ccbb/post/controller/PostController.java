@@ -101,7 +101,7 @@ public class PostController {
         Map<String, Object> resultMap = new HashMap<>();
         HttpStatus status = null;
         try {
-            resultMap.put("voteList", postService.getDetail(postId));
+            resultMap.put("wodCheck", postService.getDetail(postId));
             resultMap.put("message", "success");
             status = HttpStatus.ACCEPTED;
         } catch (Exception e) {
