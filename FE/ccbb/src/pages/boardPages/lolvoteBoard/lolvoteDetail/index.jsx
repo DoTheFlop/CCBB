@@ -47,7 +47,7 @@ export default function LoLvoteDetailPage() {
   const token1 = localStorage.getItem("token");
   const [userPick, setUserPick] = useState(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchPost();
     fetchComments();
     console.log(userPick);
@@ -72,7 +72,7 @@ export default function LoLvoteDetailPage() {
           })
           .then((res) => {
             console.log(res.data.voteResult.userPick);
-            if (res.data.voteResult.userPick === 1) {
+            if (res.data.voteResult.userPick) {
               setUserPick(true);
             }
           })
