@@ -31,10 +31,11 @@ public class BallotBoxService {
 
     public void setBallotBox(BallotBoxDto ballotBoxDto) {
         Vote vote = voteRepo.getReferenceById(ballotBoxDto.getVoteId());
+        User producer = userRepository.getReferenceById(ballotBoxDto.getUserId());
         BallotBox ballotBox = BallotBox.builder()
                 .ballotBoxId(ballotBoxDto.getBallotBoxId())
                 .pick(ballotBoxDto.getPick())
-                .userId(userRepository.getReferenceById(ballotBoxDto.getUserId()))
+                .userId(producer)
                 .vote(vote)
                 .build();
         ballotBoxRepo.save(ballotBox);
@@ -43,8 +44,8 @@ public class BallotBoxService {
         Post post = vote.getPostId();
         User receiver1 = vote.getUserId1();
         User receiver2 = vote.getUserId2();
-        eventPublisher.publishEvent(NotificationRequestDto.voteAddOf(post, receiver1, receiver2));
-        eventPublisher.publishEvent(NotificationRequestDto.voteAddOf(post, receiver2, receiver1));
+        eventPublisher.publishEvent(NotificationRequestDto.voteAddOf(post, receiver1, producer));
+        eventPublisher.publishEvent(NotificationRequestDto.voteAddOf(post, receiver2, producer));
     }
 
     public BallotResultDto getBallotResult(int voteId) {

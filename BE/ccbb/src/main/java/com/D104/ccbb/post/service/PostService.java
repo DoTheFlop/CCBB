@@ -62,10 +62,12 @@ public class PostService {
         return postRepo.getVoteList();
     }
 
-    public PostLoadDto getDetail(int postId) {
-
-        PostLoadDto postLoadDto = PostLoadDto.fromEntity(postRepo.getReferenceById(postId));
-        return postLoadDto;
+    public PostLoadDto getDetail(int postId) throws Exception {
+        Optional<Post> postOpt = postRepo.findById(postId);
+        if (postOpt.isEmpty()) {
+            throw new Exception("존재하지 않는 게시글입니다.");
+        }
+		return PostLoadDto.fromEntity(postOpt.get());
     }
 
     public Page<PostPageDto> getPageList(int page) {

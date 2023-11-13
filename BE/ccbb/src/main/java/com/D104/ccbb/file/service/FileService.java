@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
@@ -173,8 +175,8 @@ public class FileService {
 		}
 	}
 
+	@Transactional
 	public boolean deleteFile(int fileId) throws Exception {
-		log.info("deleteFile fileId: {}", fileId);
 		Optional<File> findFileOpt = fileRepo.findById(fileId);
 		if (findFileOpt.isEmpty()) {
 			throw new Exception("파일이 없습니다.");
@@ -190,12 +192,49 @@ public class FileService {
 		if (file.getType().startsWith("replay")) {
 			path += REPLAY_PATH;
 		}
-		path = path + file.getName() + "." + file.getExtension();
-		fileRepo.deleteById(fileId);
+		path = path + "/" + file.getName() + "." + file.getExtension();
 		boolean delete = new java.io.File(path).delete();
+		fileRepo.deleteById(fileId);
 		if (!delete) {
+			log.error("deleteFile error on path: {}", path);
 			throw new Exception("삭제 실패");
 		}
+		log.info("deleteFile fileId: {}", fileId);
+		return true;
+	}
+
+	public boolean savePromiseFile(MultipartFile file, int postId) throws Exception {
+		String fileExtension = getFileExtension(file.getOriginalFilename());
+		String fileNameWithoutExtension = getFileNameWithoutExtension(file.getOriginalFilename());
+		String contentType = file.getContentType();
+		String uuidName = UUID.randomUUID().toString();
+		File build = File.builder()
+			.orgName(fileNameWithoutExtension)
+			.name(uuidName)
+			.extension(fileExtension)
+			.type(contentType)
+			.isPromise(true)
+			.build();
+
+		Optional<Post> byId = postRepo.findById(postId);
+		Post post = byId.orElseThrow(() -> new Exception("게시글이 없습니다."));
+		build.setPostId(post);
+
+		String url = FILE_PATH;
+		if (contentType.startsWith("image")) {
+			url += IMAGE_PATH;
+		}
+		if (contentType.startsWith("video")) {
+			url += VIDEO_PATH;
+		}
+		if (!contentType.startsWith("image") && !contentType.startsWith("video")) {
+			build.setType("replay");
+			url += REPLAY_PATH;
+		}
+		url = url + "/" + uuidName + "." + fileExtension;
+		Path path = Paths.get(url);
+		fileRepo.save(build);
+		file.transferTo(path);
 		return true;
 	}
 }

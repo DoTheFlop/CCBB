@@ -21,7 +21,10 @@ public interface VoteRepo extends JpaRepository<Vote, Integer> {
 
 	Optional<Vote> findByPostId_PostId(int postId);
 
-	List<Vote> findByUserId1_UserIdOrUserId2_UserId(int userId1, int userId2);
+	@Query(value = "select * from vote where (user1_accept=?1 or user2_accept=?2) and vote_deadline>now();", nativeQuery = true)
+	List<Vote> participateList(int userid1, int userid2);
+	@Query(value = "select * from vote where (user1_accept=?1 or user2_accept=?2) and vote_deadline<now();", nativeQuery = true)
+	List<Vote> participatePastList(int userid1, int userid2);
 	List<Vote> findByUserId2_UserIdAndAccept2(int userId, Boolean a);
 
 	@Query(value = "select v.*, count(b.vote_id) popular\n"

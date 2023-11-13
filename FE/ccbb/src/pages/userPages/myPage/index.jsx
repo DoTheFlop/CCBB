@@ -5,7 +5,7 @@ import Button1 from "../../../component/common/buttons";
 import AccountCard from "../../../component/accountCard";
 import OngoingVote from "../../../component/myPage/ongoingVote";
 import ExpiredVote from "../../../component/myPage/expiredVote";
-import MyPosts from "../../../component/myPage/myPosts";
+// import MyPosts from "../../../component/myPage/myPosts";
 import MyWards from "../../../component/myPage/myWards";
 import TollIcon from "@mui/icons-material/Toll";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -14,6 +14,7 @@ import { userState } from "../../../recoil/UserAtom";
 import { ccbbApi } from "../../../api/ccbbApi";
 
 export default function MyPage() {
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const headers = {
     "Content-Type": "multipart/form-data",
@@ -22,6 +23,7 @@ export default function MyPage() {
   const user = useRecoilValue(userState);
   const setRecoilUser = useSetRecoilState(userState);
   React.useEffect(() => {
+    if (!token) navigate("/");
     ccbbApi
       .get("/user/profile", { headers })
       .then((res) => {
@@ -33,13 +35,12 @@ export default function MyPage() {
       })
       .catch((e) => console.log(e));
   }, [setRecoilUser]);
-  const navigate = useNavigate();
 
   const tabs = [
     { name: "진행중인 투표", component: <OngoingVote key={0} /> },
     { name: "종료된 투표", component: <ExpiredVote key={1} /> },
-    { name: "작성한 글", component: <MyPosts key={2} /> },
-    { name: "와드한 글", component: <MyWards key={3} /> },
+    // { name: "작성한 글", component: <MyPosts key={2} /> },
+    { name: "와드한 글", component: <MyWards key={2} /> },
   ];
 
   const [currentTab, setCurrentTab] = useState(0);
@@ -78,6 +79,10 @@ export default function MyPage() {
               user.userId
             }?${Date.now()}`}
             alt="profile-img"
+            onError={(e) => {
+              e.target.onerror = null; // 이벤트 핸들러를 한 번만 호출하도록 설정
+              e.target.src = "/resource/LoL.png"; // 대체 이미지의 URL로 변경
+            }}
           />
           <AddPhotoAlternateIcon onClick={onClickUploadImgBtn} />
           {/* input은 display: none이고, 아이콘이 버튼 역할을 함 */}
@@ -106,7 +111,7 @@ export default function MyPage() {
             <Button1 text="내역보기" height={"30px"}></Button1>
           </S.textAndBtn>
         </S.textSection>
-        <AccountCard />
+        <AccountCard loltier={user.lol} />
       </S.profileInfo>
       <S.tabGroup>
         {tabs.map((tab, index) => (

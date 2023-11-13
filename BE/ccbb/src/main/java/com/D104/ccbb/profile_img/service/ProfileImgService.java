@@ -41,9 +41,16 @@ public class ProfileImgService {
 		}
 		ProfileImg userProfileImg = profileImgRepo.findByUserId_UserId(userId);
 
-		String file_path = FILE_PATH + PROFILE_IMG + "/" + userProfileImg.getName();
-		File file = new File(file_path);
-		return FileUtil.readAsByteArray(file);
+		if (userProfileImg != null) {
+			String file_path = FILE_PATH + PROFILE_IMG + "/" + userProfileImg.getName();
+			File file = new File(file_path);
+			if (!file.exists()) {
+				return null;
+			}
+			return FileUtil.readAsByteArray(file);
+		} else {
+			return null;
+		}
 	}
 
 	@Transactional

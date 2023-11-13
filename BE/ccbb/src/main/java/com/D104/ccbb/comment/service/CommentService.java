@@ -1,7 +1,9 @@
 package com.D104.ccbb.comment.service;
 
+import com.D104.ccbb.ballot_box.repo.BallotBoxRepo;
 import com.D104.ccbb.comment.domain.Comment;
 import com.D104.ccbb.comment.dto.CommentDto;
+import com.D104.ccbb.comment.dto.CommentGetDto;
 import com.D104.ccbb.comment.dto.CommentRequestDto;
 import com.D104.ccbb.comment.repo.CommentRepo;
 import com.D104.ccbb.notification.dto.NotificationRequestDto;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -28,7 +31,7 @@ public class CommentService {
     private final UserRepository userRepository;
     private final PostRepo postRepo;
     private final ApplicationEventPublisher eventPublisher;
-
+    private final BallotBoxRepo ballotBoxRepo;
     @Transactional
     public void setComment(CommentRequestDto commentRequestDto, User writer) {
         Post post = postRepo.getReferenceById(commentRequestDto.getPostId());
@@ -45,8 +48,14 @@ public class CommentService {
         eventPublisher.publishEvent(NotificationRequestDto.commentOf(post, writer));
     }
 
-    public List<Comment> getComment(int postId) {
-        return commentRepo.findByPostId_PostId(postId);
+    public List<CommentGetDto> getComment(int postId) {
+
+        List<CommentGetDto> commentList = commentRepo.findByPostId_PostId(postId)
+            .stream()
+            .map(m -> CommentGetDto.fromEntity(m,ballotBoxRepo))
+            .collect(Collectors.toList());
+
+        return commentList;
     }
 
     public void deleteComment(int commentId) {

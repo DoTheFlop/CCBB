@@ -7,7 +7,7 @@ import MyPage from "./pages/userPages/myPage";
 import InfoModifyPage from "./pages/userPages/myPage/infoModifyPage";
 import BeforeModifyPage from "./pages/userPages/myPage/beforeModifyPage";
 import LoLvoteboardPage from "./pages/boardPages/lolvoteBoard";
-import FreeboardPage from "./pages/boardPages/freeBoard";
+import IntroducePage from "./pages/introducePage";
 import GiftPage from "./pages/giftPage";
 import DonatePage from "./pages/donatePage";
 import KakaoLoginPage from "./pages/userPages/kakaoLoginPage";
@@ -42,7 +42,7 @@ export default function App() {
           ></Route>
           <Route path="/lolvote/create" element={<LoLvoteCreatePage />}></Route>
 
-          <Route path="/free" element={<FreeboardPage />}></Route>
+          <Route path="/introduce" element={<IntroducePage />}></Route>
           <Route path="/gift" element={<GiftPage />}></Route>
           <Route path="/donate" element={<DonatePage />}></Route>
           <Route path="/kakaologin/:token" element={<KakaoLoginPage />}></Route>
