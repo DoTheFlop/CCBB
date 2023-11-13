@@ -71,7 +71,7 @@ export const Moviebody = styled.div`
 export const Votebody = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 2% 10%;
+  margin: 0 10%;
   font-size: large;
   padding-bottom: 20px;
   white-space: pre-line;
@@ -159,4 +159,16 @@ export const voteUser1Box = styled.div`
 `
 
 export const voteUser2Box = styled.div`
+`
+export const replaylinkBox = styled.div`
+display: flex;
+
+justify-content: end;
+margin-bottom: 10px;
+`
+export const replaylink = styled.a`
+display: flex;
+padding: 0 10px;
+align-items: center;
+text-decoration: none;
 `

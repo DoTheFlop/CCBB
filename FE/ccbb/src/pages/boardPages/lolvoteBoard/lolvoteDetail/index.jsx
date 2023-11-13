@@ -20,7 +20,7 @@ import { userState } from "../../../../recoil/UserAtom";
 import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
 import Button1 from "../../../../component/common/buttons";
 import TierImg from "../../../../component/tier";
-
+import DownloadIcon from "@mui/icons-material/Download";
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
   const token = localStorage.getItem("token");
@@ -86,7 +86,7 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        // console.log(res.data);
+        console.log(res.data);
       })
       .catch((e) => console.log(e));
   };
@@ -266,8 +266,18 @@ export default function LoLvoteDetailPage() {
               />
             )}
           </S.Moviebody>
-
           <S.Votebody>
+            {curPost.fileId && curPost.fileId.length > 0 && (
+              <S.replaylinkBox>
+                <S.replaylink
+                  href={`https://ccbb.pro/api/file/get/${curPost.fileId[1].fileId}`}
+                  download
+                >
+                  <DownloadIcon />
+                  <p>리플레이파일</p>
+                </S.replaylink>
+              </S.replaylinkBox>
+            )}
             {curPost.content}
             <S.PromiseP>
               <h3 onClick={togglePromisePage}>공약</h3>
@@ -415,15 +425,16 @@ export default function LoLvoteDetailPage() {
               )}
 
               <h4>
-                댓글 {curPost && curPost.comment && curPost.comment.length}개
+                댓글 { curPost && curPost.comment ? curPost.comment.length : 0 }개
+
               </h4>
               <S.CommentBody>
-                <CommentBox
+                {/* <CommentBox
                   bgcolor="#97A7FF"
                   comment="This is a hard-coded sample comment"
                   userId="user123"
                   date="2023-10-31"
-                />
+                /> */}
                 {comments.map((cmt, index) => {
                   return (
                     <CommentBox
