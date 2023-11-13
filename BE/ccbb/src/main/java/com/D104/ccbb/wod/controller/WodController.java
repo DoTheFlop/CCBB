@@ -89,7 +89,7 @@ public class WodController {
 		int userId = userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
 				.getUserId();
 		try {
-			resultMap.put("voteList", wodService.wodCheck(userId,postId));
+			resultMap.put("wodCheck", wodService.wodCheck(userId,postId));
 			resultMap.put("message", "success");
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
