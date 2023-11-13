@@ -13,7 +13,8 @@ export default function VotePaymentModal({ isOpen, onClose, payment }) {
   };
 
   return (
-    <>
+    <div 
+    style={{display: isOpen ? "block" : "none"}}>
       <S.ModalContainer>
         <S.ModalBtn onClick={onClose}>
           {isOpen ? "Opened!" : "Open Modal"}
@@ -26,12 +27,12 @@ export default function VotePaymentModal({ isOpen, onClose, payment }) {
                 <Button1 className="desc" onClick={handlePayment}>
                   결제하기
                 </Button1>
-                <Button1 onClick={onClose}>닫기</Button1>
+                <Button1 onClick={onClose} color="#8B0000">닫기</Button1>
               </S.buttonWrapper>
             </S.ModalView>
           </S.ModalBackdrop>
         ) : null}
       </S.ModalContainer>
-    </>
+    </div>
   );
 }

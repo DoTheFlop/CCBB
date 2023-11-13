@@ -11,27 +11,15 @@ export const main = styled.main`
   h1 {
     width: fit-content;
   }
-  .total-count {
-    font-size: 1.5rem;
-    border-bottom: solid 1px;
-    padding-bottom: 2%;
-  }
 `;
 
-export const processChart = styled.div`
-  width: 100%;
+export const CountAndBtn = styled.div`
+  border-bottom: solid 1px;
+  padding-bottom: 2%;
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
-  .arrow {
-    color: #0b123f;
-    margin-bottom: 5%;
+  justify-content: space-between;
+  .total-count {
+    font-size: 1.5rem;
   }
-`;
-
-export const processStep = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
 `;

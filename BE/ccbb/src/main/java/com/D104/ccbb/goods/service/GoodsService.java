@@ -1,5 +1,6 @@
 package com.D104.ccbb.goods.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -9,6 +10,8 @@ import com.D104.ccbb.event.repo.EventRepo;
 import com.D104.ccbb.goods.domain.Goods;
 import com.D104.ccbb.goods.dto.GoodsDto;
 import com.D104.ccbb.goods.repo.GoodsRepo;
+import com.D104.ccbb.participants.domain.Participants;
+import com.D104.ccbb.participants.repo.ParticipantsRepo;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
 
@@ -22,6 +25,7 @@ public class GoodsService {
 	private final GoodsRepo goodsRepo;
 	private final EventRepo eventRepo;
 	private final UserRepository userRepository;
+	private final ParticipantsRepo participantsRepo;
 
 	// @Transactional
 	// public Goods setGoods(GoodsDto goodsDto) {
@@ -51,7 +55,6 @@ public class GoodsService {
 		return savedGoods;
 	}
 
-
 	public List<Goods> getList(int eventId) {
 		return goodsRepo.findByEventId_EventId(eventId);
 	}
@@ -63,13 +66,13 @@ public class GoodsService {
 		Goods goods = goodsRepo.findGoodsByGoodsId(goodsId)
 			.orElseThrow(() -> new IllegalArgumentException("Invalid goodsId:" + goodsId));
 
-		if(user.getPoint() - goods.getPrice() < 0) {
+		if (user.getPoint() - goods.getPrice() < 0) {
 			throw new IllegalStateException("포인트가 부족합니다.");
 		} else {
 			user.setPoint(user.getPoint() - goods.getPrice());
 		}
 
-		if(goods.getWinCount() <= 0) {
+		if (goods.getWinCount() <= 0) {
 			throw new IllegalStateException("상품 응모가 끝났습니다.");
 		}
 		double randomValue = Math.random() * 100; // 0.0 ~ 99.9 사이의 난수를 생성
@@ -77,15 +80,18 @@ public class GoodsService {
 			goods.setWinCount(goods.getWinCount() - 1);
 			userRepository.save(user);
 			goodsRepo.save(goods);
+			participantsRepo.save(Participants.builder()
+				.goodsId(goods)
+				.userId(user)
+				.eventId(goods.getEventId())
+				.createDate(LocalDateTime.now())
+				.build());
 			return "응모에 성공했습니다.";
 		} else {
 			userRepository.save(user);
 			goodsRepo.save(goods);
 			return "응모에 실패했습니다.";
 		}
-
-
-
 
 		// Here you can add logic to handle the entry of the user to the goods.
 	}
