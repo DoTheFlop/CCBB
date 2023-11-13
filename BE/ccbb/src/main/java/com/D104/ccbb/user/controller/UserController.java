@@ -61,8 +61,16 @@ public class UserController {
 
 	@PostMapping("/esign-up")
 	public ResponseEntity<String> esignup(@RequestBody UserLoginDto userLoginDto) {
-		userService.eSignup(userLoginDto);
-		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
+		try {
+			userService.eSignup(userLoginDto);
+			return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			log.error("회원가입 중 에러 발생", e);
+			return new ResponseEntity<>("회원가입 중 에러 발생", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 //	@PostMapping("/elogin")
@@ -81,8 +89,13 @@ public class UserController {
 //	}
 @PostMapping("/elogin")
 public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
-	String token = userService.elogin(userEmailPasDto);
-	return new ResponseEntity<>(token, HttpStatus.OK);
+	try {
+		String token = userService.elogin(userEmailPasDto);
+		return new ResponseEntity<>(token, HttpStatus.OK);
+	}catch (Exception e){
+		return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+	}
+
 }
 	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization,
