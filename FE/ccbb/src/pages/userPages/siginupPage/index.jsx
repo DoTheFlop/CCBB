@@ -3,8 +3,10 @@ import * as S from "./style";
 import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
+import { useNavigate } from "react-router";
 
 export default function SignupPage() {
+  const navigate = useNavigate();
   const [user, setUser] = useState({
     email: "",
     nickname: "",
@@ -53,6 +55,7 @@ export default function SignupPage() {
       .post("/user/esign-up",JSON.stringify(body))
       .then((res) => {
         console.log(res)
+        navigate('/signin');
       })
       .catch((e) => console.log(e))
   }
