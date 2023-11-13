@@ -1,11 +1,30 @@
 import * as S from "./style";
 import UserProfile from "../../common/profile";
-import { CategoryScale, LinearScale, BarElement, Chart } from "chart.js";
+import {
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Chart,
+  Tooltip,
+} from "chart.js";
 import ChartjsPluginStacked100 from "chartjs-plugin-stacked100";
 import { Bar } from "react-chartjs-2";
 
-Chart.register(CategoryScale, LinearScale, BarElement, ChartjsPluginStacked100);
-export default function VoteRate() {
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  ChartjsPluginStacked100,
+  Tooltip
+);
+export default function VoteRate({
+  cnt1,
+  cnt2,
+  nickname1,
+  nickname2,
+  userId1,
+  userId2,
+}) {
   const options = {
     indexAxis: "y",
     plugins: {
@@ -13,7 +32,24 @@ export default function VoteRate() {
         enable: true,
         replaceTooltipLabel: false,
       },
+      tooltip: {
+        enabled: true,
+        mode: "nearest",
+        xAlign: "left",
+        yAlign: "bottom",
+        callbacks: {
+          label: function (context) {
+            var label = context.dataset.label || "";
+            if (label) {
+              label += ": ";
+            }
+            label += context.raw;
+            return label;
+          },
+        },
+      },
     },
+
     responsive: false,
     // aspectRatio: 24,
     // maintainAspectRatio: false,
@@ -35,17 +71,17 @@ export default function VoteRate() {
     labels: [""],
     datasets: [
       {
-        label: "좋아요",
+        label: nickname1,
         backgroundColor: "#7390ff",
-        data: [10],
+        data: [cnt1],
         borderRadius: 10,
         borderSkipped: "middle",
         barThickness: 10,
       },
       {
-        label: "싫어요",
+        label: nickname2,
         backgroundColor: "#ff5964",
-        data: [20],
+        data: [cnt2],
         borderRadius: 10,
         borderSkipped: "middle",
         barThickness: 10,
@@ -54,9 +90,18 @@ export default function VoteRate() {
   };
   return (
     <S.main>
-      <UserProfile name={"나"} color="black" />
+      <UserProfile
+        name={nickname1}
+        color="black"
+        imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId1}`}
+      />
       <Bar options={options} data={data} />
-      <UserProfile name={"상대"} color="black" direction="reverse" />
+      <UserProfile
+        name={nickname2}
+        color="black"
+        direction="reverse"
+        imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId2}`}
+      />
     </S.main>
   );
 }
