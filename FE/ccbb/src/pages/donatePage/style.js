@@ -41,6 +41,7 @@ export const accumulatedDonation = styled.div`
   align-items: center;
   h1 {
     margin: 1%;
+    margin-right: 30px;
   }
 `;
 
@@ -49,4 +50,38 @@ export const donatePreview = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  cursor: pointer;
+  align-items: center;
+  height: 70px;
+  p {
+    flex: 1;
+    text-align: center;
+    margin: 0;
+  }
+  &:hover {
+    background-color: aliceblue; // 연한 회색
+  }
+`;
+
+export const ModalWrapper = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+`;
+
+export const ModalContent = styled.div`
+  position: fixed;
+  background: white;
+  width: 50%;
+  height: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  img {
+    max-width: 100%;
+    height: auto;
+  }
 `;
