@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.D104.ccbb.wod.repo.WodRepo;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +49,7 @@ public class PostService {
 	private final FileService fileService;
 	private final ApplicationEventPublisher eventPublisher;
 	private final PointHistoryRepo pointHistoryRepo;
-
+	private final WodRepo wodRepo;
 	public Post setPost(PostDto postDto) {
 		User user = userRepository.getReferenceById(postDto.getUserId());
 		Post post = Post.builder()
@@ -87,7 +88,7 @@ public class PostService {
 
 	public Page<PostPageDto> getPageList(int page) {
 		int pageLimit = 12;
-		Page<Post> postsPages = postRepo.findByVote_Accept1AndVote_Accept2(true, true,
+		Page<Post> postsPages = postRepo.findByVote_Accept1AndVote_Accept2AndVote_DeadlineGreaterThan(true, true,LocalDateTime.now(),
 			PageRequest.of(page - 1, pageLimit, Sort.by(Sort.Direction.DESC, "postId")));
 		Page<PostPageDto> postPageDto = postsPages.map(m -> PostPageDto.fromEntity(m, m.getVote(), ballotBoxRepo));
 		return postPageDto;
