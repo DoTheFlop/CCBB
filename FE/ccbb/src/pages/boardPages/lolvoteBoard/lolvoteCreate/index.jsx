@@ -15,6 +15,7 @@ import { userState } from "../../../../recoil/UserAtom";
 import { useRecoilValue } from "recoil";
 import VotePaymentModal from "./votePaymentpage";
 import axios from "axios";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -156,7 +157,7 @@ export default function LoLvoteCreatePage() {
     ADCarry: 10,
     Support: 1,
   };
-  const [payment,setPayment] = useState(null)
+  const [payment, setPayment] = useState(null);
 
   const handleRoleCheckboxChange = (role) => {
     const isRoleSelected = voteArticle[role]; // Check if the role is selected
@@ -182,12 +183,11 @@ export default function LoLvoteCreatePage() {
         const response = await ccbbApi.get(
           `/user/find-user?email=${voteArticle.userId2}`
         );
-            console.log(response)
+        console.log(response);
         if (response) {
           setUserSearch(true);
           alert("확인되었습니다.");
         }
-        
       } else {
         alert("다른사람의 이메일을 입력해주세요");
         return;
@@ -196,7 +196,6 @@ export default function LoLvoteCreatePage() {
       console.log(error);
     }
   };
-
 
   const handleSendButton = async () => {
     if (!article.title) {
@@ -261,28 +260,27 @@ export default function LoLvoteCreatePage() {
           const responsevote = await ccbbApi
             .post("/vote/add", body, {
               headers,
-            //   withCredentials: true,
+              //   withCredentials: true,
             })
-            .then(async(responsevote) => {
+            .then(async (responsevote) => {
               if (responsevote.data.message === "success") {
-                console.log(voteArticle.deposit)
-                console.log(voteArticle.postId)
-                const payresponse = await ccbbApi.post(
+                console.log(voteArticle.deposit);
+                console.log(voteArticle.postId);
+                const payresponse = await ccbbApi
+                  .post(
                     `/payment/add?postId=${voteArticle.postId}&price=${voteArticle.deposit}`,
                     {},
                     { headers }
-                  ).then(async(payresponse) => {
-                    if (payresponse.data) {
-                        setPayment(payresponse.data)
-                        console.log(payment)
-                        console.log(payresponse.data)
-                        openModalHandler()
-                    }
-                    console.log(payresponse.data)
-
-                  }
-
                   )
+                  .then(async (payresponse) => {
+                    if (payresponse.data) {
+                      setPayment(payresponse.data);
+                      console.log(payment);
+                      console.log(payresponse.data);
+                      openModalHandler();
+                    }
+                    console.log(payresponse.data);
+                  });
               }
             });
         });
@@ -299,7 +297,11 @@ export default function LoLvoteCreatePage() {
         </S.Headtop>
       </S.Head>
       <S.CreateBodyCover>
-      <VotePaymentModal isOpen={isOpen} onClose={openModalHandler} payment={payment}/>
+        <VotePaymentModal
+          isOpen={isOpen}
+          onClose={openModalHandler}
+          payment={payment}
+        />
         <S.CreateBody>
           <Input2
             label="제목"
@@ -373,7 +375,7 @@ export default function LoLvoteCreatePage() {
                 </p>
                 <button
                   style={{
-                    marginLeft: "100px",
+                    marginLeft: "110px",
                     marginTop: "-150px",
                   }}
                   className="delete-button"
@@ -389,18 +391,18 @@ export default function LoLvoteCreatePage() {
               id="input-file"
               multiple
               onChange={handleVideoUpload}
-              style={{ display: "none" }}
+              style={{ display: "none", width: "100px" }}
             />
           </S.Uploadfile>
           <label className="input-file-button" htmlFor="input-file">
-            영상 업로드
+            <FileUploadIcon />
           </label>
           <h3>리플레이</h3>
-          <S.Uploadfile>
+          <S.Replayfile>
             <input
               type="file"
               id="replay-file"
-              accept="*/*"
+              accept=".bat"
               onChange={handleReplayUpload}
               style={{ display: "none" }}
             />
@@ -411,9 +413,9 @@ export default function LoLvoteCreatePage() {
                 <button onClick={handleDeleteReplay}>삭제</button>
               </div>
             )}
-          </S.Uploadfile>
+          </S.Replayfile>
           <label className="input-file-button" htmlFor="replay-file">
-            리플레이 업로드
+            <FileUploadIcon />
           </label>
           <Input2
             label="공약"
@@ -483,7 +485,7 @@ export default function LoLvoteCreatePage() {
                 ))}
               </Select>
               <div>
-                <label>Roles:</label>
+                <label>Roles :</label>
                 <input
                   type="checkbox"
                   value={voteArticle.Top}
