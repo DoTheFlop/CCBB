@@ -202,4 +202,39 @@ public class FileService {
 		log.info("deleteFile fileId: {}", fileId);
 		return true;
 	}
+
+	public boolean savePromiseFile(MultipartFile file, int postId) throws Exception {
+		String fileExtension = getFileExtension(file.getOriginalFilename());
+		String fileNameWithoutExtension = getFileNameWithoutExtension(file.getOriginalFilename());
+		String contentType = file.getContentType();
+		String uuidName = UUID.randomUUID().toString();
+		File build = File.builder()
+			.orgName(fileNameWithoutExtension)
+			.name(uuidName)
+			.extension(fileExtension)
+			.type(contentType)
+			.isPromise(true)
+			.build();
+
+		Optional<Post> byId = postRepo.findById(postId);
+		Post post = byId.orElseThrow(() -> new Exception("게시글이 없습니다."));
+		build.setPostId(post);
+
+		String url = FILE_PATH;
+		if (contentType.startsWith("image")) {
+			url += IMAGE_PATH;
+		}
+		if (contentType.startsWith("video")) {
+			url += VIDEO_PATH;
+		}
+		if (!contentType.startsWith("image") && !contentType.startsWith("video")) {
+			build.setType("replay");
+			url += REPLAY_PATH;
+		}
+		url = url + "/" + uuidName + "." + fileExtension;
+		Path path = Paths.get(url);
+		fileRepo.save(build);
+		file.transferTo(path);
+		return true;
+	}
 }
