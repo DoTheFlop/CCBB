@@ -11,13 +11,13 @@ import { Pagination } from "@mui/material";
 export default function LoLvoteboardPage() {
   const options = [
     { value: "Latest", label: "최신순" },
-    { value: "Popular", label: "인기순" },
+  { value: "Popular", label: "인기순" },
   ];
 
   const [activeTab, setActiveTab] = useState("ongoing"); // 'ongoing' 또는 'completed'
   const [selectedOption, setSelectedOption] = useState(options[0]);
   const navigate = useNavigate();
-  const [modalOpen, setIsModalOpen] = useState(false);  
+  const [modalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
 
   const toggleTab = (tab) => {
@@ -43,7 +43,7 @@ export default function LoLvoteboardPage() {
 
   const handleAgreeClick = () => {
     setIsModalOpen(false);
-    navigate("/lolvote/create");  
+    navigate("/lolvote/create");
   };
 
   const handleCancelClick = () => {
@@ -97,7 +97,7 @@ export default function LoLvoteboardPage() {
       }
 
       const response = await ccbbApi.get(endpoint);
-  
+
       setPages(response.data.voteList.totalPages);
       setVoteData(response.data.voteList.content);
       setTotal(response.data.voteList.totalElements);
@@ -181,15 +181,16 @@ export default function LoLvoteboardPage() {
           />
         </S.PaginationBox>
       </S.Votebodycover>
-      {modalOpen&&
-      <S.DepositModal 
-        isOpen={modalOpen} 
-        onClose={handleCancelClick} 
-        onAgree={handleAgreeClick}
-      >
-        공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에 동의하십니까?
-      </S.DepositModal>
-      }
+      {modalOpen && (
+        <S.DepositModal
+          isOpen={modalOpen}
+          onClose={handleCancelClick}
+          onAgree={handleAgreeClick}
+        >
+          공약을 이행하지 않으면 결제하신 보증금은 기부된다는 내용에
+          동의하십니까?
+        </S.DepositModal>
+      )}
     </S.Main>
   );
 }

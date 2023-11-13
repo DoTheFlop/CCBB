@@ -21,7 +21,9 @@ import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
 import Button1 from "../../../../component/common/buttons";
 import TierImg from "../../../../component/tier";
 import VoteProcess from "../../../../component/voteBoard/voteProcess";
-import { isBefore } from "date-fns";
+import { intervalToDuration, isBefore } from "date-fns";
+import { isAfter } from "date-fns";
+import VoteRate from "../../../../component/voteBoard/voteRate";
 
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
@@ -51,12 +53,89 @@ export default function LoLvoteDetailPage() {
   const [modalMessage, setModalMessage] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [isModalOpen, setIsOpenModal] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(""); // 종료일 나타내기 위해서
+  const [voteResult, setVoteResult] = useState({ pick1: 0, pick2: 0 });
+
+  const fetchPost = () => {
+    const headers = {
+      Authorization: `Bearer ${token1}`,
+    };
+
+    return ccbbApi.get("/post/vote/detail", {
+      params: { postId: postId },
+    });
+  };
 
   useEffect(() => {
-    fetchPost();
-    fetchComments();
-    // console.log(userPick);
+    fetchPost().then((res) => {
+      console.log(res.data);
+      setIsApproved(res.data.voteList.vote.accept2);
+      ccbbApi
+        .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
+          headers,
+        })
+        .then((res) => {
+          if (res.data.voteResult.userPick === 1) {
+            setUserPick(true);
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+      SetCurPost(res.data.voteList);
+
+      fetchComments();
+
+      // 현재 시간이 deadline을 지난지 확인
+      const now = new Date();
+      const deadline = new Date(res.data.voteList.vote.deadline);
+      if (isAfter(now, deadline)) {
+        fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
+      }
+    });
   }, [userPick]);
+  const now = new Date();
+  const fetchVoteResult = (voteId) => {
+    ccbbApi
+      .get(`/vote/result`, {
+        params: { voteId: voteId },
+      })
+      .then((res) => {
+        console.log("voteResult response:", res.data); // 추가된 부분
+        setVoteResult(res.data.voteResult); // 응답으로 받은 투표 결과를 상태 변수에 저장
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  // 두 번째 useEffect: curPost의 변경을 감지하여 타이머 업데이트
+  useEffect(() => {
+    const updateTimer = () => {
+      if (curPost?.vote.deadline) {
+        const deadline = new Date(curPost.vote.deadline);
+        const now = new Date();
+
+        // 현재 시간이 deadline을 지났는지 확인
+        if (isAfter(now, deadline)) {
+          const duration = intervalToDuration({ start: deadline, end: now });
+          const timePassed = `${duration.days}일 ${duration.hours}시간 ${duration.minutes}분 지남`;
+          setTimeLeft(timePassed);
+        } else {
+          const duration = intervalToDuration({ start: now, end: deadline });
+          const timeLeft = `${duration.days}일 ${duration.hours}시간 ${duration.minutes}분 남음`;
+          setTimeLeft(timeLeft);
+        }
+      }
+    };
+
+    updateTimer();
+    const intervalId = setInterval(updateTimer, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [curPost]);
 
   const isMyVote = () => {
     //(로그인한) 유저가 투표 당사자인지 체크
@@ -76,50 +155,11 @@ export default function LoLvoteDetailPage() {
     return 3;
   };
 
-  const fetchPost = () => {
-    const headers = {
-      Authorization: `Bearer ${token1}`,
-    };
-
-    ccbbApi
-      .get("/post/vote/detail", {
-        params: { postId: postId },
-      })
-      .then((res) => {
-        console.log(res.data);
-        setIsApproved(res.data.voteList.vote.accept2);
-        ccbbApi
-          .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
-            headers,
-          })
-          .then((res) => {
-            // console.log(res.data.voteResult.userPick);
-            if (res.data.voteResult.userPick === 1) {
-              setUserPick(true);
-            }
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        SetCurPost(res.data.voteList);
-      })
-      .catch((e) => {
-        console.log(e);
-        if (e.response) {
-          alert(e.response.data.message);
-          window.location = "https://ccbb.pro/lolvote";
-        } else {
-          alert("네트워크 오류가 발생했습니다.");
-        }
-      });
-  };
-
   const fetchComments = () => {
     ccbbApi
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        // console.log(res.data);
       })
       .catch((e) => console.log(e));
   };
@@ -133,8 +173,6 @@ export default function LoLvoteDetailPage() {
       )
       .then((res) => {
         setPayment(res.data);
-        // console.log(payment);
-        // console.log(res.data);
         openModalHandler();
       });
   };
@@ -144,7 +182,6 @@ export default function LoLvoteDetailPage() {
       ccbbApi
         .delete(`/post/reject/${curPost.postId}`, { headers }, {})
         .then((res) => {
-          // console.log(res);
           alert("거절하였습니다.");
           window.location.href = "https://ccbb.pro/lolvote";
         });
@@ -171,7 +208,6 @@ export default function LoLvoteDetailPage() {
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey && myComment) {
       e.preventDefault();
-      // console.log(myComment);
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
@@ -181,7 +217,6 @@ export default function LoLvoteDetailPage() {
     setIsOpen(!isOpen);
   };
   const handlevoteUser1 = (e) => {
-    // console.log(curPost.vote.voteId);
     const headers = {
       Authorization: `Bearer ${token1}`,
     };
@@ -321,7 +356,7 @@ export default function LoLvoteDetailPage() {
             <TierImg tier={curPost.vote.limitTier} size={"100px"} />
           </S.HeadRight>
         </S.Menuhead>
-
+        <S.TimeLeft>종료일 : {timeLeft}</S.TimeLeft>
         <S.DetailBody>
           {/* 투표 당사자일때만 진행상황이 보임 */}
           {isMyVote() && <VoteProcess step={voteStep()} />}
@@ -390,7 +425,36 @@ export default function LoLvoteDetailPage() {
                     />
                   </S.ProfileBox>
                 </S.Votebutton>
-
+                <br />
+                <br />
+                <h3>투표 결과</h3>
+                <VoteRate />
+                <S.VoteResultDisplay>
+                  <S.Bar
+                    color="#97A7FF"
+                    $percent={`${
+                      (voteResult.pick1 /
+                        (voteResult.pick1 + voteResult.pick2 || 1)) *
+                      100
+                    }%`}
+                  >
+                    {/* deadline이 지난 경우에만 투표한 수 표시 */}
+                    {new Date(curPost.vote.deadline) < now &&
+                      `투표한 수 : ${voteResult.pick1}`}
+                  </S.Bar>
+                  <S.Bar
+                    color="#FF9797"
+                    $percent={`${
+                      (voteResult.pick2 /
+                        (voteResult.pick1 + voteResult.pick2 || 1)) *
+                      100
+                    }%`}
+                  >
+                    {/* deadline이 지난 경우에만 투표한 수 표시 */}
+                    {new Date(curPost.vote.deadline) < now &&
+                      `투표한 수 : ${voteResult.pick2}`}
+                  </S.Bar>
+                </S.VoteResultDisplay>
                 <S.ArticleMenu>
                   {isThumbUp ? (
                     <ThumbUpAltIcon
