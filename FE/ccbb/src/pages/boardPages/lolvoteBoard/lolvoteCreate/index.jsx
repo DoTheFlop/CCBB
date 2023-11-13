@@ -19,16 +19,16 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export default function LoLvoteCreatePage() {
   const options = [
-    { value: "Iron", label: "아이언" },
-    { value: "Bronze", label: "브론즈" },
-    { value: "Silver", label: "실버" },
-    { value: "Gold", label: "골드" },
-    { value: "Platinum", label: "플래티넘" },
-    { value: "Emerald", label: "에메랄드" },
-    { value: "Diamond", label: "다이아몬드" },
-    { value: "Master", label: "마스터" },
-    { value: "GrandMaster", label: "그랜드마스터" },
-    { value: "Challenger", label: "챌린저" },
+    { value: "IRON", label: "아이언" },
+    { value: "BRONZE", label: "브론즈" },
+    { value: "SILVER", label: "실버" },
+    { value: "GOLD", label: "골드" },
+    { value: "PLATINUM", label: "플래티넘" },
+    { value: "EMERALD", label: "에메랄드" },
+    { value: "DIAMOND", label: "다이아몬드" },
+    { value: "MASTER", label: "마스터" },
+    { value: "GRANDMASTER", label: "그랜드마스터" },
+    { value: "CHALLENGER", label: "챌린저" },
   ];
 
   const [selectedDate, setSelectedDate] = useState(null);
