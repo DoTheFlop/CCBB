@@ -40,6 +40,7 @@ export default function AccountCard({ loltier }) {
   };
 
   const handleLoLNicknamePost = () => {
+    SetErr(false);
     setIsLoading(true);
     ccbbApi
       .post(`/user/lol/tier?lolName=${lolNick}`, {}, { headers })
@@ -100,6 +101,7 @@ export default function AccountCard({ loltier }) {
                   value={lolNick}
                   onKeyPress={handleOnKeyPress}
                   onChange={(e) => {
+                    SetErr(false);
                     setLolNick(e.target.value);
                   }}
                 ></Input1>
