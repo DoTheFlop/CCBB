@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.vote.domain.Vote;
 
@@ -33,7 +34,7 @@ public class Wod {
 	private User userId;
 
 	@ManyToOne
-	@JoinColumn(name = "vote_id", nullable = false)
-	private Vote voteId;
+	@JoinColumn(name = "post_id", nullable = false)
+	private Post postId;
 
 }
