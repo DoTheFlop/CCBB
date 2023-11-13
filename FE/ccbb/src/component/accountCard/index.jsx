@@ -40,7 +40,6 @@ export default function AccountCard({ loltier }) {
   };
 
   const handleLoLNicknamePost = () => {
-    SetErr(false);
     setIsLoading(true);
     ccbbApi
       .post(`/user/lol/tier?lolName=${lolNick}`, {}, { headers })
