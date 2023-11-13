@@ -23,6 +23,7 @@ import TierImg from "../../../../component/tier";
 import VoteProcess from "../../../../component/voteBoard/voteProcess";
 import { isBefore } from "date-fns";
 
+import DownloadIcon from "@mui/icons-material/Download";
 export default function LoLvoteDetailPage() {
   const userInfo = useRecoilValue(userState);
   const token = localStorage.getItem("token");
@@ -52,7 +53,7 @@ export default function LoLvoteDetailPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [isModalOpen, setIsOpenModal] = useState(false);
 
-  useEffect(() => {
+  React.useEffect(() => {
     fetchPost();
     fetchComments();
     // console.log(userPick);
@@ -93,8 +94,8 @@ export default function LoLvoteDetailPage() {
             headers,
           })
           .then((res) => {
-            // console.log(res.data.voteResult.userPick);
-            if (res.data.voteResult.userPick === 1) {
+            console.log(res.data.voteResult.userPick);
+            if (res.data.voteResult.userPick) {
               setUserPick(true);
             }
           })
@@ -119,7 +120,7 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        // console.log(res.data);
+        console.log(res.data);
       })
       .catch((e) => console.log(e));
   };
@@ -341,6 +342,17 @@ export default function LoLvoteDetailPage() {
             )}
           </S.Moviebody>
           <S.Votebody>
+            {curPost.fileId && curPost.fileId.length > 0 && (
+              <S.replaylinkBox>
+                <S.replaylink
+                  href={`https://ccbb.pro/api/file/get/${curPost.fileId[1].fileId}`}
+                  download
+                >
+                  <DownloadIcon />
+                  <p>리플레이파일</p>
+                </S.replaylink>
+              </S.replaylinkBox>
+            )}
             {curPost.content}
             <S.PromiseP>
               <h3 onClick={togglePromisePage}>공약</h3>
@@ -487,7 +499,8 @@ export default function LoLvoteDetailPage() {
               )}
 
               <h4>
-                댓글 {curPost && curPost.comment ? curPost.comment.length : 0}개
+                댓글 { curPost && curPost.comment ? curPost.comment.length : 0 }개
+
               </h4>
               <S.CommentBody>
                 {/* <CommentBox
