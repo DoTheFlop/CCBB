@@ -15,6 +15,7 @@ import { userState } from "../../../../recoil/UserAtom";
 import { useRecoilValue } from "recoil";
 import VotePaymentModal from "./votePaymentpage";
 import axios from "axios";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -374,7 +375,7 @@ export default function LoLvoteCreatePage() {
                 </p>
                 <button
                   style={{
-                    marginLeft: "100px",
+                    marginLeft: "110px",
                     marginTop: "-150px",
                   }}
                   className="delete-button"
@@ -390,18 +391,18 @@ export default function LoLvoteCreatePage() {
               id="input-file"
               multiple
               onChange={handleVideoUpload}
-              style={{ display: "none" }}
+              style={{ display: "none", width: "100px" }}
             />
           </S.Uploadfile>
           <label className="input-file-button" htmlFor="input-file">
-            영상 업로드
+            <FileUploadIcon />
           </label>
           <h3>리플레이</h3>
-          <S.Uploadfile>
+          <S.Replayfile>
             <input
               type="file"
               id="replay-file"
-              accept="*/*"
+              accept=".bat"
               onChange={handleReplayUpload}
               style={{ display: "none" }}
             />
@@ -412,9 +413,9 @@ export default function LoLvoteCreatePage() {
                 <button onClick={handleDeleteReplay}>삭제</button>
               </div>
             )}
-          </S.Uploadfile>
+          </S.Replayfile>
           <label className="input-file-button" htmlFor="replay-file">
-            리플레이 업로드
+            <FileUploadIcon />
           </label>
           <Input2
             label="공약"
@@ -484,7 +485,7 @@ export default function LoLvoteCreatePage() {
                 ))}
               </Select>
               <div>
-                <label>Roles:</label>
+                <label>Roles :</label>
                 <input
                   type="checkbox"
                   value={voteArticle.Top}
