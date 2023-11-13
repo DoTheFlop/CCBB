@@ -66,9 +66,18 @@ public class UserController {
 	}
 
 	@PostMapping("/elogin")
-	public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
-		String token = userService.elogin(userEmailPasDto);
-		return new ResponseEntity<>(token, HttpStatus.OK);
+	public ResponseEntity<Map<String, Object>> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+		Map<String, Object> resultMap = new HashMap<>();
+		HttpStatus status;
+		try{
+			String token = userService.elogin(userEmailPasDto);
+			resultMap.put("token:", token);
+			status = HttpStatus.OK;
+		}catch (Exception e){
+			resultMap.put("message", "fail: " + e);
+			status = HttpStatus.INTERNAL_SERVER_ERROR;
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
 	@PutMapping("/modify")
@@ -76,7 +85,6 @@ public class UserController {
 		@RequestBody UserDto userDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status;
-
 		try {
 
 			userService.updateUser(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userDto);
