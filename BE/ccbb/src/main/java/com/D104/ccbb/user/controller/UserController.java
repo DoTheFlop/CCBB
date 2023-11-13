@@ -65,21 +65,25 @@ public class UserController {
 		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
 	}
 
-	@PostMapping("/elogin")
-	public ResponseEntity<Map<String, Object>> login(@RequestBody UserEmailPasDto userEmailPasDto) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status;
-		try{
-			String token = userService.elogin(userEmailPasDto);
-			resultMap.put("token:", token);
-			status = HttpStatus.OK;
-		}catch (Exception e){
-			resultMap.put("message", "fail: " + e);
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
-
+//	@PostMapping("/elogin")
+//	public ResponseEntity<Map<String, Object>> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+//		Map<String, Object> resultMap = new HashMap<>();
+//		HttpStatus status;
+//		try{
+//			String token = userService.elogin(userEmailPasDto);
+//			resultMap.put("token:", token);
+//			status = HttpStatus.OK;
+//		}catch (Exception e){
+//			resultMap.put("message", "fail: " + e);
+//			status = HttpStatus.INTERNAL_SERVER_ERROR;
+//		}
+//		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+//	}
+@PostMapping("/elogin")
+public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+	String token = userService.elogin(userEmailPasDto);
+	return new ResponseEntity<>(token, HttpStatus.OK);
+}
 	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization,
 		@RequestBody UserDto userDto) {

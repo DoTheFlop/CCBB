@@ -42,4 +42,10 @@ public class WodService {
 		wodRepo.deleteById(wodId);
 	}
 
+	public Boolean wodCheck(int userId, int postId){
+		if(wodRepo.findByUserId_UserIdAndPostId_PostId(userId,postId)!=null)
+			return true;
+		else return false;
+	}
+
 }
