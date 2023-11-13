@@ -72,6 +72,7 @@ export default function LoLvoteDetailPage() {
           headers,
         })
         .then((res) => {
+          console.log("기표함결과");
           console.log(res);
           if (res.data.voteResult.userPick) {
             setUserPick(res.data.voteResult.userPick);
@@ -260,6 +261,7 @@ export default function LoLvoteDetailPage() {
 
   //댓글 전송
   const postComment = () => {
+    if (myComment.length === 0) return;
     ccbbApi
       .post(
         "/comment/add",
@@ -466,31 +468,14 @@ export default function LoLvoteDetailPage() {
             {voteStep() > 1 && (
               <S.VoteResultDisplay>
                 <h3>투표 결과</h3>
-                <VoteRate />
-                <S.Bar
-                  color="#97A7FF"
-                  $percent={`${
-                    (voteResult.pick1 /
-                      (voteResult.pick1 + voteResult.pick2 || 1)) *
-                    100
-                  }%`}
-                >
-                  {/* deadline이 지난 경우에만 투표한 수 표시 */}
-                  {new Date(curPost.vote.deadline) < now &&
-                    `투표한 수 : ${voteResult.pick1}`}
-                </S.Bar>
-                <S.Bar
-                  color="#FF9797"
-                  $percent={`${
-                    (voteResult.pick2 /
-                      (voteResult.pick1 + voteResult.pick2 || 1)) *
-                    100
-                  }%`}
-                >
-                  {/* deadline이 지난 경우에만 투표한 수 표시 */}
-                  {new Date(curPost.vote.deadline) < now &&
-                    `투표한 수 : ${voteResult.pick2}`}
-                </S.Bar>
+                <VoteRate
+                  cnt1={voteResult.pick1}
+                  cnt2={voteResult.pick2}
+                  nickname1={curPost.vote.nickname1}
+                  nickname2={curPost.vote.nickname2}
+                  userId1={curPost.vote.user1}
+                  userId2={curPost.vote.user2}
+                />
               </S.VoteResultDisplay>
             )}
 
