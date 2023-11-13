@@ -12,6 +12,8 @@ import com.D104.ccbb.goods.dto.GoodsDto;
 import com.D104.ccbb.goods.repo.GoodsRepo;
 import com.D104.ccbb.participants.domain.Participants;
 import com.D104.ccbb.participants.repo.ParticipantsRepo;
+import com.D104.ccbb.point_history.domain.PointHistory;
+import com.D104.ccbb.point_history.repo.PointHistoryRepo;
 import com.D104.ccbb.user.domain.User;
 import com.D104.ccbb.user.repository.UserRepository;
 
@@ -26,6 +28,7 @@ public class GoodsService {
 	private final EventRepo eventRepo;
 	private final UserRepository userRepository;
 	private final ParticipantsRepo participantsRepo;
+	private final PointHistoryRepo pointHistoryRepo;
 
 	// @Transactional
 	// public Goods setGoods(GoodsDto goodsDto) {
@@ -75,6 +78,11 @@ public class GoodsService {
 		if (goods.getWinCount() <= 0) {
 			throw new IllegalStateException("상품 응모가 끝났습니다.");
 		}
+		pointHistoryRepo.save(PointHistory.builder()
+			.value(-goods.getPrice())
+			.userId(user)
+			.detail("상품 응모")
+			.build());
 		double randomValue = Math.random() * 100; // 0.0 ~ 99.9 사이의 난수를 생성
 		if (randomValue < goods.getWinPercent()) {
 			goods.setWinCount(goods.getWinCount() - 1);
