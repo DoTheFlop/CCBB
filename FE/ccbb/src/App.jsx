@@ -18,6 +18,7 @@ import * as S from "./style";
 import LoLvoteDetailPage from "./pages/boardPages/lolvoteBoard/lolvoteDetail";
 import LoLvoteCreatePage from "./pages/boardPages/lolvoteBoard/lolvoteCreate";
 import PaymentSuccessPage from "./pages/userPages/paymentSuccess";
+import StatisticPage from "./pages/statisticPage";
 
 export default function App() {
   return (
@@ -32,9 +33,13 @@ export default function App() {
           <Route path="/mypage" element={<MyPage />}></Route>
           <Route path="/mypage/pwcheck" element={<BeforeModifyPage />} />
           <Route path="/mypage/modify" element={<InfoModifyPage />} />
-          <Route path="/payment-success"element={<PaymentSuccessPage/>}></Route>
+          <Route
+            path="/payment-success"
+            element={<PaymentSuccessPage />}
+          ></Route>
 
           <Route path="/lolvote" element={<LoLvoteboardPage />}></Route>
+          <Route path="/statistic" element={<StatisticPage />}></Route>
           <Route
             path="/lolvote/:postId"
             element={<LoLvoteDetailPage />}
