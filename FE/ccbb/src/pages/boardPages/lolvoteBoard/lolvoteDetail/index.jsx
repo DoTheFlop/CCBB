@@ -166,6 +166,7 @@ export default function LoLvoteDetailPage() {
     ccbbApi
       .get(`/comment/${postId}`)
       .then((res) => {
+        // console.log(res.data.commentList);
         SetComments(res.data.commentList);
       })
       .catch((e) => console.log(e));
@@ -400,7 +401,7 @@ export default function LoLvoteDetailPage() {
             )}
 
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
-              <PromisePage promise={curPost.vote.promise} />
+              <PromisePage promise={curPost.vote.promise} deposit={curPost.vote.deposit} />
             </S.PromisePageWrapper>
 
             {/* 투표 진행중일 때 */}
@@ -444,7 +445,7 @@ export default function LoLvoteDetailPage() {
 
             {/* 미수락 투표글일때 - user2에게만 수락거절 버튼이 보임 */}
             {curPost.voteList?.vote && voteStep() === 0 ? (
-              userInfo.userId !== curPost.vote?.user2 ? (
+              userInfo.userId !== curPost.vote.user2 ? (
                 <S.VoteBodybot>
                   <h3>{curPost.vote.argument}</h3>
                   <h2>⛔️ 상대방의 수락을 기다리고 있는 게시글입니다. ⛔️</h2>
@@ -536,7 +537,7 @@ export default function LoLvoteDetailPage() {
               )}
 
               <h4>
-                댓글 {curPost && curPost.comment ? curPost.comment.length : 0}개
+                댓글 {comments.length}개
               </h4>
               <S.CommentBody>
                 {/* <CommentBox
@@ -555,6 +556,7 @@ export default function LoLvoteDetailPage() {
                       comment={cmt.content}
                       date={cmt.createDate}
                       position={cmt.position}
+                      tier={cmt.tier}
                       onClickModify={(newContent) =>
                         handleModifyComment(cmt.commentId, newContent)
                       }
