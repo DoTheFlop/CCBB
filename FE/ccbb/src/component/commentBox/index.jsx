@@ -13,6 +13,7 @@ export default function CommentBox({
   position,
   onClickModify,
   onClickDelete,
+  tier,
 }) {
   const createDate = parseDate(date);
 
@@ -41,8 +42,10 @@ export default function CommentBox({
           name={nickname}
           imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId}`}
           color={"black"}
-          iconSize={"30px"}
-          fontsize={"15px"}
+          iconSize={"10px"}
+          fontsize={"10px"}
+          size={40}
+          tier={tier}
         />
         <p>
           {`${createDate.year}/${createDate.month}/${createDate.day} ${createDate.hours}:${createDate.minutes}`}

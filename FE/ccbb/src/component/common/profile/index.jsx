@@ -8,6 +8,7 @@ export default function UserProfile({
   direction = "",
   size = 50,
   imgUrl,
+  tier,
 }) {
   // const iconSize = "50px";
   const [profileImg, setProfileImg] = React.useState(imgUrl);
@@ -35,11 +36,18 @@ export default function UserProfile({
       <S.Img
         src={profileImg}
         alt="profile-img"
-        style={{ width: size, height: size }}
+        style={{ width: size - 10, height: size - 10 }}
       />
       <S.Name color={color} size={size}>
         {name}
       </S.Name>
+      {tier ? (
+        <S.Img
+          src={`/resource/${tier}.png`}
+          alt="tier-img"
+          style={{ width: size - 10, height: size - 10 }}
+        />
+      ) : null}
     </S.Profile>
   );
 }
