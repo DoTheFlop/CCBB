@@ -156,4 +156,17 @@ public class PostService {
 		postRepo.deleteById(postId);
 
 	}
+
+	public String acceptPromise(String authorization, int postId) throws Exception {
+		Optional<Vote> foundVote = voteRepo.findByPostId_PostId(postId);
+		if (foundVote.isEmpty()) {
+			throw new Exception("존재하지 않는 게시글 번호 입니다.");
+		}
+		Vote vote = foundVote.get();
+		vote.setDoPromise(true);
+		voteRepo.save(vote);
+
+		paymentHistoryService.returnPayment(authorization, vote.getVoteId(), false);
+		return "공약 이행 완료";
+	}
 }

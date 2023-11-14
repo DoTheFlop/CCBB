@@ -1,5 +1,25 @@
 package com.D104.ccbb.post.controller;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.D104.ccbb.file.service.FileService;
 import com.D104.ccbb.jwt.service.JwtTokenService;
 import com.D104.ccbb.like.dto.LikesDto;
@@ -15,17 +35,9 @@ import com.D104.ccbb.user.service.UserService;
 import com.D104.ccbb.vote.dto.VoteAcceptDto;
 import com.D104.ccbb.vote.dto.VoteListDto;
 import com.D104.ccbb.vote.service.VoteService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/post")
@@ -317,6 +329,17 @@ public class PostController {
         } catch (Exception e) {
             log.error("투표 거절 실패 ", e);
             return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/promise/accept/{postId}")
+    public ResponseEntity<String> acceptPromise(@RequestHeader String Authorization, @PathVariable int postId) {
+        try {
+            String result = postService.acceptPromise(Authorization, postId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>("실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
