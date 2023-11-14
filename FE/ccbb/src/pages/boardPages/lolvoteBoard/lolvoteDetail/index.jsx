@@ -11,7 +11,7 @@ import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
 import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import InputComment from "../../../../component/common/inputs/inputcomment";
 import CommentBox from "../../../../component/commentBox";
 import { ccbbApi } from "../../../../api/ccbbApi";
@@ -21,10 +21,14 @@ import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
 import Button1 from "../../../../component/common/buttons";
 import TierImg from "../../../../component/tier";
 import VoteProcess from "../../../../component/voteBoard/voteProcess";
-import { isBefore } from "date-fns";
+import { intervalToDuration, isBefore } from "date-fns";
+import { isAfter } from "date-fns";
+import VoteRate from "../../../../component/voteBoard/voteRate";
 
 import DownloadIcon from "@mui/icons-material/Download";
+import Loading from "../../../../component/common/Loading";
 export default function LoLvoteDetailPage() {
+  const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
   const token = localStorage.getItem("token");
   const headers = {
@@ -47,46 +51,24 @@ export default function LoLvoteDetailPage() {
   const [isApproved, setIsApproved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [payment, setPayment] = useState(null);
-  const token1 = localStorage.getItem("token");
-  const [userPick, setUserPick] = useState(null);
+  const [userPick, setUserPick] = useState(0); // 0: 미투표, 투표했으면 1 or 2
   const [modalMessage, setModalMessage] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const [isModalOpen, setIsOpenModal] = useState(false);
-
-  React.useEffect(() => {
-    fetchPost();
-    fetchComments();
-    // console.log(userPick);
-  }, [userPick]);
-
-  const isMyVote = () => {
-    //(로그인한) 유저가 투표 당사자인지 체크
-    return (
-      userInfo?.userId === curPost?.vote.user1 ||
-      userInfo?.userId === curPost?.vote.user2
-    );
-  };
-
-  const voteStep = () => {
-    //투표 진행단계를 0~3 중 하나의 숫자로 리턴함 (수락대기/투표진행/공약이행/보증금반환)
-    if (!isApproved) return 0;
-    const now = new Date();
-    const endDate = new Date(curPost?.vote.deadline);
-    if (isBefore(now, endDate)) return 1;
-    if (!curPost?.vote.doPromise) return 2;
-    return 3;
-  };
+  const [timeLeft, setTimeLeft] = useState(""); // 종료일 나타내기 위해서
+  const [voteResult, setVoteResult] = useState({ pick1: 0, pick2: 0 });
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPost = () => {
-    const headers = {
-      Authorization: `Bearer ${token1}`,
-    };
+    return ccbbApi.get("/post/vote/detail", {
+      params: { postId: postId },
+    });
+  };
 
-    ccbbApi
-      .get("/post/vote/detail", {
-        params: { postId: postId },
-      })
-      .then((res) => {
+  useEffect(() => {
+    try {
+      setIsLoading(true);
+      fetchPost().then((res) => {
         console.log(res.data);
         setIsApproved(res.data.voteList.vote.accept2);
         ccbbApi
@@ -94,25 +76,90 @@ export default function LoLvoteDetailPage() {
             headers,
           })
           .then((res) => {
-            console.log(res.data.voteResult.userPick);
+            console.log("기표함결과");
+            console.log(res);
             if (res.data.voteResult.userPick) {
-              setUserPick(true);
+              setUserPick(res.data.voteResult.userPick);
             }
           })
           .catch((e) => {
             console.log(e);
           });
         SetCurPost(res.data.voteList);
+
+        fetchComments();
+        setIsLoading(false);
+
+        // 현재 시간이 deadline을 지난지 확인
+        const now = new Date();
+        const deadline = new Date(res.data.voteList.vote.deadline);
+        if (isAfter(now, deadline)) {
+          fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
+        }
+      });
+    } catch {
+      setIsLoading(false);
+    }
+  }, [userPick]);
+  const now = new Date();
+  const fetchVoteResult = (voteId) => {
+    ccbbApi
+      .get(`/vote/result`, {
+        params: { voteId: voteId },
+      })
+      .then((res) => {
+        console.log("voteResult response:", res.data); // 추가된 부분
+        setVoteResult(res.data.voteResult); // 응답으로 받은 투표 결과를 상태 변수에 저장
       })
       .catch((e) => {
         console.log(e);
-        if (e.response) {
-          alert(e.response.data.message);
-          window.location = "https://ccbb.pro/lolvote";
-        } else {
-          alert("네트워크 오류가 발생했습니다.");
-        }
       });
+  };
+
+  // 두 번째 useEffect: curPost의 변경을 감지하여 타이머 업데이트
+  useEffect(() => {
+    const updateTimer = () => {
+      if (curPost.vote?.deadline) {
+        const deadline = new Date(curPost.vote.deadline);
+        const now = new Date();
+
+        // 현재 시간이 deadline을 지났는지 확인
+        if (isAfter(now, deadline)) {
+          const duration = intervalToDuration({ start: deadline, end: now });
+          const timePassed = `${duration.days}일 ${duration.hours}시간 ${duration.minutes}분 지남`;
+          setTimeLeft(timePassed);
+        } else {
+          const duration = intervalToDuration({ start: now, end: deadline });
+          const timeLeft = `${duration.days}일 ${duration.hours}시간 ${duration.minutes}분 남음`;
+          setTimeLeft(timeLeft);
+        }
+      }
+    };
+
+    updateTimer();
+    const intervalId = setInterval(updateTimer, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [curPost]);
+
+  const isMyVote = () => {
+    //(로그인한) 유저가 투표 당사자인지 체크
+    return (
+      userInfo?.userId === curPost.vote?.user1 ||
+      userInfo?.userId === curPost.vote?.user2
+    );
+  };
+
+  const voteStep = () => {
+    //투표 진행단계를 0~3 중 하나의 숫자로 리턴함 (수락대기/투표진행/공약이행/보증금반환)
+    if (!isApproved) return 0;
+    const now = new Date();
+    const endDate = new Date(curPost.vote?.deadline);
+    if (isBefore(now, endDate)) return 1;
+    if (!curPost.vote?.doPromise) return 2;
+    return 3;
   };
 
   const fetchComments = () => {
@@ -120,7 +167,6 @@ export default function LoLvoteDetailPage() {
       .get(`/comment/${postId}`)
       .then((res) => {
         SetComments(res.data.commentList);
-        console.log(res.data);
       })
       .catch((e) => console.log(e));
   };
@@ -134,8 +180,6 @@ export default function LoLvoteDetailPage() {
       )
       .then((res) => {
         setPayment(res.data);
-        // console.log(payment);
-        // console.log(res.data);
         openModalHandler();
       });
   };
@@ -145,9 +189,8 @@ export default function LoLvoteDetailPage() {
       ccbbApi
         .delete(`/post/reject/${curPost.postId}`, { headers }, {})
         .then((res) => {
-          // console.log(res);
           alert("거절하였습니다.");
-          window.location.href = "https://ccbb.pro/lolvote";
+          navigate("/lolvote");
         });
     }
   };
@@ -172,7 +215,6 @@ export default function LoLvoteDetailPage() {
   const handleOnKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey && myComment) {
       e.preventDefault();
-      // console.log(myComment);
       postComment(); // Enter 입력시 댓글 등록
       e.target.value = "";
     }
@@ -181,26 +223,33 @@ export default function LoLvoteDetailPage() {
   const openModalHandler = () => {
     setIsOpen(!isOpen);
   };
-  const handlevoteUser1 = (e) => {
-    // console.log(curPost.vote.voteId);
+  const handlevoteUser = (pickSide) => {
+    if (!token) {
+      //비로그인 유저는 투표못함
+      alert("로그인 후 투표하세요");
+      // navigate("/signin");
+    }
     const headers = {
-      Authorization: `Bearer ${token1}`,
+      Authorization: `Bearer ${token}`,
     };
     const body = {
       ballotBoxId: 0,
-      pick: 1,
+      pick: pickSide,
       userId: 0,
       voteId: curPost.vote.voteId,
     };
 
-    if (userPick) {
+    if (userPick > 0) {
+      // TODO: 토스티파이로 수정
       alert("이미 투표를 하였습니다.");
       return;
     } else {
-      ccbbApi.post("/vote/ballet/add", body, { headers }).then((e) => {
-        console.log(e);
-        setUserPick(true);
-      });
+      ccbbApi
+        .post("/vote/ballet/add", body, { headers })
+        .then((res) => {
+          setUserPick(pickSide);
+        })
+        .catch((e) => console.log(e));
     }
   };
 
@@ -218,29 +267,9 @@ export default function LoLvoteDetailPage() {
     openModal("투표가 성공적으로 이루어졌습니다.");
   };
 
-  const handlevoteUser2 = (e) => {
-    const headers = {
-      Authorization: `Bearer ${token1}`,
-    };
-    const body = {
-      ballotBoxId: 0,
-      pick: 2,
-      userId: 0,
-      voteId: curPost.vote.voteId,
-    };
-    if (userPick) {
-      alert("이미 투표를 하였습니다.");
-      return;
-    } else {
-      ccbbApi.post("/vote/ballet/add", body, { headers }).then((e) => {
-        console.log(e);
-        setUserPick(true);
-      });
-    }
-  };
-
   //댓글 전송
   const postComment = () => {
+    if (myComment.length === 0) return;
     ccbbApi
       .post(
         "/comment/add",
@@ -319,10 +348,15 @@ export default function LoLvoteDetailPage() {
             <S.Headbottom></S.Headbottom>
           </S.HeadLeft>
           <S.HeadRight>
-            <TierImg tier={curPost.vote.limitTier} size={"100px"} />
+            {isLoading ? (
+              <div style={{ height: "100px" }}></div>
+            ) : (
+              <TierImg tier={curPost.vote.limitTier} size={"100px"} />
+            )}
           </S.HeadRight>
         </S.Menuhead>
-
+        {isLoading ? <Loading /> : null}
+        {isLoading ? null : <S.TimeLeft>종료일 : {timeLeft}</S.TimeLeft>}
         <S.DetailBody>
           {/* 투표 당사자일때만 진행상황이 보임 */}
           {isMyVote() && <VoteProcess step={voteStep()} />}
@@ -354,27 +388,30 @@ export default function LoLvoteDetailPage() {
               </S.replaylinkBox>
             )}
             {curPost.content}
-            <S.PromiseP>
-              <h3 onClick={togglePromisePage}>공약</h3>
-              {isPromisePageOpen ? (
-                <ArrowDropDownIcon onClick={togglePromisePage} />
-              ) : (
-                <PlayArrowIcon onClick={togglePromisePage} />
-              )}
-            </S.PromiseP>
+            {isLoading ? null : (
+              <S.PromiseP>
+                <h3 onClick={togglePromisePage}>공약</h3>
+                {isPromisePageOpen ? (
+                  <ArrowDropDownIcon onClick={togglePromisePage} />
+                ) : (
+                  <PlayArrowIcon onClick={togglePromisePage} />
+                )}
+              </S.PromiseP>
+            )}
 
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
               <PromisePage promise={curPost.vote.promise} />
             </S.PromisePageWrapper>
 
-            {isApproved ? (
+            {/* 투표 진행중일 때 */}
+            {voteStep() === 1 && (
               <S.VoteBodybot>
                 <h3>{curPost.vote.argument}</h3>
                 <h4>옳다고 생각하는 유저에 투표해주세요</h4>
                 <S.Votebutton>
                   <S.ProfileBox
                     onClick={(e) => {
-                      handlevoteUser1();
+                      handlevoteUser(1);
                     }}
                     $bgcolor="#97A7FF"
                   >
@@ -391,7 +428,7 @@ export default function LoLvoteDetailPage() {
                   />
                   <S.ProfileBox
                     onClick={(e) => {
-                      handlevoteUser2();
+                      handlevoteUser(2);
                     }}
                     $bgcolor="#FF9797"
                   >
@@ -402,82 +439,82 @@ export default function LoLvoteDetailPage() {
                     />
                   </S.ProfileBox>
                 </S.Votebutton>
-
-                <S.ArticleMenu>
-                  {isThumbUp ? (
-                    <ThumbUpAltIcon
-                      onClick={toggleThumbUp}
-                      style={{ fontSize: "50px", cursor: "pointer" }}
-                    />
-                  ) : (
-                    <ThumbUpOffAltIcon
-                      onClick={toggleThumbUp}
-                      style={{ fontSize: "50px", cursor: "pointer" }}
-                    />
-                  )}
-
-                  {isWard ? (
-                    <S.Imgward
-                      onClick={toggleWard}
-                      src="../resource/wardafter.png"
-                      alt="VS Logo"
-                      style={{ height: "80px", cursor: "pointer" }}
-                    />
-                  ) : (
-                    <S.Imgward
-                      onClick={toggleWard}
-                      src="../resource/wardbefore.png"
-                      alt="VS Logo"
-                      style={{ height: "80px", cursor: "pointer" }}
-                    />
-                  )}
-
-                  {isThumbDown ? (
-                    <ThumbDownAltIcon
-                      onClick={toggleThumbDown}
-                      style={{ fontSize: "50px", cursor: "pointer" }}
-                    />
-                  ) : (
-                    <ThumbDownOffAltIcon
-                      onClick={toggleThumbDown}
-                      style={{ fontSize: "50px", cursor: "pointer" }}
-                    />
-                  )}
-                </S.ArticleMenu>
               </S.VoteBodybot>
-            ) : !isMyVote() ? (
-              <S.VoteBodybot>
-                <h3>{curPost.vote.argument}</h3>
-                <h2>⛔️ 아직 성사되지 않은 게시글입니다. ⛔️</h2>
-              </S.VoteBodybot>
+            )}
+
+            {/* 미수락 투표글일때 - user2에게만 수락거절 버튼이 보임 */}
+            {curPost.voteList?.vote && voteStep() === 0 ? (
+              userInfo.userId !== curPost.vote?.user2 ? (
+                <S.VoteBodybot>
+                  <h3>{curPost.vote.argument}</h3>
+                  <h2>⛔️ 상대방의 수락을 기다리고 있는 게시글입니다. ⛔️</h2>
+                </S.VoteBodybot>
+              ) : (
+                <S.VoteBodybot>
+                  <h3>{curPost.vote.argument}</h3>
+                  <h4>해당 투표를 진행하시겠습니까?</h4>
+                  <S.VoteBodyButtonBox>
+                    <Button1
+                      text="수락"
+                      width="150px"
+                      height="50px"
+                      onClick={handleCreateButtonClick} // 변경된 부분: onClick 이벤트 핸들러로 payresponse 함수가 호출됩니다.
+                    ></Button1>
+                    <Button1
+                      onClick={voteReject}
+                      text="거절"
+                      width="150px"
+                      height="50px"
+                      color="#8B0000"
+                    ></Button1>
+                  </S.VoteBodyButtonBox>
+                  <VotePaymentModal
+                    isOpen={isOpen}
+                    onClose={openModalHandler}
+                    payment={payment}
+                  />
+                </S.VoteBodybot>
+              )
             ) : (
-              <S.VoteBodybot>
-                <h3>{curPost.vote.argument}</h3>
-                <h4>해당 투표를 진행하시겠습니까?</h4>
-                <S.VoteBodyButtonBox>
-                  <Button1
-                    text="수락"
-                    width="150px"
-                    height="50px"
-                    onClick={handleCreateButtonClick} // 변경된 부분: onClick 이벤트 핸들러로 payresponse 함수가 호출됩니다.
-                  ></Button1>
-                  <Button1
-                    onClick={voteReject}
-                    text="거절"
-                    width="150px"
-                    height="50px"
-                    color="#8B0000"
-                  ></Button1>
-                </S.VoteBodyButtonBox>
-                <VotePaymentModal
-                  isOpen={isOpen}
-                  onClose={openModalHandler}
-                  payment={payment}
+              <></>
+            )}
+
+            {/* 종료된 투표일때 */}
+            {voteStep() > 1 && (
+              <S.VoteResultDisplay>
+                <h3>투표 결과</h3>
+                <VoteRate
+                  cnt1={voteResult.pick1}
+                  cnt2={voteResult.pick2}
+                  nickname1={curPost.vote.nickname1}
+                  nickname2={curPost.vote.nickname2}
+                  userId1={curPost.vote.user1}
+                  userId2={curPost.vote.user2}
                 />
-              </S.VoteBodybot>
+              </S.VoteResultDisplay>
+            )}
+
+            {/* 와드영역 - 구현완료한 다음에 비로그인일때 렌더링 막을것 */}
+            {isLoading ? (
+              <S.EmptyDiv></S.EmptyDiv>
+            ) : isWard ? (
+              <S.Imgward
+                onClick={toggleWard}
+                src="../resource/wardafter.png"
+                alt="VS Logo"
+                style={{ width: "120px", height: "80px", cursor: "pointer" }}
+              />
+            ) : (
+              <S.Imgward
+                onClick={toggleWard}
+                src="../resource/wardbefore.png"
+                alt="VS Logo"
+                style={{ width: "120px", height: "80px", cursor: "pointer" }}
+              />
             )}
           </S.Votebody>
 
+          {/* 댓글영역 */}
           {isApproved && (
             <S.BodyBottom>
               {token && (
@@ -499,8 +536,7 @@ export default function LoLvoteDetailPage() {
               )}
 
               <h4>
-                댓글 { curPost && curPost.comment ? curPost.comment.length : 0 }개
-
+                댓글 {curPost && curPost.comment ? curPost.comment.length : 0}개
               </h4>
               <S.CommentBody>
                 {/* <CommentBox
