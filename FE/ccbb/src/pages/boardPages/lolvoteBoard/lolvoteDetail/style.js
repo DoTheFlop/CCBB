@@ -299,3 +299,7 @@ export const replaylink = styled.a`
   align-items: center;
   text-decoration: none;
 `;
+
+export const EmptyDiv = styled.div`
+  height: 200px;
+`

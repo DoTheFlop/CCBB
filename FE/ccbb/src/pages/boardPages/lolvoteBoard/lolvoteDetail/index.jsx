@@ -26,6 +26,7 @@ import { isAfter } from "date-fns";
 import VoteRate from "../../../../component/voteBoard/voteRate";
 
 import DownloadIcon from "@mui/icons-material/Download";
+import Loading from "../../../../component/common/Loading";
 export default function LoLvoteDetailPage() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
@@ -56,6 +57,7 @@ export default function LoLvoteDetailPage() {
   const [isModalOpen, setIsOpenModal] = useState(false);
   const [timeLeft, setTimeLeft] = useState(""); // 종료일 나타내기 위해서
   const [voteResult, setVoteResult] = useState({ pick1: 0, pick2: 0 });
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchPost = () => {
     return ccbbApi.get("/post/vote/detail", {
@@ -64,34 +66,40 @@ export default function LoLvoteDetailPage() {
   };
 
   useEffect(() => {
-    fetchPost().then((res) => {
-      console.log(res.data);
-      setIsApproved(res.data.voteList.vote.accept2);
-      ccbbApi
-        .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
-          headers,
-        })
-        .then((res) => {
-          console.log("기표함결과");
-          console.log(res);
-          if (res.data.voteResult.userPick) {
-            setUserPick(res.data.voteResult.userPick);
-          }
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-      SetCurPost(res.data.voteList);
+    try {
+      setIsLoading(true);
+      fetchPost().then((res) => {
+        console.log(res.data);
+        setIsApproved(res.data.voteList.vote.accept2);
+        ccbbApi
+          .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
+            headers,
+          })
+          .then((res) => {
+            console.log("기표함결과");
+            console.log(res);
+            if (res.data.voteResult.userPick) {
+              setUserPick(res.data.voteResult.userPick);
+            }
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+        SetCurPost(res.data.voteList);
 
-      fetchComments();
+        fetchComments();
+        setIsLoading(false);
 
-      // 현재 시간이 deadline을 지난지 확인
-      const now = new Date();
-      const deadline = new Date(res.data.voteList.vote.deadline);
-      if (isAfter(now, deadline)) {
-        fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
-      }
-    });
+        // 현재 시간이 deadline을 지난지 확인
+        const now = new Date();
+        const deadline = new Date(res.data.voteList.vote.deadline);
+        if (isAfter(now, deadline)) {
+          fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
+        }
+      });
+    } catch {
+      setIsLoading(false);
+    }
   }, [userPick]);
   const now = new Date();
   const fetchVoteResult = (voteId) => {
@@ -340,10 +348,15 @@ export default function LoLvoteDetailPage() {
             <S.Headbottom></S.Headbottom>
           </S.HeadLeft>
           <S.HeadRight>
-            <TierImg tier={curPost.vote.limitTier} size={"100px"} />
+            {isLoading ? (
+              <div style={{ height: "100px" }}></div>
+            ) : (
+              <TierImg tier={curPost.vote.limitTier} size={"100px"} />
+            )}
           </S.HeadRight>
         </S.Menuhead>
-        <S.TimeLeft>종료일 : {timeLeft}</S.TimeLeft>
+        {isLoading ? <Loading /> : null}
+        {isLoading ? null : <S.TimeLeft>종료일 : {timeLeft}</S.TimeLeft>}
         <S.DetailBody>
           {/* 투표 당사자일때만 진행상황이 보임 */}
           {isMyVote() && <VoteProcess step={voteStep()} />}
@@ -375,14 +388,16 @@ export default function LoLvoteDetailPage() {
               </S.replaylinkBox>
             )}
             {curPost.content}
-            <S.PromiseP>
-              <h3 onClick={togglePromisePage}>공약</h3>
-              {isPromisePageOpen ? (
-                <ArrowDropDownIcon onClick={togglePromisePage} />
-              ) : (
-                <PlayArrowIcon onClick={togglePromisePage} />
-              )}
-            </S.PromiseP>
+            {isLoading ? null : (
+              <S.PromiseP>
+                <h3 onClick={togglePromisePage}>공약</h3>
+                {isPromisePageOpen ? (
+                  <ArrowDropDownIcon onClick={togglePromisePage} />
+                ) : (
+                  <PlayArrowIcon onClick={togglePromisePage} />
+                )}
+              </S.PromiseP>
+            )}
 
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
               <PromisePage promise={curPost.vote.promise} />
@@ -480,7 +495,9 @@ export default function LoLvoteDetailPage() {
             )}
 
             {/* 와드영역 - 구현완료한 다음에 비로그인일때 렌더링 막을것 */}
-            {isWard ? (
+            {isLoading ? (
+              <S.EmptyDiv></S.EmptyDiv>
+            ) : isWard ? (
               <S.Imgward
                 onClick={toggleWard}
                 src="../resource/wardafter.png"

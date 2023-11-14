@@ -235,3 +235,7 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
     </ModalBackground>
   );
 };
+
+export const EmptyDiv = styled.div`
+  height: 100px;
+`
