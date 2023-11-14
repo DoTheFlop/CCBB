@@ -7,6 +7,8 @@ import { ccbbApi } from "../../../api/ccbbApi";
 import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../recoil/UserAtom";
 import { UrlAtom } from "../../../recoil/UrlAtom";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -41,7 +43,10 @@ export default function SigninPage() {
       }
     } catch (e) {
       console.log(e);
+      toast.error('이메일 또는 비밀번호가 잘못되었습니다.');
     }
+
+    console.timeEnd("doLogin");
   };
 
   const handleOnKeyPress = (e) => {
@@ -111,6 +116,14 @@ export default function SigninPage() {
           <p>패스워드 찾기</p>
         </Link>
       </S.signinMenu>
+      <ToastContainer
+      position="top-right"
+      limit={1}
+      closeButton={false}
+      autoClose={2200}
+      closeOnClick
+      hideProgressBar
+    />
     </S.bg>
   );
 }
