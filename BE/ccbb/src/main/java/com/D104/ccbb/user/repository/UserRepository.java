@@ -26,7 +26,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 		"group by u.lol_tier",nativeQuery = true)
 	List<Map<String, Object>> getStatisticsTier();
 
-	@Query(value = "select u.main_position as position, sum(u.vote_count) as voteCount, sum(u.vote_victory) as voteVictory " +
+	@Query(value = "select u.main_position as lolPosition, sum(u.vote_count) as voteCount, sum(u.vote_victory) as voteVictory " +
 		"from user u " +
 		"group by u.main_position",nativeQuery = true)
 	List<Map<String, Object>> getStatisticsPosition();
