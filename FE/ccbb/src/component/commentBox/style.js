@@ -7,8 +7,8 @@ export const Box = styled.div`
   border-radius: 10px;
   display: flex;
   flex-direction: column;
-  margin-top: 1%;
-  margin-bottom: 1%;
+  // margin-top: 1%;
+  // margin-bottom: 1%;
   padding: 1% 2% 2% 2%;
 `;
 
