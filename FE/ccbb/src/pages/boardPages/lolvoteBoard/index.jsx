@@ -7,11 +7,12 @@ import Select from "react-select";
 import { useNavigate } from "react-router-dom";
 import { ccbbApi } from "../../../api/ccbbApi";
 import { Pagination } from "@mui/material";
+import Loading from "../../../component/common/Loading";
 
 export default function LoLvoteboardPage() {
   const options = [
     { value: "Latest", label: "최신순" },
-  { value: "Popular", label: "인기순" },
+    { value: "Popular", label: "인기순" },
   ];
 
   const [activeTab, setActiveTab] = useState("ongoing"); // 'ongoing' 또는 'completed'
@@ -19,6 +20,7 @@ export default function LoLvoteboardPage() {
   const navigate = useNavigate();
   const [modalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const toggleTab = (tab) => {
     setActiveTab(tab);
@@ -107,7 +109,8 @@ export default function LoLvoteboardPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    setIsLoading(true);
+    fetchData().then(() => setIsLoading(false));
   }, [currentPage, selectedOption, activeTab]);
 
   const handlePageChange = (event, newPage) => {
@@ -159,6 +162,12 @@ export default function LoLvoteboardPage() {
       <S.Votebodycover>
         <S.VotebodyC>
           <S.Votebody>
+            {isLoading ? (
+              <>
+                <S.EmptyDiv></S.EmptyDiv>
+                <Loading />
+              </>
+            ) : null}
             {voteData.length > 0 &&
               voteData.map((item, idx) => (
                 <VoteCard
@@ -173,13 +182,15 @@ export default function LoLvoteboardPage() {
               ))}
           </S.Votebody>
         </S.VotebodyC>
-        <S.PaginationBox>
-          <Pagination
-            count={pages}
-            page={currentPage}
-            onChange={handlePageChange}
-          />
-        </S.PaginationBox>
+        {isLoading ? null : (
+          <S.PaginationBox>
+            <Pagination
+              count={pages}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </S.PaginationBox>
+        )}
       </S.Votebodycover>
       {modalOpen && (
         <S.DepositModal
