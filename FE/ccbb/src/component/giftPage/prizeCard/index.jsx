@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import * as S from "./style";
 import Button1 from "../../common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
-import { useParams } from "react-router-dom";
 
 export default function PrizeCard({
   stock = 1,
