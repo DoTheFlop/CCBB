@@ -442,10 +442,10 @@ export default function LoLvoteDetailPage() {
                 </S.Votebutton>
               </S.VoteBodybot>
             )}
-
+            {/* <p>{alert(curPost.voteList?.vote)}</p> */}
             {/* 미수락 투표글일때 - user2에게만 수락거절 버튼이 보임 */}
-            {curPost.voteList?.vote && voteStep() === 0 ? (
-              userInfo.userId !== curPost.vote.user2 ? (
+            {!isLoading && voteStep() === 0 ? (
+              userInfo.userId !== curPost.vote?.user2 ? (
                 <S.VoteBodybot>
                   <h3>{curPost.vote.argument}</h3>
                   <h2>⛔️ 상대방의 수락을 기다리고 있는 게시글입니다. ⛔️</h2>
@@ -496,7 +496,7 @@ export default function LoLvoteDetailPage() {
             )}
 
             {/* 와드영역 - 구현완료한 다음에 비로그인일때 렌더링 막을것 */}
-            {isLoading ? (
+            {isLoading || voteStep() == 0 ? (
               <S.EmptyDiv></S.EmptyDiv>
             ) : isWard ? (
               <S.Imgward
