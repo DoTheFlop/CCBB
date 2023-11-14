@@ -25,6 +25,7 @@ export default function VoteRate({
   userId1,
   userId2,
 }) {
+  const totalVote = cnt1 + cnt2;
   const options = {
     indexAxis: "y",
     plugins: {
@@ -43,15 +44,21 @@ export default function VoteRate({
             if (label) {
               label += ": ";
             }
-            label += context.raw;
+            label += totalVote ? context.raw : 0;
             return label;
           },
         },
       },
     },
+    layout: {
+      padding: {
+        top: 0,
+        bottom: 0,
+      },
+    },
 
-    responsive: false,
-    // aspectRatio: 24,
+    responsive: true,
+    aspectRatio: 10,
     // maintainAspectRatio: false,
     // layout: {
     //   padding: 0,
@@ -73,18 +80,18 @@ export default function VoteRate({
       {
         label: nickname1,
         backgroundColor: "#7390ff",
-        data: [cnt1],
+        data: [totalVote ? cnt1 : 1],
         borderRadius: 10,
         borderSkipped: "middle",
-        barThickness: 10,
+        barThickness: 20,
       },
       {
         label: nickname2,
         backgroundColor: "#ff5964",
-        data: [cnt2],
+        data: [totalVote ? cnt2 : 1],
         borderRadius: 10,
         borderSkipped: "middle",
-        barThickness: 10,
+        barThickness: 20,
       },
     ],
   };
@@ -95,7 +102,9 @@ export default function VoteRate({
         color="black"
         imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId1}`}
       />
-      <Bar options={options} data={data} />
+      <div className="bar-wrapper">
+        <Bar options={options} data={data} style={{ width: "100%" }} />
+      </div>
       <UserProfile
         name={nickname2}
         color="black"
