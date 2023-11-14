@@ -39,6 +39,7 @@ export default function LoLvoteCreatePage() {
   const [selectedTier, setSelectedTier] = useState(options[0].value);
   const [userSearch, setUserSearch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [minVotingTier, setMinVotingTier] = useState(options[0].value);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -52,6 +53,7 @@ export default function LoLvoteCreatePage() {
   const handleTierChange = (selected) => {
     const selectedValue = selected.value;
     setSelectedTier(selectedValue);
+    setMinVotingTier(selectedValue);
     setVoteArticle((prev) => ({
       ...prev,
       tier: selectedValue,
@@ -236,6 +238,8 @@ export default function LoLvoteCreatePage() {
     } else if (!voteArticle.deadline) {
       toast.error("투표마감일을 선택하세요.");
       return;
+
+      
     }
 
     let deadline = new Date(voteArticle.deadline);
@@ -270,6 +274,12 @@ export default function LoLvoteCreatePage() {
         .then(async (e) => {
           console.log(e.data.postId);
           voteArticle.postId = e.data.postId;
+
+          const voteArticleWithMinTier = {
+            ...voteArticle,
+            minVotingTier: minVotingTier
+          };
+          
           const body = JSON.stringify(voteArticle);
           const headers = {
             Authorization: `Bearer ${token1}`,
