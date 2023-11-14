@@ -3,20 +3,27 @@ import Headermenu from "../../component/common/headers/headermenu";
 import PrizeCard from "../../component/giftPage/prizeCard";
 import { ccbbApi } from "../../api/ccbbApi";
 import { useEffect, useState } from "react";
+import Loading from "../../component/common/Loading";
 
 export default function GiftPage() {
   const [goods, setGoods] = useState([]);
   const [userPoint, setUserPoint] = useState(0); // 사용자의 포인트를 저장할 state를 추가합니다.
+  const [isLoading, setIsLoading] = useState(false);
 
   const token1 = localStorage.getItem("token"); // 사용자의 토큰을 가져옵니다.
 
   const updateGoods = () => {
+    setIsLoading(true);
     ccbbApi
       .get(`/event/goods/list?eventId=${1}`)
       .then((res) => {
         setGoods(res.data.goodsList);
+        setIsLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        setIsLoading(false);
+      });
   };
 
   const getUserPoint = () => {
@@ -52,6 +59,12 @@ export default function GiftPage() {
         </S.userPointSection>
       ) : null}
       <S.prizeSection>
+        {isLoading ? (
+          <>
+            <Loading></Loading>
+            <S.EmptyDiv></S.EmptyDiv>
+          </>
+        ) : null}
         {goods.map((pr, index) => {
           return (
             <PrizeCard
