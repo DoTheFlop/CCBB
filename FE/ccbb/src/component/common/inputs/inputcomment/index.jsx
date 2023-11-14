@@ -22,6 +22,7 @@ export default function InputComment({
           height={height}
           onKeyPress={onKeyPress}
           onChange={onChange}
+          value={value}
         />
         {btn && (
           <Button1
