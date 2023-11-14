@@ -30,6 +30,7 @@ export const Menuhead = styled.div`
   padding-right: 10%;
   width: 80%;
   border-bottom: 1px solid #ccc;
+  position: relative;
 `;
 
 export const Votebodycover = styled.div`
@@ -99,7 +100,9 @@ export const Votebutton = styled.div`
 export const ImgVS = styled.img`
   margin: 0 50px;
 `;
-export const Imgward = styled.img``;
+export const Imgward = styled.img`
+  align-self: center;
+`;
 
 export const ProfileBox = styled.div`
   display: flex;
@@ -181,6 +184,66 @@ const ModalContent = styled.div`
   color: black;
 `;
 
+export const TimeLeft = styled.div`
+  position: relative;
+  font-size: 1.8rem;
+  color: red;
+  background-color: #f8f9fa;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.15);
+  margin-bottom: 20px; // 동영상 파일과의 간격을 조절합니다.
+`;
+
+export const VoteResultDisplay = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const Bar = styled.div`
+  display: flex; // 추가
+  align-items: center; // 추가
+  justify-content: center; // 추가
+  height: 100%;
+  background-color: ${(props) => props.color || "#000"};
+
+  /* Flexbox 속성 조정 */
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: ${(props) => props.$percent || "0"};
+`;
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
+const Button = styled.button`
+  margin: 0 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  &:first-child {
+    background-color: #337ab7;
+  }
+  &:last-child {
+    background-color: #f44336;
+  }
+`;
+
+const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+`;
+
 export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
   const [agree, setAgree] = useState(false); // 체크박스의 상태를 관리하는 state를 추가합니다.
 
@@ -209,26 +272,34 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
           규칙입니다. 따라서 이 점을 숙지하고, 공약을 설정하실 때 신중하게
           결정해주시기 바랍니다.
         </p>
-        <input type="checkbox" checked={agree} onChange={handleAgree} />
-        <label>위의 보증금 관련 규칙에 동의하십니까?</label>
-        <button disabled={!agree} onClick={onAgree}>
-          동의하고 계속하기
-        </button>
-        <button onClick={onClose}>취소</button>
+        <CheckboxContainer>
+          <input type="checkbox" checked={agree} onChange={handleAgree} />
+          <label>위의 보증금 관련 규칙에 동의하십니까?</label>
+        </CheckboxContainer>
+        <ButtonContainer>
+          <Button onClick={onAgree} disabled={!agree}>
+            동의하고 계속하기
+          </Button>
+          <Button onClick={onClose}>취소</Button>
+        </ButtonContainer>
       </ModalContent>
     </ModalBackground>
   );
 };
 
 export const replaylinkBox = styled.div`
-display: flex;
+  display: flex;
 
-justify-content: end;
-margin-bottom: 10px;
-`
+  justify-content: end;
+  margin-bottom: 10px;
+`;
 export const replaylink = styled.a`
-display: flex;
-padding: 0 10px;
-align-items: center;
-text-decoration: none;
+  display: flex;
+  padding: 0 10px;
+  align-items: center;
+  text-decoration: none;
+`;
+
+export const EmptyDiv = styled.div`
+  height: 200px;
 `

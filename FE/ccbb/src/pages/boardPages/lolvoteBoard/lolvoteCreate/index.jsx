@@ -16,25 +16,29 @@ import { useRecoilValue } from "recoil";
 import VotePaymentModal from "./votePaymentpage";
 import axios from "axios";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
+import Loading from "../../../../component/common/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function LoLvoteCreatePage() {
   const options = [
-    { value: "Iron", label: "아이언" },
-    { value: "Bronze", label: "브론즈" },
-    { value: "Silver", label: "실버" },
-    { value: "Gold", label: "골드" },
-    { value: "Platinum", label: "플래티넘" },
-    { value: "Emerald", label: "에메랄드" },
-    { value: "Diamond", label: "다이아몬드" },
-    { value: "Master", label: "마스터" },
-    { value: "GrandMaster", label: "그랜드마스터" },
-    { value: "Challenger", label: "챌린저" },
+    { value: "IRON", label: "아이언" },
+    { value: "BRONZE", label: "브론즈" },
+    { value: "SILVER", label: "실버" },
+    { value: "GOLD", label: "골드" },
+    { value: "PLATINUM", label: "플래티넘" },
+    { value: "EMERALD", label: "에메랄드" },
+    { value: "DIAMOND", label: "다이아몬드" },
+    { value: "MASTER", label: "마스터" },
+    { value: "GRANDMASTER", label: "그랜드마스터" },
+    { value: "CHALLENGER", label: "챌린저" },
   ];
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [isDatePickerOpen, setDatePickerOpen] = useState(false);
   const [selectedTier, setSelectedTier] = useState(options[0].value);
   const [userSearch, setUserSearch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -178,55 +182,70 @@ export default function LoLvoteCreatePage() {
   const userSelf = useRecoilValue(userState);
 
   const handleSearchUser = async () => {
+    if (voteArticle.userId2 === "") {
+      toast.error("이메일을 입력하세요.");
+      return;
+    }
     try {
+      setIsLoading(true);
       if (userSelf.email !== voteArticle.userId2) {
-        const response = await ccbbApi.get(
-          `/user/find-user?email=${voteArticle.userId2}`
-        );
-        console.log(response);
+        const response = await ccbbApi
+          .get(`/user/find-user?email=${voteArticle.userId2}`)
+          .then(setIsLoading(false));
         if (response) {
           setUserSearch(true);
-          alert("확인되었습니다.");
+          toast.success("확인되었습니다.");
         }
       } else {
-        alert("다른사람의 이메일을 입력해주세요");
+        toast.error("다른사람의 이메일을 입력해주세요");
         return;
       }
     } catch (error) {
-      console.log(error);
+      if (error.response.data === false) {
+        toast.error("이메일을 확인해주세요.");
+      }
+      setIsLoading(false);
     }
   };
 
   const handleSendButton = async () => {
     if (!article.title) {
-      alert("제목을 작성하시오.");
+      toast.error("제목을 작성하세요.");
       return;
     } else if (!voteArticle.argument) {
-      alert("논점을 작성하시오.");
+      toast.error("논점을 작성하세요.");
       return;
     } else if (!article.content) {
-      alert("내용을 작성하시오.");
+      toast.error("내용을 작성하세요.");
       return;
     } else if (!uploadedVideo) {
-      alert("동영상파일을 첨부하시오.");
+      toast.error("동영상파일을 첨부하세요.");
       return;
     } else if (!uploadedReplay) {
-      alert("파일을 첨부하시오.");
+      toast.error("파일을 첨부하세요.");
       return;
     } else if (!voteArticle.promise) {
-      alert("공약을 작성하시오.");
+      toast.error("공약을 작성하세요.");
       return;
     } else if (!voteArticle.userId2) {
-      alert("받는사람을 작성하시오.");
+      toast.error("받는사람을 작성하세요.");
       return;
     } else if (voteArticle.userId2 && !userSearch) {
-      alert("받는사람을 확인해주세요.");
+      toast.error("받는사람을 확인해주세요.");
       return;
     } else if (!voteArticle.deadline) {
-      alert("투표마감일을 선택하시오.");
+      toast.error("투표마감일을 선택하세요.");
       return;
     }
 
+    let deadline = new Date(voteArticle.deadline);
+    let now = new Date();
+    now.setHours(0, 0, 0, 0);
+    if (deadline <= now) {
+      toast.error("마감일이 잘못되었습니다.");
+    }
+
+    setIsLoading(true);
     try {
       const jsonData = JSON.stringify(article); // article 객체를 문자열로 변환
       const jsonBlob = new Blob([jsonData], { type: "application/json" }); // 문자열을 Blob으로 변환
@@ -273,6 +292,7 @@ export default function LoLvoteCreatePage() {
                     { headers }
                   )
                   .then(async (payresponse) => {
+                    setIsLoading(false);
                     if (payresponse.data) {
                       setPayment(payresponse.data);
                       console.log(payment);
@@ -285,7 +305,8 @@ export default function LoLvoteCreatePage() {
             });
         });
     } catch (error) {
-      console.log(error);
+      toast.error("네트워크 오류입니다.");
+      setIsLoading(false);
     }
   };
 
@@ -550,7 +571,7 @@ export default function LoLvoteCreatePage() {
                 width="100%"
                 height="40px"
                 placeholder="10,000 원"
-                disabled={true}
+                disabled={false}
               />
             </S.RightBottom>
           </S.CreateBodybottom>
@@ -563,6 +584,15 @@ export default function LoLvoteCreatePage() {
               onClick={handleSendButton}
             />
           </S.buttonBox>
+          {isLoading ? <Loading /> : null}
+          <ToastContainer
+            position="top-right"
+            limit={1}
+            closeButton={false}
+            autoClose={2200}
+            closeOnClick
+            hideProgressBar
+          />
         </S.CreateBody>
       </S.CreateBodyCover>
     </S.Main>
