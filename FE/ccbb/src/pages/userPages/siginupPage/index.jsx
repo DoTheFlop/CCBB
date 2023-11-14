@@ -4,6 +4,8 @@ import Input1 from "../../../component/common/inputs/input1";
 import Button1 from "../../../component/common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
 import { useNavigate } from "react-router";
+import { ToastContainer, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -15,6 +17,7 @@ export default function SignupPage() {
     gender: true,
   });
 
+  const emailRegex = /\S+@\S+\.\S+/;
   const createDate = new Date().toISOString();
   
   const handleButtonSignup = () => {
@@ -22,19 +25,23 @@ export default function SignupPage() {
 
     // 필수 필드가 비어있는지 확인
     if (!email) {
-      alert("이메일을 입력해 주세요");
+      toast.error("이메일을 입력해 주세요");
+      return;
+    } 
+    if (!emailRegex.test(email)) {
+      toast.error('유효한 이메일 형식을 입력해 주세요');
       return;
     }
     if (!password) {
-      alert("비밀번호를 입력해 주세요");
+      toast.error("비밀번호를 입력해 주세요");
       return;
     }
     if (!name) {
-      alert("이름을 입력해주세요");
+      toast.error("이름을 입력해주세요");
       return;
     }
     if (!nickname) {
-      alert("닉네임을 입력해 주세요");
+      toast.error("닉네임을 입력해 주세요");
       return;
     }
 
@@ -51,13 +58,20 @@ export default function SignupPage() {
       "voteVictory":0
     }
 //
-    ccbbApi
-      .post("/user/esign-up",JSON.stringify(body))
-      .then((res) => {
-        console.log(res)
-        navigate('/signin');
-      })
-      .catch((e) => console.log(e))
+ccbbApi
+.post("/user/esign-up", JSON.stringify(body))
+.then((res) => {
+  console.log(res);
+  navigate('/signin');
+})
+.catch((e) => {
+  console.log(e);
+  if (e.response && e.response.status === 400) {
+    toast.error(e.response.data);
+  } else {
+    toast.error("회원가입 중 에러 발생");
+  }
+});
   }
 
 
@@ -155,6 +169,14 @@ export default function SignupPage() {
         height={"50px"}
         onClick={handleButtonSignup}
       />
+      <ToastContainer
+      position="top-right"
+      limit={1}
+      closeButton={false}
+      autoClose={2200}
+      closeOnClick
+      hideProgressBar
+    />
     </>
   );
 }
