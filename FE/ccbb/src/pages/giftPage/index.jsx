@@ -19,7 +19,8 @@ export default function GiftPage() {
       .catch((e) => console.log(e));
   };
 
-  const getUserPoint = () => { // 사용자의 포인트를 가져오는 함수를 추가합니다.
+  const getUserPoint = () => {
+    // 사용자의 포인트를 가져오는 함수를 추가합니다.
     const headers = {
       Authorization: `Bearer ${token1}`,
     };
@@ -38,12 +39,18 @@ export default function GiftPage() {
 
   return (
     <S.main>
-      
-      <Headermenu title="경품응모">
-      </Headermenu>
-      <S.userPointSection> {/* 사용자의 포인트를 나타내는 섹션을 추가합니다. */}
-        <h3>내가 보유한 포인트 &nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;   {userPoint}point</h3> {/* 사용자의 포인트를 출력합니다. */}
-      </S.userPointSection>
+      <Headermenu title="경품응모"></Headermenu>
+      {token1 ? (
+        <S.userPointSection>
+          {" "}
+          {/* 사용자의 포인트를 나타내는 섹션을 추가합니다. */}
+          <h3>
+            내가 보유한 포인트 &nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp; {userPoint}
+            point
+          </h3>{" "}
+          {/* 사용자의 포인트를 출력합니다. */}
+        </S.userPointSection>
+      ) : null}
       <S.prizeSection>
         {goods.map((pr, index) => {
           return (
@@ -56,13 +63,12 @@ export default function GiftPage() {
               goodsId={pr.goodsId}
               updateGoods={updateGoods}
               getUserPoint={getUserPoint}
-              setUserPoint={setUserPoint}  // setUserPoint 함수를 전달합니다.
-              userPoint={userPoint}  // userPoint 상태를 전달합니다.
+              setUserPoint={setUserPoint} // setUserPoint 함수를 전달합니다.
+              userPoint={userPoint} // userPoint 상태를 전달합니다.
             />
           );
         })}
       </S.prizeSection>
-      
     </S.main>
   );
 }

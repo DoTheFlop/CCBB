@@ -1,5 +1,4 @@
 import Button1 from "../../../component/common/buttons";
-import * as S from "./style";
 
 export default function PaymentSuccessPage() {
   <>

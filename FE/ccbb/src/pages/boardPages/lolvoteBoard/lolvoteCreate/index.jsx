@@ -143,7 +143,7 @@ export default function LoLvoteCreatePage() {
     accept2: false,
     argument: "",
     deadline: "",
-    deposit: 10000,
+    deposit: 0,
     postId: 1,
     doPromise: false,
     promise: "",
@@ -209,6 +209,15 @@ export default function LoLvoteCreatePage() {
   };
 
   const handleSendButton = async () => {
+    console.log(voteArticle.deposit)
+    if (!voteArticle.deposit) {
+      toast.error("보증금을 작성하세요.");
+      return;
+    } else if (isNaN(voteArticle.deposit)) {
+      toast.error("보증금을 숫자로 작성하세요.");
+      return;
+    }
+
     if (!article.title) {
       toast.error("제목을 작성하세요.");
       return;
@@ -570,8 +579,13 @@ export default function LoLvoteCreatePage() {
                 id="amount"
                 width="100%"
                 height="40px"
-                placeholder="10,000 원"
-                disabled={false}
+                placeholder="10,000"
+                onChange={(e) => {
+                  setVoteArticle((prev) => ({
+                    ...prev,
+                    deposit: e.target.value.replace(/,/g, ''),
+                  }));
+                }}
               />
             </S.RightBottom>
           </S.CreateBodybottom>
