@@ -237,5 +237,5 @@ export const DepositModal = ({ isOpen, onClose, onAgree, children }) => {
 };
 
 export const EmptyDiv = styled.div`
-  height: 100px;
+  height: 500px;
 `

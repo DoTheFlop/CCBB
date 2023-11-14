@@ -27,6 +27,9 @@ import VoteRate from "../../../../component/voteBoard/voteRate";
 
 import DownloadIcon from "@mui/icons-material/Download";
 import Loading from "../../../../component/common/Loading";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export default function LoLvoteDetailPage() {
   const navigate = useNavigate();
   const userInfo = useRecoilValue(userState);
@@ -58,10 +61,37 @@ export default function LoLvoteDetailPage() {
   const [timeLeft, setTimeLeft] = useState(""); // 종료일 나타내기 위해서
   const [voteResult, setVoteResult] = useState({ pick1: 0, pick2: 0 });
   const [isLoading, setIsLoading] = useState(false);
+  const options = [
+    { value: "IRON", label: "아이언" },
+    { value: "BRONZE", label: "브론즈" },
+    { value: "SILVER", label: "실버" },
+    { value: "GOLD", label: "골드" },
+    { value: "PLATINUM", label: "플래티넘" },
+    { value: "EMERALD", label: "에메랄드" },
+    { value: "DIAMOND", label: "다이아몬드" },
+    { value: "MASTER", label: "마스터" },
+    { value: "GRANDMASTER", label: "그랜드마스터" },
+    { value: "CHALLENGER", label: "챌린저" },
+  ];
+  const [selectedTier, setSelectedTier] = useState(options[0].value);
+  const [minVotingTier, setMinVotingTier] = useState(options[0].value);
+  const userSelf = useRecoilValue(userState);
 
   const fetchPost = () => {
     return ccbbApi.get("/post/vote/detail", {
       params: { postId: postId },
+    })
+    .then((res) => {
+      console.log('res:', res);  // res 전체를 출력
+      console.log('res.data:', res.data);  // res.data 출력
+      console.log('res.data.voteList:', res.data.voteList);  // res.data.voteList 출력
+      console.log('res.data.voteList.vote:', res.data.voteList.vote);  // res.data.voteList.vote 출력
+      console.log('res.data.voteList.vote.limitTier:', res.data.voteList.vote.limitTier);  // res.data.voteList.vote.limitTier 출력
+      setMinVotingTier(res.data.voteList.vote.limitTier); 
+      return res;
+    })
+    .catch((error) => {
+      console.log('API 호출 에러:', error);
     });
   };
 
@@ -190,7 +220,7 @@ export default function LoLvoteDetailPage() {
       ccbbApi
         .delete(`/post/reject/${curPost.postId}`, { headers }, {})
         .then((res) => {
-          alert("거절하였습니다.");
+          toast.error("거절하였습니다.");
           navigate("/lolvote");
         });
     }
@@ -224,33 +254,74 @@ export default function LoLvoteDetailPage() {
   const openModalHandler = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleMinVotingTierChange = (selected) => {
+    const selectedValue = selected.value;
+    setMinVotingTier(selectedValue);
+  };
+  // 투표 가능 여부 판단 함수
+  const isEligibleToVote = (userTier, minimumTier) => {
+    const userTierIndex = options.findIndex(
+      (option) => option.value === userTier
+    );
+    const minimumTierIndex = options.findIndex(
+      (option) => option.value === minimumTier
+    );
+
+    console.log(userTier, "는", userTierIndex);
+    console.log(minimumTier, "는", minimumTierIndex);
+    return userTierIndex >= minimumTierIndex;
+  };
+
+  // 투표 함수
+  // 투표 함수
   const handlevoteUser = (pickSide) => {
     if (!token) {
       //비로그인 유저는 투표못함
-      alert("로그인 후 투표하세요");
+      toast.error("로그인 후 투표하세요");
       // navigate("/signin");
+      return;
     }
+
+    const minimumTier = minVotingTier; // 최소 투표 가능 티어. 선택된 티어를 최소 투표 가능 티어로 설정합니다.
+    console.log(userSelf.lol);
+    console.log(minVotingTier);
+    console.log(minimumTier);
+
+    if (!isEligibleToVote(userSelf.lol, minimumTier)) {
+      toast.error("당신의 티어는 투표를 할 수 없습니다.");
+      return;
+    }
+
     const headers = {
       Authorization: `Bearer ${token}`,
     };
     const body = {
       ballotBoxId: 0,
       pick: pickSide,
-      userId: 0,
+      userId: userSelf.id, // 로그인한 유저의 ID를 사용합니다.
       voteId: curPost.vote.voteId,
     };
 
     if (userPick > 0) {
       // TODO: 토스티파이로 수정
-      alert("이미 투표를 하였습니다.");
+      toast.error("이미 투표를 하였습니다.");
       return;
     } else {
       ccbbApi
         .post("/vote/ballet/add", body, { headers })
         .then((res) => {
           setUserPick(pickSide);
+          const votedUserNickname =
+            pickSide === 1 ? curPost.vote.nickname1 : curPost.vote.nickname2;
+          toast.success(
+            `성공적으로 ${votedUserNickname}님에게 투표하였습니다.`
+          );
         })
-        .catch((e) => console.log(e));
+        .catch((e) => {
+          console.log(e);
+          toast.error("투표 중 오류가 발생하였습니다.");
+        });
     }
   };
 
@@ -332,6 +403,14 @@ export default function LoLvoteDetailPage() {
 
   return (
     <S.Main>
+      <ToastContainer
+        position="top-right"
+        limit={1}
+        closeButton={false}
+        autoClose={2200}
+        closeOnClick
+        hideProgressBar
+      />
       <S.Head>
         <S.Headtop>
           <Headermenu title={"리그 오브 레전드"} />
