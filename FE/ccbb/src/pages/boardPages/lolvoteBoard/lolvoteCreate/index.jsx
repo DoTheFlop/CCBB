@@ -351,13 +351,14 @@ export default function LoLvoteCreatePage() {
               }));
             }}
           />
-          <Input2
+          <InputComment
+            value={article.argument}
             label="논점"
             id="argument"
             width="100%"
-            height="40px"
+            height="80px"
             onChange={(e) => {
-              setVoteArticle((prev) => ({
+              setAritcle((prev) => ({
                 ...prev,
                 argument: e.target.value,
               }));
