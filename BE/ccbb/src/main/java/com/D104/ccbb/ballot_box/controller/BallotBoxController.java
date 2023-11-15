@@ -1,7 +1,11 @@
 package com.D104.ccbb.ballot_box.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +19,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.D104.ccbb.ballot_box.dto.BallotBoxDto;
 import com.D104.ccbb.ballot_box.dto.BallotResultDto;
+import com.D104.ccbb.ballot_box.repo.BallotBoxRepo;
 import com.D104.ccbb.ballot_box.service.BallotBoxService;
 import com.D104.ccbb.jwt.service.JwtTokenService;
-import com.D104.ccbb.user.repository.UserRepository;
+import com.D104.ccbb.payment_history.service.PaymentHistoryService;
 import com.D104.ccbb.user.service.UserService;
+import com.D104.ccbb.vote.domain.Vote;
+import com.D104.ccbb.vote.repo.VoteRepo;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,6 +39,27 @@ public class BallotBoxController {
 	private final BallotBoxService ballotBoxService;
 	private final JwtTokenService jwtTokenService;
 	private final UserService userService;
+
+	private final BallotBoxRepo ballotBoxRepo;
+	private final VoteRepo voteRepo;
+	private final PaymentHistoryService paymentHistoryService;
+	@GetMapping("/test")
+	public ResponseEntity<?> test(){
+		List<Integer> voteIdList = ballotBoxRepo.foundSameVote();
+		for (Integer voteId : voteIdList) {
+			Optional<Vote> voteOptional = voteRepo.findById(voteId);
+			Vote vote = voteOptional.get();
+			LocalDateTime deadline = vote.getDeadline();
+			if (deadline.toLocalDate().isBefore(LocalDate.now())) {
+				String result = paymentHistoryService.returnAllPayment(voteId);
+				log.info("result: {}", result);
+			}
+		}
+
+		List<Integer> integers = ballotBoxRepo.foundSameVote();
+		return new ResponseEntity<>(integers, HttpStatus.OK) ;
+	}
+
 	@PostMapping("/ballet/add")//투표함에 표 추가
 	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
 		@RequestBody BallotBoxDto ballotBoxDto) {
