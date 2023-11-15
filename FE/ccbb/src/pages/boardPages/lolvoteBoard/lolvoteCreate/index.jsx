@@ -103,6 +103,11 @@ export default function LoLvoteCreatePage() {
   const handleVideoUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
+      if (file.size >= 100 * 1024 * 1024) {
+        toast.error('동영상 파일 크기가 너무 큽니다. 100MB 이하의 파일을 업로드해주세요.');
+        return;
+      }
+
       if (file.type.startsWith("video/")) {
         setUploadedVideo(createFileEntry(file));
         setUploadedFiles([...uploadedFiles, createFileEntry(file)]);
