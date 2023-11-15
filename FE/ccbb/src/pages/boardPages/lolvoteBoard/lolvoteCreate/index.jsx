@@ -275,7 +275,7 @@ export default function LoLvoteCreatePage() {
       };
 
       const response = await axios
-        .post("https://ccbb.pro/api/post/add", formData, {
+        .post("http://k9d104.p.ssafy.io:8081/api/post/add", formData, {
           headers,
           //cors에러 뜨면 넣어야함
           withCredentials: true,
