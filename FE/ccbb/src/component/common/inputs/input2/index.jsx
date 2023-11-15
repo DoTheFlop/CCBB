@@ -1,3 +1,4 @@
+import MyTooltip from "../tooltip";
 import * as S from "./style";
 
 export default function Input2({
@@ -9,11 +10,20 @@ export default function Input2({
   placeholder,
   disabled,
   onChange,
+  tooltip = false,
+  tooltipDetail = "",
 }) {
   return (
     <S.InputBox>
       <S.Inputlabel htmlFor={id} color={color}>
         {label}
+        {"   "}
+        {tooltip ? (
+          <MyTooltip
+            tooltip={tooltip}
+            tooltipDetail={tooltipDetail}
+          ></MyTooltip>
+        ) : null}
       </S.Inputlabel>
       <S.StyledInput
         id={id}

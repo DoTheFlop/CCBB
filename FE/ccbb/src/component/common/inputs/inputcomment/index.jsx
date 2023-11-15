@@ -1,5 +1,6 @@
 import * as S from "./style";
 import Button1 from "../../buttons";
+import MyTooltip from "../tooltip";
 
 export default function InputComment({
   width,
@@ -11,10 +12,21 @@ export default function InputComment({
   onChange,
   onClick,
   btn = false,
+  tooltip = false,
+  tooltipDetail = "",
 }) {
   return (
     <S.InputBox>
-      <S.Inputlabel htmlFor={id}>{label}</S.Inputlabel>
+      <S.Inputlabel htmlFor={id}>
+        {label}
+        {"   "}
+        {tooltip ? (
+          <MyTooltip
+            tooltip={tooltip}
+            tooltipDetail={tooltipDetail}
+          ></MyTooltip>
+        ) : null}
+      </S.Inputlabel>
       <S.InputAndButton>
         <S.StyledInput
           id={id}

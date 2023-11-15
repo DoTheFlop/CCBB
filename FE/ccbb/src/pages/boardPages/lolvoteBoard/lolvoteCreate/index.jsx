@@ -19,6 +19,7 @@ import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Loading from "../../../../component/common/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MyTooltip from "../../../../component/common/inputs/tooltip";
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -211,7 +212,7 @@ export default function LoLvoteCreatePage() {
   };
 
   const handleSendButton = async () => {
-    console.log(voteArticle.deposit)
+    console.log(voteArticle.deposit);
     if (!voteArticle.deposit) {
       toast.error("보증금을 작성하세요.");
       return;
@@ -232,9 +233,6 @@ export default function LoLvoteCreatePage() {
     } else if (!uploadedVideo) {
       toast.error("동영상파일을 첨부하세요.");
       return;
-    } else if (!uploadedReplay) {
-      toast.error("파일을 첨부하세요.");
-      return;
     } else if (!voteArticle.promise) {
       toast.error("공약을 작성하세요.");
       return;
@@ -247,8 +245,6 @@ export default function LoLvoteCreatePage() {
     } else if (!voteArticle.deadline) {
       toast.error("투표마감일을 선택하세요.");
       return;
-
-      
     }
 
     let deadline = new Date(voteArticle.deadline);
@@ -286,9 +282,9 @@ export default function LoLvoteCreatePage() {
 
           const voteArticleWithMinTier = {
             ...voteArticle,
-            minVotingTier: minVotingTier
+            minVotingTier: minVotingTier,
           };
-          
+
           const body = JSON.stringify(voteArticle);
           const headers = {
             Authorization: `Bearer ${token1}`,
@@ -366,6 +362,8 @@ export default function LoLvoteCreatePage() {
                 argument: e.target.value,
               }));
             }}
+            tooltip={true}
+            tooltipDetail="하나의 논점만 정해주세요."
           />
           <InputComment
             label="내용"
@@ -378,8 +376,23 @@ export default function LoLvoteCreatePage() {
                 content: e.target.value,
               }));
             }}
+            tooltip={true}
+            tooltipDetail={`✔ 반드시 서로 합의 하에 최대한 상세히 상황을 작성해주세요.
+            
+            ✔ 본인 티어를 감안하여 판결되기를 원하는지 여부를 작성해주시면 좋아요.
+
+            ✔ 글 작성자가 왼쪽 투표대상자, 상대방이 오른쪽 투표대상자로 표시됩니다. 누구에게 투표해야할 지 명확하게 언급해주세요.`}
           />
-          <h3>동영상 파일</h3>
+          <S.InputTitleWrapper>
+            <h3 style={{ marginRight: 5 }}>동영상 파일</h3>
+            <MyTooltip
+              tooltip={true}
+              tooltipDetail={`✔ 당시 상황을 녹화해서 올려주세요. 2분 내외가 적당해요.
+            
+            ✔ 용량 제한은 최대 512MB 입니다. 영상 업로드에 시간이 많이 소모되니 유의하세요.
+            `}
+            ></MyTooltip>
+          </S.InputTitleWrapper>
           <S.Uploadfile>
             {uploadedVideo && (
               <div
@@ -437,7 +450,18 @@ export default function LoLvoteCreatePage() {
           <label className="input-file-button" htmlFor="input-file">
             <FileUploadIcon />
           </label>
-          <h3>리플레이</h3>
+          <S.InputTitleWrapper>
+            <h3 style={{ marginRight: 5 }}>리플레이</h3>
+            <MyTooltip
+              tooltip={true}
+              tooltipDetail={`✔ op.gg 사이트에서 다운로드 받을 수 있는 bat 파일을 업로드 해주세요.
+              
+              ✔ 사전에 인게임 정보에서 녹화버튼을 눌러야 합니다.
+
+              ✔ 만약 파일이 없다면, 내용 부분에 당신의 닉네임과 어떤 게임인지 명시해주세요.
+            `}
+            ></MyTooltip>
+          </S.InputTitleWrapper>
           <S.Replayfile>
             <input
               type="file"
@@ -462,6 +486,8 @@ export default function LoLvoteCreatePage() {
             id="promise"
             width="100%"
             height="40px"
+            tooltip={true}
+            tooltipDetail={`적절한 공약을 걸어주세요. 투표가 종료된 후 공약을 수행한다면 보증금은 반환되지만, 이행하지 않으면 승자의 이름으로 기부됩니다.`}
             onChange={(e) => {
               setVoteArticle((prev) => ({
                 ...prev,
@@ -593,7 +619,7 @@ export default function LoLvoteCreatePage() {
                 onChange={(e) => {
                   setVoteArticle((prev) => ({
                     ...prev,
-                    deposit: e.target.value.replace(/,/g, ''),
+                    deposit: e.target.value.replace(/,/g, ""),
                   }));
                 }}
               />

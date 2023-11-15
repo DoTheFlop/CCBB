@@ -185,3 +185,8 @@ export const UserWrapper = styled.div`
     display: flex;
     flex-direction: column;
 `
+
+export const InputTitleWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`
