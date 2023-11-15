@@ -12,7 +12,7 @@ export const main = styled.main`
   }
 `;
 
-export const statisticSection = styled.div`
+export const StatisticSection = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -21,4 +21,27 @@ export const statisticSection = styled.div`
   box-sizing: border-box;
   background-color: white;
   flex-wrap: wrap;
+`;
+
+export const PieWithDescription = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 10px 10% 10px;
+  max-width: 40%;
+  min-width: 250px;
+  width: 40%;
+  text {
+    font-weight: bold;
+  }
+  & > svg {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const DualPie = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
 `;
