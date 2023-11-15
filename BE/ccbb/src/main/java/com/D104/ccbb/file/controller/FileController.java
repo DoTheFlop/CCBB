@@ -61,4 +61,15 @@ public class FileController {
 			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+	@PostMapping("/remove/promise/{postId}")
+	public ResponseEntity<Boolean> removePromiseFile(@PathVariable int postId, @RequestHeader String Authorization) {
+		try {
+			boolean result = fileService.removePromiseFile(postId);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }
