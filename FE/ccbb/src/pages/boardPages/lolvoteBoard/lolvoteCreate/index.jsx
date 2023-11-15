@@ -275,7 +275,7 @@ export default function LoLvoteCreatePage() {
       };
 
       const response = await axios
-        .post("http://k9d104.p.ssafy.io:8081/api/post/add", formData, {
+        .post("https://ccbb.pro/api/post/add", formData, {
           headers,
           //cors에러 뜨면 넣어야함
           withCredentials: true,
@@ -396,7 +396,7 @@ export default function LoLvoteCreatePage() {
               tooltip={true}
               tooltipDetail={`✔ 당시 상황을 녹화해서 올려주세요. 2분 내외가 적당해요.
             
-            ✔ 용량 제한은 최대 512MB 입니다. 영상 업로드에 시간이 많이 소모되니 유의하세요.
+            ✔ 용량 제한은 최대 100MB 입니다. 영상 업로드에 시간이 많이 소모되니 유의하세요.
             `}
             ></MyTooltip>
           </S.InputTitleWrapper>
