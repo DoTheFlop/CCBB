@@ -38,8 +38,8 @@ public class WodService {
 		return wodDto;
 	}
 
-	public void deleteWod(int wodId){
-		wodRepo.deleteById(wodId);
+	public void deleteWod(int userId, int postId){
+		wodRepo.delete(wodRepo.findByUserId_UserIdAndPostId_PostId(userId,postId));
 	}
 
 	public Boolean wodCheck(int userId, int postId){
