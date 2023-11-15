@@ -456,7 +456,7 @@ export default function LoLvoteDetailPage() {
             )}
           </S.Moviebody>
           <S.Votebody>
-            {curPost.fileId && curPost.fileId.length > 0 && (
+            {curPost.fileId && curPost.fileId.length > 1 && (
               <S.replaylinkBox>
                 <S.replaylink
                   href={`https://ccbb.pro/api/file/get/${curPost.fileId[1].fileId}`}

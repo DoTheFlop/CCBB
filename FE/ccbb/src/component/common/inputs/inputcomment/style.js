@@ -17,6 +17,12 @@ export const Inputlabel = styled.label`
   padding-bottom: 10px;
   font-size: 20px;
   font-weight: bold;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-left: 5px;
+  }
 `;
 
 export const InputBox = styled.div`
