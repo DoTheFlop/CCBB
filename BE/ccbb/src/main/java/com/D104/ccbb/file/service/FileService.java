@@ -237,4 +237,23 @@ public class FileService {
 		file.transferTo(path);
 		return true;
 	}
+
+	public boolean removePromiseFile(int postId) {
+		File foundFile = fileRepo.findByPostId_PostIdAndIsPromise(postId, true);
+		String contentType = foundFile.getType();
+		String url = FILE_PATH;
+		if (contentType.startsWith("image")) {
+			url += IMAGE_PATH;
+		}
+		if (contentType.startsWith("video")) {
+			url += VIDEO_PATH;
+		}
+		if (!contentType.startsWith("image") && !contentType.startsWith("video")) {
+			url += REPLAY_PATH;
+		}
+		url = url + "/" + foundFile.getName() + "." + foundFile.getExtension();
+		new java.io.File(url).delete();
+		fileRepo.deleteById(foundFile.getFileId());
+		return true;
+	}
 }
