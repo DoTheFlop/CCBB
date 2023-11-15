@@ -363,9 +363,10 @@ export default function LoLvoteCreatePage() {
               }));
             }}
             tooltip={true}
-            tooltipDetail="하나의 논점만 정해주세요."
+            tooltipDetail="논점을 명확하게 작성해주세요."
           />
           <InputComment
+            value={article.content}
             label="내용"
             id="content"
             width="100%"
