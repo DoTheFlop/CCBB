@@ -20,6 +20,7 @@ import Loading from "../../../../component/common/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyTooltip from "../../../../component/common/inputs/tooltip";
+import moment from 'moment';
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -43,12 +44,18 @@ export default function LoLvoteCreatePage() {
   const [minVotingTier, setMinVotingTier] = useState(options[0].value);
 
   const handleDateChange = (date) => {
+    date.setHours(23);
+    date.setMinutes(59);
+    date.setSeconds(59);
+
     setSelectedDate(date);
     setDatePickerOpen(false);
     setVoteArticle((prev) => ({
       ...prev,
-      deadline: date.toISOString(),
+      deadline: moment(date).format('YYYY-MM-DDTHH:mm:ss'),
     }));
+
+    console.log(voteArticle.deadline);
   };
 
   const handleTierChange = (selected) => {
@@ -212,15 +219,6 @@ export default function LoLvoteCreatePage() {
   };
 
   const handleSendButton = async () => {
-    console.log(voteArticle.deposit);
-    if (!voteArticle.deposit) {
-      toast.error("보증금을 작성하세요.");
-      return;
-    } else if (isNaN(voteArticle.deposit)) {
-      toast.error("보증금을 숫자로 작성하세요.");
-      return;
-    }
-
     if (!article.title) {
       toast.error("제목을 작성하세요.");
       return;
@@ -245,6 +243,12 @@ export default function LoLvoteCreatePage() {
     } else if (!voteArticle.deadline) {
       toast.error("투표마감일을 선택하세요.");
       return;
+    } else if (!voteArticle.deposit) {
+      toast.error("보증금을 작성하세요.");
+      return;
+    } else if (isNaN(voteArticle.deposit)) {
+      toast.error("보증금을 숫자로 작성하세요.");
+      return;
     }
 
     let deadline = new Date(voteArticle.deadline);
@@ -261,7 +265,8 @@ export default function LoLvoteCreatePage() {
 
       const formData = new FormData();
       formData.append("files", uploadedFiles[0].file);
-      formData.append("files", uploadedFiles[1].file);
+      if (uploadedFiles.length > 1)
+        formData.append("files", uploadedFiles[1].file);
       formData.append("post", jsonBlob);
 
       const headers = {
@@ -352,13 +357,13 @@ export default function LoLvoteCreatePage() {
             }}
           />
           <InputComment
-            value={article.argument}
+            value={voteArticle.argument}
             label="논점"
             id="argument"
             width="100%"
             height="80px"
             onChange={(e) => {
-              setAritcle((prev) => ({
+              setVoteArticle((prev) => ({
                 ...prev,
                 argument: e.target.value,
               }));
