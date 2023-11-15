@@ -3,7 +3,6 @@ package com.D104.ccbb.ballot_box.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,10 +29,11 @@ public class SameBallotSceduler {
 	public void cronTask() {
 		List<Integer> voteIdList = ballotBoxRepo.foundSameVote();
 		for (Integer voteId : voteIdList) {
-			Optional<Vote> voteOptional = voteRepo.findById(voteId);
-			Vote vote = voteOptional.get();
+			Vote vote = voteRepo.findByVoteIdAndDoPromise(voteId, false);
 			LocalDateTime deadline = vote.getDeadline();
 			if (deadline.toLocalDate().isBefore(LocalDate.now())) {
+				vote.setDoPromise(true);
+				voteRepo.save(vote);
 				String result = paymentHistoryService.returnAllPayment(voteId);
 				log.info("result: {}", result);
 			}

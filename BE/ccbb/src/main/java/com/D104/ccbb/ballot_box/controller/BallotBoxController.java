@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,18 +45,24 @@ public class BallotBoxController {
 	@GetMapping("/test")
 	public ResponseEntity<?> test(){
 		List<Integer> voteIdList = ballotBoxRepo.foundSameVote();
+		log.info("list: {}", voteIdList);
 		for (Integer voteId : voteIdList) {
-			Optional<Vote> voteOptional = voteRepo.findById(voteId);
-			Vote vote = voteOptional.get();
+			log.info("voteId: {}", voteId);
+			Vote vote = voteRepo.findByVoteIdAndDoPromise(voteId, false);
+			if (vote == null) {
+				continue;
+			}
 			LocalDateTime deadline = vote.getDeadline();
 			if (deadline.toLocalDate().isBefore(LocalDate.now())) {
+				log.info("환불 시도");
+				vote.setDoPromise(true);
+				voteRepo.save(vote);
 				String result = paymentHistoryService.returnAllPayment(voteId);
 				log.info("result: {}", result);
 			}
 		}
 
-		List<Integer> integers = ballotBoxRepo.foundSameVote();
-		return new ResponseEntity<>(integers, HttpStatus.OK) ;
+		return new ResponseEntity<>(voteIdList, HttpStatus.OK) ;
 	}
 
 	@PostMapping("/ballet/add")//투표함에 표 추가
