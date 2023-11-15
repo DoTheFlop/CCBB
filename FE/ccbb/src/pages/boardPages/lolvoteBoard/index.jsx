@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { ccbbApi } from "../../../api/ccbbApi";
 import { Pagination } from "@mui/material";
 import Loading from "../../../component/common/Loading";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function LoLvoteboardPage() {
   const options = [
@@ -40,6 +41,11 @@ export default function LoLvoteboardPage() {
   };
 
   const handleCreateButtonClick = () => {
+    let token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("로그인 하세요.");
+      return;
+    }
     setIsModalOpen(true);
   };
 
@@ -138,6 +144,14 @@ export default function LoLvoteboardPage() {
               종료된 투표
             </h3>
           </S.Menuhead>
+          <ToastContainer
+            position="top-right"
+            limit={1}
+            closeButton={false}
+            autoClose={2200}
+            closeOnClick
+            hideProgressBar
+          />
           <S.Actions>
             <S.Dropdown>
               <Select
