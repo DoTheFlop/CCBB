@@ -50,6 +50,17 @@ public class FileController {
 		}
 	}
 
+	@GetMapping("/get/promise/{postId}")
+	public ResponseEntity<FileSystemResource> getPromiseFile(@PathVariable int postId) {
+		try {
+			ResponseEntity<FileSystemResource> promiseFile = fileService.getPromiseFile(postId);
+			return promiseFile;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 	@PostMapping("/add/promise/{postId}")
 	public ResponseEntity<Boolean> addPromiseFile(@PathVariable int postId, @RequestHeader String Authorization,
 		@RequestPart(name = "file") MultipartFile file) {

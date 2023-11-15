@@ -256,4 +256,28 @@ public class FileService {
 		fileRepo.deleteById(foundFile.getFileId());
 		return true;
 	}
+
+	public ResponseEntity<FileSystemResource> getPromiseFile(int postId) {
+		File foundFile = fileRepo.findByPostId_PostIdAndIsPromise(postId, true);
+		String contentType = foundFile.getType();
+		HttpHeaders headers = new HttpHeaders();
+		String url = FILE_PATH;
+		if (contentType.startsWith("image")) {
+			url += IMAGE_PATH;
+			headers.setContentDispositionFormData("inline", foundFile.getOrgName() + "." + foundFile.getExtension());
+		}
+		if (contentType.startsWith("video")) {
+			url += VIDEO_PATH;
+			headers.setContentDispositionFormData("inline", foundFile.getOrgName() + "." + foundFile.getExtension());
+		}
+		if (!contentType.startsWith("image") && !contentType.startsWith("video")) {
+			url += REPLAY_PATH;
+			headers.setContentDispositionFormData("attachment", foundFile.getOrgName() + "." + foundFile.getExtension());
+		}
+		url = url + "/" + foundFile.getName() + "." + foundFile.getExtension();
+		log.info("path: {}", url);
+		FileSystemResource video = new FileSystemResource(url);
+		headers.setContentType(MediaTypeFactory.getMediaType(video).orElse(MediaType.APPLICATION_OCTET_STREAM));
+		return new ResponseEntity<>(video, headers, HttpStatus.OK);
+	}
 }
