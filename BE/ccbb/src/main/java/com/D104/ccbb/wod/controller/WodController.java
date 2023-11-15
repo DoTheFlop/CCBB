@@ -71,10 +71,12 @@ public class WodController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 
-	@DeleteMapping("/delete/{wodId}")
-	public ResponseEntity<String> reject(@RequestHeader String Authorization, @PathVariable int wodId) {
+	@DeleteMapping("/delete/{postId}")
+	public ResponseEntity<String> reject(@RequestHeader String Authorization, @PathVariable int postId) {
 		try {
-			wodService.deleteWod(wodId);
+			int userId = userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+				.getUserId();
+			wodService.deleteWod(userId,postId);
 			return new ResponseEntity<>("success", HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
