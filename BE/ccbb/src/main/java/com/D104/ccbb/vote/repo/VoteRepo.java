@@ -11,11 +11,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.D104.ccbb.post.domain.Post;
 import com.D104.ccbb.vote.domain.Vote;
 
 @Repository
 public interface VoteRepo extends JpaRepository<Vote, Integer> {
+
+	Vote findByVoteIdAndDoPromise(int voteId, boolean doPromise);
 
 	List<Vote> findByDeadlineLessThan(LocalDateTime deadLine);
 
