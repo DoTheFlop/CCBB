@@ -114,6 +114,7 @@ export const VoteBodybot = styled.div`
 export const Votebutton = styled.div`
   color: black;
   display: flex;
+  justify-content: center;
   margin-top: 10px;
 `;
 
@@ -126,10 +127,20 @@ export const Imgward = styled.img`
 
 export const ProfileBox = styled.div`
   display: flex;
+  flex-direction: row;
   background-color: ${(props) => props.$bgcolor};
   border-radius: 8px;
+  max-width: 35%;
   padding: 5px 10px;
   cursor: pointer;
+  position: relative;
+  box-shadow: ${(props) =>
+    props.$pick ? "0 0 0 5px #00000044 inset" : "none"};
+  svg {
+    position: absolute;
+    color: red;
+    margin-right: -100%;
+  }
 `;
 
 export const ArticleMenu = styled.div`
@@ -322,7 +333,7 @@ export const replaylink = styled.a`
 
 export const EmptyDiv = styled.div`
   height: 200px;
-`
+`;
 export const Promisefile = styled.div`
   width: 100%;
   /* padding: 0 0 10px 0; */
