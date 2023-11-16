@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import UserProfile from "../common/profile";
 import * as S from "./style";
 // import { parseDate } from "../../api/dateParse";
-import { ko } from 'date-fns/locale'
-import {formatDistanceToNow} from "date-fns";
+import { ko } from "date-fns/locale";
+import { formatDistanceToNow } from "date-fns";
 
 export default function CommentBox({
   isMine = false,
@@ -16,10 +16,13 @@ export default function CommentBox({
   onClickModify,
   onClickDelete,
   tier,
+  pick,
 }) {
   const receivedDate = new Date(date);
-  const createDate = formatDistanceToNow(receivedDate, { addSuffix: true, locale: ko });
-  
+  const createDate = formatDistanceToNow(receivedDate, {
+    addSuffix: true,
+    locale: ko,
+  });
 
   //댓글 수정 상태를 위한 값
   const [isEditing, setIsEditing] = useState(false);
@@ -39,21 +42,26 @@ export default function CommentBox({
     setNewComment(comment); // 원본 comment로 복원
   };
 
+  const pickSideColor = () => {
+    if (!pick) return "black";
+    if (pick === 1) return "#97A7FF";
+    if (pick === 2) return "#FF9797";
+    return "black";
+  };
+
   return (
-    <S.Box bgcolor={bgcolor}>
+    <S.Box>
       <S.CommentHead>
         <UserProfile
           name={nickname}
           imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${userId}`}
-          color={"black"}
+          color={pickSideColor}
           iconSize={"10px"}
           fontsize={"10px"}
           size={40}
           tier={tier}
         />
-        <p>
-          {createDate}
-        </p>
+        <p>{createDate}</p>
       </S.CommentHead>
       <S.CommentBody>
         {isEditing ? (
@@ -97,6 +105,7 @@ export default function CommentBox({
           )}
         </S.CommentBottom>
       )}
+      <hr />
     </S.Box>
   );
 }
