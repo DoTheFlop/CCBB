@@ -5,10 +5,12 @@ import ProcessBtn from "../processBtn";
 import VotePreview from "../../votePreview";
 import Button1 from "../../common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
+import Loading from "../../common/Loading";
 // import VoteRate from "../../voteBoard/voteRate";
 
 export default function OngoingVote() {
   const [myVoteList, SetMyVoteList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const token = localStorage.getItem("token");
   const headers = {
@@ -16,13 +18,18 @@ export default function OngoingVote() {
   };
 
   React.useEffect(() => {
+    setIsLoading(true);
     ccbbApi
       .get("/post/vote/participationList", { headers })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         SetMyVoteList(res.data.participationList);
+        setIsLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        setIsLoading(false);
+      });
   }, []);
 
   const dummyVotes = [
@@ -64,6 +71,7 @@ export default function OngoingVote() {
           <Button1 text={"투표 만들기"} width={"120px"} height={"30px"} />
         </Link>
       </S.CountAndBtn>
+      {isLoading ? <Loading></Loading> : null}
       {myVoteList.map((vote, index) => {
         return <VotePreview key={index} {...vote} />;
       })}

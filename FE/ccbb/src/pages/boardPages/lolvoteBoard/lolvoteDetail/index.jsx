@@ -544,6 +544,7 @@ export default function LoLvoteDetailPage() {
     formData.append("file", selectedFile);
     console.log("Uploaded files:", selectedFile);
 
+    setIsLoading(true);
     try {
       const response = await axios.post(
         `https://ccbb.pro/api/file/add/promise/${pId}`,
@@ -555,9 +556,11 @@ export default function LoLvoteDetailPage() {
 
       // Handle the response
       console.log("Upload success:", response);
+      setIsLoading(false);
     } catch (error) {
       // Handle errors
       console.error("Upload error:", error);
+      setIsLoading(false);
     }
   };
 
