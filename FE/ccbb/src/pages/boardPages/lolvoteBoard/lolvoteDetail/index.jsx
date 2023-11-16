@@ -2,7 +2,6 @@ import ReactPlayer from "react-player";
 import Headermenu from "../../../../component/common/headers/headermenu";
 import * as S from "./style";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import PromisePage from "./promisePage";
 import UserProfile from "../../../../component/common/profile";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
@@ -126,31 +125,57 @@ export default function LoLvoteDetailPage() {
         setPId(res.data.voteList.vote.postId);
         setIsApproved(res.data.voteList.vote.accept2);
         setDPromise(res.data.voteList.vote.doPromise);
-        ccbbApi
-          .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
-            headers,
-          })
-          .then((res) => {
-            console.log("기표함결과");
-            console.log(res);
-            if (res.data.voteResult.userPick) {
-              setUserPick(true);
+        if (token) {
+          ccbbApi
+            .get(`/vote/userPick?voteId=${res.data.voteList.vote.voteId}`, {
+              headers,
+            })
+            .then((res) => {
+              console.log("기표함결과");
+              console.log(res);
+              if (res.data.voteResult.userPick) {
+                setUserPick(true);
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+
+          ccbbApi
+            .get(`/wod/check?postId=${res.data.voteList.vote.postId}`, {
+              headers,
+            })
+            .then((res) => {
+              setIsWard(res.data.wodCheck);
+              console.log(res);
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+
+          ccbbApi.get("/user/profile", { headers }).then((res) => {
+            // user1이 이겼을때 승자를 user1으로 세팅
+            setCurUser(res.data.user.userId);
+            setUser1(user1);
+            setUser2(user2);
+            if (voteResult.pick1 > voteResult.pick2) {
+              setWinner(user1);
+              setLoser(user2);
             }
-          })
-          .catch((e) => {
-            console.log(e);
+            // user2가 이겼을때 승자를 user2로 세팅
+            else if (voteResult.pick1 < voteResult.pick2) {
+              setWinner(user2);
+              setLoser(user1);
+            }
+            console.log(`현재유저 : ${res.data.user.userId}`);
+            console.log(`유저1 : ${user1}`);
+            console.log(`유저2 : ${user2}`);
+            console.log(`승자 : ${winner}`);
+            console.log(`패자 : ${loser}`);
+            console.log(voteResult.pick1);
           });
-        ccbbApi
-          .get(`/wod/check?postId=${res.data.voteList.vote.postId}`, {
-            headers,
-          })
-          .then((res) => {
-            setIsWard(res.data.wodCheck);
-            console.log(res);
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+        }
+
         SetCurPost(res.data.voteList);
 
         fetchComments();
@@ -161,30 +186,6 @@ export default function LoLvoteDetailPage() {
         const deadline = new Date(res.data.voteList.vote.deadline);
         if (isAfter(now, deadline)) {
           fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
-          ccbbApi
-            .get("/user/profile", { headers })
-            .then((res) => {
-              // user1이 이겼을때 승자를 user1으로 세팅
-              setCurUser(res.data.user.userId);
-              setUser1(user1);
-              setUser2(user2);
-              if (voteResult.pick1 > voteResult.pick2) {
-                setWinner(user1);
-                setLoser(user2);
-              }
-              // user2가 이겼을때 승자를 user2로 세팅
-              else if (voteResult.pick1 < voteResult.pick2) {
-                setWinner(user2);
-                setLoser(user1);
-              }
-              console.log(res.data.user.userId);
-              console.log(user1);
-              console.log(user2);
-              console.log(voteResult.pick1);
-            })
-            .catch((e) => {
-              console.log(e);
-            });
         }
       });
     } catch {
@@ -641,112 +642,112 @@ export default function LoLvoteDetailPage() {
             )}
 
             <S.PromisePageWrapper $opened={isPromisePageOpen}>
-              <PromisePage
-                promise={curPost.vote.promise}
-                deposit={curPost.vote.deposit}
-              />
-
               {curPost.vote.promise}
-              {dPromise && <h3>공약 이행</h3>}
 
               {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 파일 미리보기 부분을 렌더링하지 않음 */}
-              {!promiseFile["hasPromise"] && (
+              {voteStep() === 2 && (
                 <>
-                  <S.FilePreview>
-                    {selectedFile && (
-                      <>
-                        {selectedFile.type.startsWith("image/") ? (
-                          <img
-                            src={URL.createObjectURL(selectedFile)}
-                            alt="Preview"
-                            style={{ maxWidth: "100%", maxHeight: "200px" }}
-                          />
-                        ) : (
-                          <video
-                            key={URL.createObjectURL(selectedFile)} // Change the key here
-                            controls
-                            style={{ maxWidth: "100%", maxHeight: "200px" }}
-                          >
-                            <source
-                              src={URL.createObjectURL(selectedFile)}
-                              type={selectedFile.type}
-                            />
-                          </video>
-                        )}
-                      </>
-                    )}
-                  </S.FilePreview>
-                  {/* 패자만 볼수있음 */}
-                  {curUser === loser && (
+                  {dPromise && <h3>공약 이행</h3>}
+                  {!promiseFile["hasPromise"] && (
                     <>
-                      <input
-                        type="file"
-                        accept="image/*, video/*"
-                        id="input-file"
-                        onChange={handleFileChange}
-                      />
-                      <Button1
-                        text={"등록"}
-                        width={"55px"}
-                        height={"30px"}
-                        onClick={handleUploadButton}
-                      ></Button1>
+                      <S.FilePreview>
+                        {selectedFile && (
+                          <>
+                            {selectedFile.type.startsWith("image/") ? (
+                              <img
+                                src={URL.createObjectURL(selectedFile)}
+                                alt="Preview"
+                                style={{ maxWidth: "100%", maxHeight: "200px" }}
+                              />
+                            ) : (
+                              <video
+                                key={URL.createObjectURL(selectedFile)} // Change the key here
+                                controls
+                                style={{ maxWidth: "100%", maxHeight: "200px" }}
+                              >
+                                <source
+                                  src={URL.createObjectURL(selectedFile)}
+                                  type={selectedFile.type}
+                                />
+                              </video>
+                            )}
+                          </>
+                        )}
+                      </S.FilePreview>
+                      {/* 패자만 볼수있음 */}
+                      {curUser === loser && (
+                        <>
+                          <input
+                            type="file"
+                            accept="image/*, video/*"
+                            id="input-file"
+                            onChange={handleFileChange}
+                          />
+                          <Button1
+                            text={"등록"}
+                            width={"55px"}
+                            height={"30px"}
+                            onClick={handleUploadButton}
+                          ></Button1>
+                        </>
+                      )}
                     </>
+                  )}
+
+                  {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 동영상 부분을 렌더링함 */}
+                  {promiseFile["hasPromise"] && (
+                    <S.MPbody>
+                      {promiseFile["fileType"].startsWith("image/") ? (
+                        <img
+                          src={`https://ccbb.pro/api/file/get/promise/${pId}`}
+                          alt="Preview"
+                          style={{ width: "80%", height: "40%" }}
+                        />
+                      ) : (
+                        <ReactPlayer
+                          url={`https://ccbb.pro/api/file/get/promise/${pId}`}
+                          controls
+                          width="80%"
+                          height=""
+                          style={{
+                            border: "3px solid #ccc",
+                            borderRadius: "30px",
+                            overflow: "hidden",
+                          }}
+                        />
+                      )}
+                      {/* 승자만 볼수있음 */}
+                      {!dPromise && curUser === winner && (
+                        <S.ARWrapper>
+                          <h1>공약을 이행했다고 생각하시나요?</h1>
+                          <S.AWrapper>
+                            <Button1
+                              text={"O"}
+                              width={"100px"}
+                              height={"60px"}
+                              onClick={handleAcceptButton}
+                              size={"40px"}
+                            />
+                          </S.AWrapper>
+
+                          <S.RWrapper>
+                            <Button1
+                              text={"X"}
+                              width={"100px"}
+                              height={"60px"}
+                              onClick={handleRefuseButton}
+                              color={"red"}
+                              size={"40px"}
+                            />
+                          </S.RWrapper>
+                        </S.ARWrapper>
+                      )}
+                    </S.MPbody>
                   )}
                 </>
               )}
-
-              {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 동영상 부분을 렌더링함 */}
-              {promiseFile["hasPromise"] && (
-                <S.MPbody>
-                  {promiseFile["fileType"].startsWith("image/") ? (
-                    <img
-                      src={`https://ccbb.pro/api/file/get/promise/${pId}`}
-                      alt="Preview"
-                      style={{ width: "80%", height: "40%" }}
-                    />
-                  ) : (
-                    <ReactPlayer
-                      url={`https://ccbb.pro/api/file/get/promise/${pId}`}
-                      controls
-                      width="80%"
-                      height=""
-                      style={{
-                        border: "3px solid #ccc",
-                        borderRadius: "30px",
-                        overflow: "hidden",
-                      }}
-                    />
-                  )}
-                  {/* 승자만 볼수있음 */}
-                  {!dPromise && curUser === winner && (
-                    <S.ARWrapper>
-                      <h1>공약을 이행했다고 생각하시나요?</h1>
-                      <S.AWrapper>
-                        <Button1
-                          text={"O"}
-                          width={"100px"}
-                          height={"60px"}
-                          onClick={handleAcceptButton}
-                          size={"40px"}
-                        />
-                      </S.AWrapper>
-
-                      <S.RWrapper>
-                        <Button1
-                          text={"X"}
-                          width={"100px"}
-                          height={"60px"}
-                          onClick={handleRefuseButton}
-                          color={"red"}
-                          size={"40px"}
-                        />
-                      </S.RWrapper>
-                    </S.ARWrapper>
-                  )}
-                </S.MPbody>
-              )}
             </S.PromisePageWrapper>
+
             {/* 투표 진행중일 때 */}
             {voteStep() === 1 && (
               <S.VoteBodybot>
@@ -839,22 +840,34 @@ export default function LoLvoteDetailPage() {
             )}
 
             {/* 와드영역 - 구현완료한 다음에 비로그인일때 렌더링 막을것 */}
-            {isLoading || voteStep() == 0 ? (
-              <S.EmptyDiv></S.EmptyDiv>
-            ) : isWard ? (
-              <S.Imgward
-                onClick={toggleWard}
-                src="../resource/wardafter.png"
-                alt="VS Logo"
-                style={{ width: "120px", height: "80px", cursor: "pointer" }}
-              />
-            ) : (
-              <S.Imgward
-                onClick={toggleWard}
-                src="../resource/wardbefore.png"
-                alt="VS Logo"
-                style={{ width: "120px", height: "80px", cursor: "pointer" }}
-              />
+            {token && (
+              <>
+                {isLoading || voteStep() == 0 ? (
+                  <S.EmptyDiv></S.EmptyDiv>
+                ) : isWard ? (
+                  <S.Imgward
+                    onClick={toggleWard}
+                    src="../resource/wardafter.png"
+                    alt="VS Logo"
+                    style={{
+                      width: "120px",
+                      height: "80px",
+                      cursor: "pointer",
+                    }}
+                  />
+                ) : (
+                  <S.Imgward
+                    onClick={toggleWard}
+                    src="../resource/wardbefore.png"
+                    alt="VS Logo"
+                    style={{
+                      width: "120px",
+                      height: "80px",
+                      cursor: "pointer",
+                    }}
+                  />
+                )}
+              </>
             )}
           </S.Votebody>
 
