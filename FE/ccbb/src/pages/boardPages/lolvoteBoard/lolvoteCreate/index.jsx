@@ -235,7 +235,6 @@ export default function LoLvoteCreatePage() {
       formData.append("files", uploadedFiles[0].file);
       formData.append("files", uploadedFiles[1].file);
       formData.append("post", jsonBlob);
-
       const headers = {
         Authorization: `Bearer ${token1}`,
         "content-type": "multipart/form-data",
