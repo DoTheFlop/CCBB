@@ -683,7 +683,7 @@ export default function LoLvoteDetailPage() {
                   )}
 
                   {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 동영상 부분을 렌더링함 */}
-                  {dPromise && promiseFile["hasPromise"] && (
+                  {promiseFile["hasPromise"] && (
                     <S.MPbody>
                       {promiseFile["fileType"].startsWith("image/") ? (
                         <img
@@ -705,7 +705,7 @@ export default function LoLvoteDetailPage() {
                         />
                       )}
                       {/* 승자만 볼수있음 */}
-                      {!dPromise && curUser == winner && (
+                      {!dPromise && curUser === winner && (
                         <S.ARWrapper>
                           <h1>공약을 이행했다고 생각하시나요?</h1>
                           <S.AWrapper>
