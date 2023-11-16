@@ -5,10 +5,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import UserProfile from "../../../../component/common/profile";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ThumbUpOffAltIcon from "@mui/icons-material/ThumbUpOffAlt";
-import ThumbDownOffAltIcon from "@mui/icons-material/ThumbDownOffAlt";
-import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import ThumbDownAltIcon from "@mui/icons-material/ThumbDownAlt";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import InputComment from "../../../../component/common/inputs/inputcomment";
@@ -51,8 +47,6 @@ export default function LoLvoteDetailPage() {
   const [comments, SetComments] = useState([]);
   const [isPromisePageOpen, setIsPromisePageOpen] = useState(false);
   const [isWard, setIsWard] = useState(false);
-  const [isThumbUp, setIsThumbup] = useState(false);
-  const [isThumbDown, setIsThumbDown] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [payment, setPayment] = useState(null);
@@ -85,7 +79,6 @@ export default function LoLvoteDetailPage() {
   const [winner, setWinner] = useState("");
   const [loser, setLoser] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const [pId, setPId] = useState("");
   const [dPromise, setDPromise] = useState(null);
   const [promiseFile, setPromiseFile] = useState({
     hasPromise: false,
@@ -97,14 +90,14 @@ export default function LoLvoteDetailPage() {
         params: { postId: postId },
       })
       .then((res) => {
-        console.log("res:", res); // res 전체를 출력
-        console.log("res.data:", res.data); // res.data 출력
-        console.log("res.data.voteList:", res.data.voteList); // res.data.voteList 출력
-        console.log("res.data.voteList.vote:", res.data.voteList.vote); // res.data.voteList.vote 출력
-        console.log(
-          "res.data.voteList.vote.limitTier:",
-          res.data.voteList.vote.limitTier
-        ); // res.data.voteList.vote.limitTier 출력
+        // console.log("res:", res); // res 전체를 출력
+        // console.log("res.data:", res.data); // res.data 출력
+        // console.log("res.data.voteList:", res.data.voteList); // res.data.voteList 출력
+        // console.log("res.data.voteList.vote:", res.data.voteList.vote); // res.data.voteList.vote 출력
+        // console.log(
+        //   "res.data.voteList.vote.limitTier:",
+        //   res.data.voteList.vote.limitTier
+        // ); // res.data.voteList.vote.limitTier 출력
         setMinVotingTier(res.data.voteList.vote.limitTier);
         return res;
       })
@@ -122,7 +115,6 @@ export default function LoLvoteDetailPage() {
         let user1 = res.data.voteList.vote.user1;
         let user2 = res.data.voteList.vote.user2;
         processFileData(res.data.voteList.fileId);
-        setPId(res.data.voteList.vote.postId);
         setIsApproved(res.data.voteList.vote.accept2);
         setDPromise(res.data.voteList.vote.doPromise);
         if (token) {
@@ -265,7 +257,7 @@ export default function LoLvoteDetailPage() {
     ccbbApi
       .get(`/comment/${postId}`)
       .then((res) => {
-        // console.log(res.data.commentList);
+        console.log(res.data.commentList);
         SetComments(res.data.commentList);
       })
       .catch((e) => console.log(e));
@@ -295,14 +287,6 @@ export default function LoLvoteDetailPage() {
     }
   };
 
-  // const toggleThumbUp = () => {
-  //   setIsThumbup(!isThumbUp);
-  // };
-
-  // const toggleThumbDown = () => {
-  //   setIsThumbDown(!isThumbDown);
-  // };
-
   const toggleWard = () => {
     const headers = {
       Authorization: `Bearer ${token}`,
@@ -310,7 +294,7 @@ export default function LoLvoteDetailPage() {
     // 와드를 했을경우
     if (isWard) {
       ccbbApi
-        .delete(`/wod/delete/${pId}`, { headers })
+        .delete(`/wod/delete/${postId}`, { headers })
         .then((res) => {
           console.log(res);
           setIsWard(!isWard);
@@ -320,7 +304,7 @@ export default function LoLvoteDetailPage() {
     // 와드를 안했을 경우
     else if (!isWard) {
       ccbbApi
-        .post(`/wod/add?postId=${pId}`, {}, { headers })
+        .post(`/wod/add?postId=${postId}`, {}, { headers })
         .then((res) => {
           console.log(res);
           setIsWard(!isWard);
@@ -365,7 +349,6 @@ export default function LoLvoteDetailPage() {
   };
 
   // 투표 함수
-  // 투표 함수
   const handlevoteUser = (pickSide) => {
     if (!token) {
       //비로그인 유저는 투표못함
@@ -395,7 +378,6 @@ export default function LoLvoteDetailPage() {
     };
 
     if (userPick > 0) {
-      // TODO: 토스티파이로 수정
       toast.error("이미 투표를 하였습니다.");
       return;
     } else {
@@ -503,7 +485,7 @@ export default function LoLvoteDetailPage() {
     console.log(token);
     ccbbApi
       .post(
-        `/post/promise/accept/${pId}`,
+        `/post/promise/accept/${postId}`,
         {},
         {
           headers,
@@ -524,7 +506,7 @@ export default function LoLvoteDetailPage() {
     console.log("거절");
     ccbbApi
       .post(
-        `/file/remove/promise/${pId}`,
+        `/file/remove/promise/${postId}`,
         {},
         {
           headers,
@@ -546,7 +528,7 @@ export default function LoLvoteDetailPage() {
 
     try {
       const response = await axios.post(
-        `https://ccbb.pro/api/file/add/promise/${pId}`,
+        `https://ccbb.pro/api/file/add/promise/${postId}`,
         formData,
         {
           headers,
@@ -699,13 +681,13 @@ export default function LoLvoteDetailPage() {
                     <S.MPbody>
                       {promiseFile["fileType"].startsWith("image/") ? (
                         <img
-                          src={`https://ccbb.pro/api/file/get/promise/${pId}`}
+                          src={`https://ccbb.pro/api/file/get/promise/${postId}`}
                           alt="Preview"
                           style={{ width: "80%", height: "40%" }}
                         />
                       ) : (
                         <ReactPlayer
-                          url={`https://ccbb.pro/api/file/get/promise/${pId}`}
+                          url={`https://ccbb.pro/api/file/get/promise/${postId}`}
                           controls
                           width="80%"
                           height=""
@@ -894,12 +876,6 @@ export default function LoLvoteDetailPage() {
 
               <h4>댓글 {comments.length}개</h4>
               <S.CommentBody>
-                {/* <CommentBox
-                  bgcolor="#97A7FF"
-                  comment="This is a hard-coded sample comment"
-                  userId="user123"
-                  date="2023-10-31"
-                /> */}
                 {comments.map((cmt, index) => {
                   return (
                     <CommentBox
