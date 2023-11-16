@@ -17,7 +17,7 @@ export const StatisticSection = styled.div`
   flex: 1;
   flex-direction: column;
   width: 100%;
-  padding: 2% 12% 3% 12%;
+  padding: 2% 10% 3% 10%;
   box-sizing: border-box;
   background-color: white;
   flex-wrap: wrap;
@@ -26,16 +26,21 @@ export const StatisticSection = styled.div`
 export const PieWithDescription = styled.div`
   display: flex;
   flex-direction: column;
-  margin: 0 10px 10% 10px;
-  max-width: 40%;
+  position: relative;
+  margin: 0 1% 10% 1%;
+  max-width: 600px;
   min-width: 250px;
-  width: 40%;
+  width: 48%;
+  height: fit-content;
   text {
     font-weight: bold;
   }
   & > svg {
-    width: 100%;
-    height: 100%;
+    /* position: absolute; */
+    width: 125%;
+    margin-left: -10%;
+    height: 125%;
+    margin-top: -20%;
   }
 `;
 
