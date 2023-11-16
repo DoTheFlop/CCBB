@@ -145,6 +145,19 @@ export default function LoLvoteDetailPage() {
               console.log(e);
             });
 
+          
+        }
+
+        SetCurPost(res.data.voteList);
+
+        fetchComments();
+        setIsLoading(false);
+
+        // 현재 시간이 deadline을 지난지 확인
+        const now = new Date();
+        const deadline = new Date(res.data.voteList.vote.deadline);
+        if (isAfter(now, deadline)) {
+          fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
           ccbbApi.get("/user/profile", { headers }).then((res) => {
             // user1이 이겼을때 승자를 user1으로 세팅
             setCurUser(res.data.user.userId);
@@ -164,21 +177,10 @@ export default function LoLvoteDetailPage() {
             console.log(`유저2 : ${user2}`);
             console.log(`승자 : ${winner}`);
             console.log(`패자 : ${loser}`);
-            console.log(voteResult.pick1);
+            console.log(voteResult);
           });
         }
-
-        SetCurPost(res.data.voteList);
-
-        fetchComments();
-        setIsLoading(false);
-
-        // 현재 시간이 deadline을 지난지 확인
-        const now = new Date();
-        const deadline = new Date(res.data.voteList.vote.deadline);
-        if (isAfter(now, deadline)) {
-          fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
-        }
+        
       });
     } catch {
       setIsLoading(false);
@@ -197,6 +199,7 @@ export default function LoLvoteDetailPage() {
       .catch((e) => {
         console.log(e);
       });
+      
   };
 
   // 두 번째 useEffect: curPost의 변경을 감지하여 타이머 업데이트
@@ -680,7 +683,7 @@ export default function LoLvoteDetailPage() {
                   )}
 
                   {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 동영상 부분을 렌더링함 */}
-                  {promiseFile["hasPromise"] && (
+                  {dPromise && promiseFile["hasPromise"] && (
                     <S.MPbody>
                       {promiseFile["fileType"].startsWith("image/") ? (
                         <img
@@ -702,7 +705,7 @@ export default function LoLvoteDetailPage() {
                         />
                       )}
                       {/* 승자만 볼수있음 */}
-                      {!dPromise && curUser === winner && (
+                      {!dPromise && curUser == winner && (
                         <S.ARWrapper>
                           <h1>공약을 이행했다고 생각하시나요?</h1>
                           <S.AWrapper>
