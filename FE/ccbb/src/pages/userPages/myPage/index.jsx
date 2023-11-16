@@ -22,6 +22,7 @@ export default function MyPage() {
   };
   const user = useRecoilValue(userState);
   const setRecoilUser = useSetRecoilState(userState);
+
   React.useEffect(() => {
     if (!token) navigate("/");
     ccbbApi
