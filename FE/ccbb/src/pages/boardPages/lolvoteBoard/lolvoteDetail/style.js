@@ -112,14 +112,17 @@ export const VoteBodybot = styled.div`
 `;
 
 export const Votebutton = styled.div`
+  width: 90%;
   color: black;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: 1fr 100px 1fr;
+  align-items: center;
   margin-top: 10px;
 `;
 
 export const ImgVS = styled.img`
   margin: 0 50px;
+  justify-self: center;
 `;
 export const Imgward = styled.img`
   align-self: center;
@@ -129,8 +132,9 @@ export const ProfileBox = styled.div`
   display: flex;
   flex-direction: row;
   background-color: ${(props) => props.$bgcolor};
+  justify-self: ${(props) => (props.$side === 1 ? "flex-end" : "flex-start")};
   border-radius: 8px;
-  max-width: 35%;
+  width: fit-content;
   padding: 5px 10px;
   cursor: pointer;
   position: relative;
