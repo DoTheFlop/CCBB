@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.D104.ccbb.ballot_box.repo.BallotBoxRepo;
 import com.D104.ccbb.post.repo.PostRepo;
 import com.D104.ccbb.user.repository.UserRepository;
 import com.D104.ccbb.vote.domain.Vote;
@@ -24,6 +25,7 @@ public class WodService {
 	private final UserRepository userRepository;
 	private final PostRepo postRepo;
 	private final WodRepo wodRepo;
+	private final BallotBoxRepo ballotBoxRepo;
 	@Transactional
 	public void setWod(int userId, int postId){
 		Wod wod = Wod.builder()
@@ -33,7 +35,7 @@ public class WodService {
 		wodRepo.save(wod);
 	}
 	public List<WodDto> getWod(int userId){
-		List<WodDto> wodDto = wodRepo.findByUserId_UserId(userId).stream().map(m->WodDto.fromEntity(m)).collect(
+		List<WodDto> wodDto = wodRepo.findByUserId_UserId(userId).stream().map(m->WodDto.fromEntity(m,postRepo,ballotBoxRepo)).collect(
 			Collectors.toList());
 		return wodDto;
 	}
