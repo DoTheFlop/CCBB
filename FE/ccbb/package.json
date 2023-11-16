@@ -15,7 +15,7 @@
     "chartjs-plugin-stacked100": "^1.5.2",
     "date-fns": "^2.30.0",
     "event-source-polyfill": "^1.0.31",
-    "jetty-chart": "^0.1.13",
+    "jetty-chart": "^0.1.18",
     "moment": "^2.29.4",
     "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
