@@ -4,12 +4,21 @@ import { StyledInput } from "../common/inputs/inputcomment/style";
 export { StyledInput };
 export const Box = styled.div`
   background-color: ${(props) => props.bgcolor || "transparent"};
-  border-radius: 10px;
+  /* border-radius: 10px; */
   display: flex;
   flex-direction: column;
   // margin-top: 1%;
   // margin-bottom: 1%;
-  padding: 1% 2% 2% 2%;
+  padding: 1% 2% 0.5% 2%;
+  & > hr {
+    align-self: center;
+    height: 0px;
+    width: 99%;
+    margin: 0;
+    border: solid 1px;
+    border-color: lightgray;
+    border-radius: 10px;
+  }
 `;
 
 export const CommentHead = styled.div`

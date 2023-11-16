@@ -890,6 +890,7 @@ export default function LoLvoteDetailPage() {
                       date={cmt.createDate}
                       position={cmt.position}
                       tier={cmt.tier}
+                      pick={cmt.pick}
                       onClickModify={(newContent) =>
                         handleModifyComment(cmt.commentId, newContent)
                       }
