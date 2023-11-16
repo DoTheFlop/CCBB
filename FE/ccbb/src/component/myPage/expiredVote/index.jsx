@@ -5,21 +5,29 @@ import * as S from "./style";
 import VotePreview from "../../votePreview";
 import Button1 from "../../common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
+import Loading from "../../common/Loading";
 
 export default function ExpiredVote() {
   const [myVoteList, SetMyVoteList] = useState([]);
   const token = localStorage.getItem("token");
+  const [isLoading, setIsLoading] = useState(false);
+
   const headers = {
     Authorization: `Bearer ${token}`,
   };
   React.useEffect(() => {
+    setIsLoading(true);
     ccbbApi
       .get("/post/vote/participationPastList", { headers })
       .then((res) => {
-        console.log(res.data)
+        console.log(res.data);
         SetMyVoteList(res.data.participationList);
+        setIsLoading(false);
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        console.log(e);
+        setIsLoading(false);
+      });
   }, []);
 
   const dummyVotes = [
@@ -44,6 +52,7 @@ export default function ExpiredVote() {
       <S.CountAndBtn>
         <span className="total-count">{myVoteList.length}건</span>
       </S.CountAndBtn>
+      {isLoading ? <Loading></Loading> : null}
       {myVoteList.map((vote, index) => {
         return <VotePreview key={index} {...vote} />;
       })}
