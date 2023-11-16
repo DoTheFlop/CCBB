@@ -268,14 +268,13 @@ export default function LoLvoteCreatePage() {
       if (uploadedFiles.length > 1)
         formData.append("files", uploadedFiles[1].file);
       formData.append("post", jsonBlob);
-
       const headers = {
         Authorization: `Bearer ${token1}`,
         "content-type": "multipart/form-data",
       };
 
       const response = await axios
-        .post("http://k9d104.p.ssafy.io:8081/api/post/add", formData, {
+        .post("https://ccbb.pro/api/post/add", formData, {
           headers,
           //cors에러 뜨면 넣어야함
           withCredentials: true,

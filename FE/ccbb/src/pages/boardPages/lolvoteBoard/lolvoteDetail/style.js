@@ -71,7 +71,27 @@ export const Moviebody = styled.div`
   justify-content: center;
   align-items: center;
 `;
+export const MPbody = styled.div`
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
+export const ARWrapper = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+`;
+
+export const AWrapper = styled.div`
+  margin-left: 20px;
+`;
+export const RWrapper = styled.div`
+  margin-left: 10px;
+`;
 export const Votebody = styled.div`
   display: flex;
   flex-direction: column;
@@ -303,3 +323,23 @@ export const replaylink = styled.a`
 export const EmptyDiv = styled.div`
   height: 200px;
 `
+export const Promisefile = styled.div`
+  width: 100%;
+  /* padding: 0 0 10px 0; */
+  .delete-button {
+    position: absolute;
+    /* background-color: red; */
+    color: red;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+`;
+
+export const FilePreview = styled.div``;
