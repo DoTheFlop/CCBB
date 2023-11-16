@@ -16,6 +16,7 @@ export default function ExpiredVote() {
     ccbbApi
       .get("/post/vote/participationPastList", { headers })
       .then((res) => {
+        console.log(res.data)
         SetMyVoteList(res.data.participationList);
       })
       .catch((e) => console.log(e));
@@ -41,9 +42,9 @@ export default function ExpiredVote() {
   return (
     <S.main>
       <S.CountAndBtn>
-        <span className="total-count">{dummyVotes.length}건</span>
+        <span className="total-count">{myVoteList.length}건</span>
       </S.CountAndBtn>
-      {dummyVotes.map((vote, index) => {
+      {myVoteList.map((vote, index) => {
         return <VotePreview key={index} {...vote} />;
       })}
     </S.main>
