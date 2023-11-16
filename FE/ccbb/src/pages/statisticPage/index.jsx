@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Headermenu from "../../component/common/headers/headermenu";
 import { ccbbApi } from "../../api/ccbbApi";
 import { Pie } from "jetty-chart";
+import PuffLoader from "react-spinners/PuffLoader";
 
 export default function StatisticPage() {
   const [statisticsErr, setStatisticsErr] = useState(false);
@@ -131,7 +132,7 @@ export default function StatisticPage() {
         <S.DualPie>
           <S.PieWithDescription>
             <h2>유저 티어 분포</h2>
-            {tierDist.length > 0 && (
+            {tierDist.length > 0 ? (
               <Pie
                 data={makeData(tierDist)}
                 generalSettings={pieGeneralSettings}
@@ -153,32 +154,42 @@ export default function StatisticPage() {
                 }}
                 legendSettings={{ useLegend: false }}
               />
+            ) : (
+              <S.SpinnerBox>
+                <PuffLoader color="#5c78d5" />
+              </S.SpinnerBox>
             )}
           </S.PieWithDescription>
           <S.PieWithDescription>
             <h2>유저 포지션 분포</h2>
-            <Pie
-              data={makeData(positionDist)}
-              generalSettings={pieGeneralSettings}
-              pieSettings={{
-                innerRadius: 0.5,
-                cornerRadius: 0.04,
-                padAngle: 2,
-                startAngle: 270,
-                sortByValue: true,
-              }}
-              labelSettings={{
-                labelText: "ratio",
-                labelOpacity: 0.5,
-              }}
-              legendSettings={{ useLegend: false }}
-            />
+            {positionDist.length > 0 ? (
+              <Pie
+                data={makeData(positionDist)}
+                generalSettings={pieGeneralSettings}
+                pieSettings={{
+                  innerRadius: 0.5,
+                  cornerRadius: 0.04,
+                  padAngle: 2,
+                  startAngle: 270,
+                  sortByValue: true,
+                }}
+                labelSettings={{
+                  labelText: "ratio",
+                  labelOpacity: 0.5,
+                }}
+                legendSettings={{ useLegend: false }}
+              />
+            ) : (
+              <S.SpinnerBox>
+                <PuffLoader color="#5c78d5" />
+              </S.SpinnerBox>
+            )}
           </S.PieWithDescription>
         </S.DualPie>
         <S.DualPie>
           <S.PieWithDescription>
             <h2>티어별 투표 승률</h2>
-            {winRateByTier.length > 0 && (
+            {winRateByTier.length > 0 ? (
               <Pie
                 data={makeData(winRateByTier)}
                 generalSettings={pieGeneralSettings}
@@ -201,26 +212,36 @@ export default function StatisticPage() {
                 }}
                 legendSettings={{ useLegend: false }}
               />
+            ) : (
+              <S.SpinnerBox>
+                <PuffLoader color="#5c78d5" />
+              </S.SpinnerBox>
             )}
           </S.PieWithDescription>
           <S.PieWithDescription>
             <h2>포지션별 투표 승률</h2>
-            <Pie
-              data={makeData(winRateByPosition)}
-              generalSettings={pieGeneralSettings}
-              pieSettings={{
-                innerRadius: 0.5,
-                cornerRadius: 0.04,
-                padAngle: 2,
-                startAngle: 270,
-                sortByValue: true,
-              }}
-              labelSettings={{
-                labelText: "ratio",
-                labelOpacity: 0.5,
-              }}
-              legendSettings={{ useLegend: false }}
-            />
+            {winRateByPosition.length > 0 ? (
+              <Pie
+                data={makeData(winRateByPosition)}
+                generalSettings={pieGeneralSettings}
+                pieSettings={{
+                  innerRadius: 0.5,
+                  cornerRadius: 0.04,
+                  padAngle: 2,
+                  startAngle: 270,
+                  sortByValue: true,
+                }}
+                labelSettings={{
+                  labelText: "ratio",
+                  labelOpacity: 0.5,
+                }}
+                legendSettings={{ useLegend: false }}
+              />
+            ) : (
+              <S.SpinnerBox>
+                <PuffLoader color="#5c78d5" />
+              </S.SpinnerBox>
+            )}
           </S.PieWithDescription>
         </S.DualPie>
       </S.StatisticSection>

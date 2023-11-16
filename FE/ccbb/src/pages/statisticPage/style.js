@@ -26,6 +26,7 @@ export const StatisticSection = styled.div`
 export const PieWithDescription = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: start;
   position: relative;
   margin: 0 1% 10% 1%;
   max-width: 600px;
@@ -37,9 +38,9 @@ export const PieWithDescription = styled.div`
   }
   & > svg {
     /* position: absolute; */
-    width: 125%;
+    width: 120%;
     margin-left: -10%;
-    height: 125%;
+    height: 120%;
     margin-top: -20%;
   }
 `;
@@ -49,4 +50,11 @@ export const DualPie = styled.div`
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-between;
+`;
+
+export const SpinnerBox = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 80%;
+  margin-top: 30%;
 `;
