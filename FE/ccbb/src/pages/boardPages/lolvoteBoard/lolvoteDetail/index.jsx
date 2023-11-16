@@ -113,8 +113,10 @@ export default function LoLvoteDetailPage() {
       fetchPost().then((res) => {
         console.log(res.data);
         setIsApproved(res.data.voteList.vote.accept2);
-        let user1 = res.data.voteList.vote.user1;
-        let user2 = res.data.voteList.vote.user2;
+
+        console.log(res.data.voteList.vote.user1);
+        setUser1(res.data.voteList.vote.user1);
+        setUser2(res.data.voteList.vote.user2);
         processFileData(res.data.voteList.fileId);
         setIsApproved(res.data.voteList.vote.accept2);
         setDPromise(res.data.voteList.vote.doPromise);
@@ -145,6 +147,16 @@ export default function LoLvoteDetailPage() {
             .catch((e) => {
               console.log(e);
             });
+
+          ccbbApi
+            .get("/user/profile", { headers })
+            .then((res) => {
+              setCurUser(res.data.user.userId);
+              console.log(res)
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         }
 
         SetCurPost(res.data.voteList);
@@ -157,27 +169,6 @@ export default function LoLvoteDetailPage() {
         const deadline = new Date(res.data.voteList.vote.deadline);
         if (isAfter(now, deadline)) {
           fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
-          ccbbApi.get("/user/profile", { headers }).then((res) => {
-            // user1이 이겼을때 승자를 user1으로 세팅
-            setCurUser(res.data.user.userId);
-            setUser1(user1);
-            setUser2(user2);
-            if (voteResult.pick1 > voteResult.pick2) {
-              setWinner(user1);
-              setLoser(user2);
-            }
-            // user2가 이겼을때 승자를 user2로 세팅
-            else if (voteResult.pick1 < voteResult.pick2) {
-              setWinner(user2);
-              setLoser(user1);
-            }
-            console.log(`현재유저 : ${res.data.user.userId}`);
-            console.log(`유저1 : ${user1}`);
-            console.log(`유저2 : ${user2}`);
-            console.log(`승자 : ${winner}`);
-            console.log(`패자 : ${loser}`);
-            console.log(voteResult);
-          });
         }
       });
     } catch {
@@ -227,6 +218,33 @@ export default function LoLvoteDetailPage() {
     };
   }, [curPost]);
 
+  useEffect(() => {
+    if (voteResult) {
+      ccbbApi.get("/user/profile", { headers })
+      .then((res) => {
+        // user1이 이겼을때 승자를 user1으로 세팅
+        console.log(voteResult)
+        if (voteResult.pick1 > voteResult.pick2) {
+          setWinner(user1);
+          setLoser(user2);
+        }
+        // user2가 이겼을때 승자를 user2로 세팅
+        else if (voteResult.pick1 < voteResult.pick2) {
+          setWinner(user2);
+          setLoser(user1);
+        }
+        console.log(`현재유저 : ${res.data.user.userId}`);
+        console.log(`유저1 : ${user1}`);
+        console.log(`유저2 : ${user2}`);
+        console.log(`승자 : ${winner}`);
+        console.log(`패자 : ${loser}`);
+        console.log(voteResult);
+        return
+      });
+        console.log("Rendering after fetchVoteResult:", voteResult);
+    }
+}, [voteResult]);
+
   const processFileData = (fileArray) => {
     for (const file of fileArray) {
       if (file.isPromise) {
@@ -234,6 +252,8 @@ export default function LoLvoteDetailPage() {
       }
     }
   };
+
+
 
   const isMyVote = () => {
     //(로그인한) 유저가 투표 당사자인지 체크
