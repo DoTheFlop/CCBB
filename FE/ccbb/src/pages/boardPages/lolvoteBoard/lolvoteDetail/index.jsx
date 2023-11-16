@@ -1,29 +1,30 @@
-import ReactPlayer from "react-player";
-import Headermenu from "../../../../component/common/headers/headermenu";
-import * as S from "./style";
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
-import UserProfile from "../../../../component/common/profile";
-import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import InputComment from "../../../../component/common/inputs/inputcomment";
-import CommentBox from "../../../../component/commentBox";
-import { ccbbApi } from "../../../../api/ccbbApi";
+import * as S from "./style";
 import { useRecoilValue } from "recoil";
 import { userState } from "../../../../recoil/UserAtom";
+
+import Headermenu from "../../../../component/common/headers/headermenu";
+import UserProfile from "../../../../component/common/profile";
+import InputComment from "../../../../component/common/inputs/inputcomment";
+import CommentBox from "../../../../component/commentBox";
+import Loading from "../../../../component/common/Loading";
+import VoteRate from "../../../../component/voteBoard/voteRate";
 import VotePaymentModal from "../lolvoteCreate/votePaymentpage";
 import Button1 from "../../../../component/common/buttons";
 import TierImg from "../../../../component/tier";
 import VoteProcess from "../../../../component/voteBoard/voteProcess";
+import { ccbbApi } from "../../../../api/ccbbApi";
+
 import { intervalToDuration, isBefore } from "date-fns";
 import { isAfter } from "date-fns";
-import VoteRate from "../../../../component/voteBoard/voteRate";
-import FileUploadIcon from "@mui/icons-material/FileUpload";
-import RemoveCircleIcon from "@mui/icons-material/RemoveCircle";
+import ReactPlayer from "react-player";
 
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import DoneIcon from "@mui/icons-material/Done";
 import DownloadIcon from "@mui/icons-material/Download";
-import Loading from "../../../../component/common/Loading";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -112,8 +113,10 @@ export default function LoLvoteDetailPage() {
       fetchPost().then((res) => {
         console.log(res.data);
         setIsApproved(res.data.voteList.vote.accept2);
-        let user1 = res.data.voteList.vote.user1;
-        let user2 = res.data.voteList.vote.user2;
+
+        console.log(res.data.voteList.vote.user1);
+        setUser1(res.data.voteList.vote.user1);
+        setUser2(res.data.voteList.vote.user2);
         processFileData(res.data.voteList.fileId);
         setIsApproved(res.data.voteList.vote.accept2);
         setDPromise(res.data.voteList.vote.doPromise);
@@ -126,7 +129,7 @@ export default function LoLvoteDetailPage() {
               console.log("기표함결과");
               console.log(res);
               if (res.data.voteResult.userPick) {
-                setUserPick(true);
+                setUserPick(res.data.voteResult.userPick);
               }
             })
             .catch((e) => {
@@ -145,7 +148,15 @@ export default function LoLvoteDetailPage() {
               console.log(e);
             });
 
-          
+          ccbbApi
+            .get("/user/profile", { headers })
+            .then((res) => {
+              setCurUser(res.data.user.userId);
+              console.log(res)
+            })
+            .catch((e) => {
+              console.log(e);
+            });
         }
 
         SetCurPost(res.data.voteList);
@@ -158,29 +169,7 @@ export default function LoLvoteDetailPage() {
         const deadline = new Date(res.data.voteList.vote.deadline);
         if (isAfter(now, deadline)) {
           fetchVoteResult(res.data.voteList.vote.voteId); // 투표 결과를 가져오는 함수 호출
-          ccbbApi.get("/user/profile", { headers }).then((res) => {
-            // user1이 이겼을때 승자를 user1으로 세팅
-            setCurUser(res.data.user.userId);
-            setUser1(user1);
-            setUser2(user2);
-            if (voteResult.pick1 > voteResult.pick2) {
-              setWinner(user1);
-              setLoser(user2);
-            }
-            // user2가 이겼을때 승자를 user2로 세팅
-            else if (voteResult.pick1 < voteResult.pick2) {
-              setWinner(user2);
-              setLoser(user1);
-            }
-            console.log(`현재유저 : ${res.data.user.userId}`);
-            console.log(`유저1 : ${user1}`);
-            console.log(`유저2 : ${user2}`);
-            console.log(`승자 : ${winner}`);
-            console.log(`패자 : ${loser}`);
-            console.log(voteResult);
-          });
         }
-        
       });
     } catch {
       setIsLoading(false);
@@ -199,7 +188,6 @@ export default function LoLvoteDetailPage() {
       .catch((e) => {
         console.log(e);
       });
-      
   };
 
   // 두 번째 useEffect: curPost의 변경을 감지하여 타이머 업데이트
@@ -230,6 +218,33 @@ export default function LoLvoteDetailPage() {
     };
   }, [curPost]);
 
+  useEffect(() => {
+    if (voteResult) {
+      ccbbApi.get("/user/profile", { headers })
+      .then((res) => {
+        // user1이 이겼을때 승자를 user1으로 세팅
+        console.log(voteResult)
+        if (voteResult.pick1 > voteResult.pick2) {
+          setWinner(user1);
+          setLoser(user2);
+        }
+        // user2가 이겼을때 승자를 user2로 세팅
+        else if (voteResult.pick1 < voteResult.pick2) {
+          setWinner(user2);
+          setLoser(user1);
+        }
+        console.log(`현재유저 : ${res.data.user.userId}`);
+        console.log(`유저1 : ${user1}`);
+        console.log(`유저2 : ${user2}`);
+        console.log(`승자 : ${winner}`);
+        console.log(`패자 : ${loser}`);
+        console.log(voteResult);
+        return
+      });
+        console.log("Rendering after fetchVoteResult:", voteResult);
+    }
+}, [voteResult]);
+
   const processFileData = (fileArray) => {
     for (const file of fileArray) {
       if (file.isPromise) {
@@ -237,6 +252,8 @@ export default function LoLvoteDetailPage() {
       }
     }
   };
+
+
 
   const isMyVote = () => {
     //(로그인한) 유저가 투표 당사자인지 체크
@@ -747,6 +764,7 @@ export default function LoLvoteDetailPage() {
                       handlevoteUser(1);
                     }}
                     $bgcolor="#97A7FF"
+                    $pick={userPick === 1}
                   >
                     <UserProfile
                       imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user1}`}
@@ -764,6 +782,7 @@ export default function LoLvoteDetailPage() {
                       handlevoteUser(2);
                     }}
                     $bgcolor="#FF9797"
+                    $pick={userPick === 2}
                   >
                     <UserProfile
                       imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user2}`}
