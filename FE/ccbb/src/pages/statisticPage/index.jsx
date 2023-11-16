@@ -19,26 +19,25 @@ export default function StatisticPage() {
         ccbbApi
           .get("/statistics/count/tier")
           .then((res) => {
-            setTierDist(makeData(res.data.statistics));
-            console.log(makeData(res.data.statistics));
+            setTierDist(res.data.statistics);
           })
           .catch((e) => console.log(e));
         ccbbApi
           .get("/statistics/count/position")
           .then((res) => {
-            setPositionDist(makeData(res.data.statistics));
+            setPositionDist(res.data.statistics);
           })
           .catch((e) => console.log(e));
         ccbbApi
           .get("/statistics/vote/tier")
           .then((res) => {
-            setWinRateByTier(makeData(res.data.statistics));
+            setWinRateByTier(res.data.statistics);
           })
           .catch((e) => console.log(e));
         ccbbApi
           .get("/statistics/vote/position")
           .then((res) => {
-            setWinRateByPosition(makeData(res.data.statistics));
+            setWinRateByPosition(res.data.statistics);
           })
           .catch((e) => console.log(e));
       })
@@ -64,6 +63,7 @@ export default function StatisticPage() {
         return "";
     }
   }
+
   function tierToKorAndColor(tier) {
     switch (tier) {
       case "IRON":
@@ -75,11 +75,11 @@ export default function StatisticPage() {
       case "GOLD":
         return { kor: "골드", color: "#ebcb94" };
       case "PLATINUM":
-        return { kor: "플래티넘", color: "#dbf5fc" };
+        return { kor: "플래티넘", color: "#aedee6" };
       case "EMERALD":
         return { kor: "에메랄드", color: "#99ecca" };
       case "DIAMOND":
-        return { kor: "다이아몬드", color: "#adebfa" };
+        return { kor: "다이아몬드", color: "#9adff0" };
       case "MASTER":
         return { kor: "마스터", color: "#e7bef6" };
       case "GRANDMASTER":
@@ -87,7 +87,7 @@ export default function StatisticPage() {
       case "CHALLENGER":
         return { kor: "챌린저", color: "#b3bdff" };
       default:
-        return { kor: "", color: "#ffffff" };
+        return { kor: "", color: "#cccccc" };
     }
   }
   const makeData = (arr) => {
@@ -101,16 +101,22 @@ export default function StatisticPage() {
           return {
             label: label,
             value: value,
-            origin: item.lolTier || item.lolPosition,
           };
         }
       })
       .filter((item) => item !== undefined);
   };
-  const makeColor = (data) => {
-    return data.map((item) => {
-      return tierToKorAndColor(item.origin).color;
+  const makeColor = (arr) => {
+    return arr.map((item) => {
+      return tierToKorAndColor(item.lolTier).color;
     });
+  };
+  const pieGeneralSettings = {
+    backgroundColor: "transparent",
+    paddingTop: 0,
+    paddingRight: 0,
+    paddingBottom: 0,
+    paddingLeft: 0,
   };
 
   return (
@@ -123,51 +129,37 @@ export default function StatisticPage() {
           </h2>
         )}
         <S.DualPie>
-          {/* <S.PieWithDescription>
-            <h2>유저 티어 분포(소트안함)</h2>
-            <Pie
-              data={tierDist}
-              generalSettings={{
-                backgroundColor: "white",
-              }}
-              pieSettings={{
-                color: makeColor(tierDist),
-                innerRadius: 0.4,
-                cornerRadius: 0.04,
-                padAngle: 1,
-                startAngle: 270,
-                // sortByValue: true,
-              }}
-            />
-          </S.PieWithDescription> */}
           <S.PieWithDescription>
-            <h2>유저 티어 분포(소트했더니색밀림)</h2>
-            <Pie
-              data={tierDist}
-              generalSettings={{
-                backgroundColor: "white",
-              }}
-              pieSettings={{
-                color: makeColor(tierDist),
-                innerRadius: 0.4,
-                cornerRadius: 0.04,
-                padAngle: 1,
-                startAngle: 270,
-                sortByValue: true,
-              }}
-              labelSettings={{
-                labelText: "label",
-                labelOpacity: 0.5,
-              }}
-            />
+            <h2>유저 티어 분포</h2>
+            {tierDist.length > 0 && (
+              <Pie
+                data={makeData(tierDist)}
+                generalSettings={pieGeneralSettings}
+                pieSettings={{
+                  color: makeColor(tierDist),
+                  innerRadius: 0.4,
+                  cornerRadius: 0.04,
+                  padAngle: 1,
+                  startAngle: 270,
+                  sortByValue: true,
+                }}
+                labelSettings={{
+                  labelText: "ratio",
+                  labelOpacity: 0.5,
+                }}
+                arcLinkLabelSettings={{
+                  arcLinkLabelTextColor: makeColor(tierDist),
+                  arcLinkLabelLineColor: makeColor(tierDist),
+                }}
+                legendSettings={{ useLegend: false }}
+              />
+            )}
           </S.PieWithDescription>
           <S.PieWithDescription>
             <h2>유저 포지션 분포</h2>
             <Pie
-              data={positionDist}
-              generalSettings={{
-                backgroundColor: "white",
-              }}
+              data={makeData(positionDist)}
+              generalSettings={pieGeneralSettings}
               pieSettings={{
                 innerRadius: 0.5,
                 cornerRadius: 0.04,
@@ -176,41 +168,46 @@ export default function StatisticPage() {
                 sortByValue: true,
               }}
               labelSettings={{
-                labelText: "label",
+                labelText: "ratio",
                 labelOpacity: 0.5,
               }}
+              legendSettings={{ useLegend: false }}
             />
           </S.PieWithDescription>
         </S.DualPie>
         <S.DualPie>
           <S.PieWithDescription>
             <h2>티어별 투표 승률</h2>
-            <Pie
-              data={winRateByTier}
-              generalSettings={{
-                backgroundColor: "white",
-              }}
-              pieSettings={{
-                color: makeColor(winRateByTier),
-                innerRadius: 0.4,
-                cornerRadius: 0.04,
-                padAngle: 1,
-                startAngle: 270,
-                sortByValue: true,
-              }}
-              labelSettings={{
-                labelText: "label",
-                labelOpacity: 0.5,
-              }}
-            />
+            {winRateByTier.length > 0 && (
+              <Pie
+                data={makeData(winRateByTier)}
+                generalSettings={pieGeneralSettings}
+                pieSettings={{
+                  color: makeColor(winRateByTier),
+                  innerRadius: 0.4,
+                  cornerRadius: 0.04,
+                  padAngle: 1,
+                  startAngle: 270,
+                  // sortByValue: true,
+                }}
+                labelSettings={{
+                  labelText: "ratio",
+                  labelOpacity: 0.5,
+                }}
+                arcLinkLabelSettings={{
+                  arcLinkLabelText: "label",
+                  arcLinkLabelTextColor: makeColor(winRateByTier),
+                  arcLinkLabelLineColor: makeColor(winRateByTier),
+                }}
+                legendSettings={{ useLegend: false }}
+              />
+            )}
           </S.PieWithDescription>
           <S.PieWithDescription>
             <h2>포지션별 투표 승률</h2>
             <Pie
-              data={winRateByPosition}
-              generalSettings={{
-                backgroundColor: "white",
-              }}
+              data={makeData(winRateByPosition)}
+              generalSettings={pieGeneralSettings}
               pieSettings={{
                 innerRadius: 0.5,
                 cornerRadius: 0.04,
@@ -219,9 +216,10 @@ export default function StatisticPage() {
                 sortByValue: true,
               }}
               labelSettings={{
-                labelText: "label",
+                labelText: "ratio",
                 labelOpacity: 0.5,
               }}
+              legendSettings={{ useLegend: false }}
             />
           </S.PieWithDescription>
         </S.DualPie>
