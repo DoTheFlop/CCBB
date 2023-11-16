@@ -19,6 +19,7 @@ export default function OngoingVote() {
     ccbbApi
       .get("/post/vote/participationList", { headers })
       .then((res) => {
+        console.log(res)
         SetMyVoteList(res.data.participationList);
       })
       .catch((e) => console.log(e));
@@ -58,12 +59,12 @@ export default function OngoingVote() {
   return (
     <S.main>
       <S.CountAndBtn>
-        <span className="total-count">{dummyVotes.length}건</span>
+        <span className="total-count">{myVoteList.length}건</span>
         <Link to="/lolvote/create">
           <Button1 text={"투표 만들기"} width={"120px"} height={"30px"} />
         </Link>
       </S.CountAndBtn>
-      {dummyVotes.map((vote, index) => {
+      {myVoteList.map((vote, index) => {
         return <VotePreview key={index} {...vote} />;
       })}
     </S.main>
