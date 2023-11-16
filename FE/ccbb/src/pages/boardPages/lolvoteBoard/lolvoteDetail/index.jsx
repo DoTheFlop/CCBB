@@ -765,6 +765,7 @@ export default function LoLvoteDetailPage() {
                     }}
                     $bgcolor="#97A7FF"
                     $pick={userPick === 1}
+                    $side={1}
                   >
                     <UserProfile
                       imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user1}`}
@@ -783,6 +784,7 @@ export default function LoLvoteDetailPage() {
                     }}
                     $bgcolor="#FF9797"
                     $pick={userPick === 2}
+                    $side={2}
                   >
                     <UserProfile
                       imgUrl={`${process.env.REACT_APP_BASE_SERVER}profileimg/${curPost.vote.user2}`}
