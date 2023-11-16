@@ -109,7 +109,6 @@ export default function MyPage() {
           <S.textAndBtn>
             <TollIcon />
             <div>{user.point}P</div>
-            <Button1 text="내역보기" height={"30px"}></Button1>
           </S.textAndBtn>
         </S.textSection>
         <AccountCard loltier={user.lol} />
