@@ -219,7 +219,7 @@ export default function LoLvoteDetailPage() {
   }, [curPost]);
 
   useEffect(() => {
-    if (voteResult) {
+    if (voteResult && token) {
       ccbbApi.get("/user/profile", { headers })
       .then((res) => {
         // user1이 이겼을때 승자를 user1으로 세팅
@@ -680,7 +680,7 @@ export default function LoLvoteDetailPage() {
                         )}
                       </S.FilePreview>
                       {/* 패자만 볼수있음 */}
-                      {curUser === loser && (
+                      {token && curUser === loser && (
                         <>
                           <input
                             type="file"
@@ -722,7 +722,7 @@ export default function LoLvoteDetailPage() {
                         />
                       )}
                       {/* 승자만 볼수있음 */}
-                      {!dPromise && curUser === winner && (
+                      {token && !dPromise && curUser === winner && (
                         <S.ARWrapper>
                           <h1>공약을 이행했다고 생각하시나요?</h1>
                           <S.AWrapper>
