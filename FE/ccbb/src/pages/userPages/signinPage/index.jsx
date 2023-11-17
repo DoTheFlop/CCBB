@@ -8,7 +8,7 @@ import { useRecoilValue, useSetRecoilState } from "recoil";
 import { userState } from "../../../recoil/UserAtom";
 import { UrlAtom } from "../../../recoil/UrlAtom";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SigninPage() {
   const [email, setEmail] = useState("");
@@ -43,7 +43,7 @@ export default function SigninPage() {
       }
     } catch (e) {
       console.log(e);
-      toast.error('이메일 또는 비밀번호가 잘못되었습니다.');
+      toast.error("이메일 또는 비밀번호가 잘못되었습니다.");
     }
 
     console.timeEnd("doLogin");
@@ -95,12 +95,12 @@ export default function SigninPage() {
         onClick={doLogin}
       />
 
-      <a href="http://localhost:8081/api/oauth2/authorization/kakao">
+      {/* <a href="http://localhost:8081/api/oauth2/authorization/kakao">
         kakao(localhost:8081)
       </a>
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         kakao(ccbb.pro)
-      </a>
+      </a> */}
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         <img
           src="/resource/kakao_login_large_wide.png"
@@ -117,13 +117,13 @@ export default function SigninPage() {
         </Link>
       </S.signinMenu>
       <ToastContainer
-      position="top-right"
-      limit={1}
-      closeButton={false}
-      autoClose={2200}
-      closeOnClick
-      hideProgressBar
-    />
+        position="top-right"
+        limit={1}
+        closeButton={false}
+        autoClose={2200}
+        closeOnClick
+        hideProgressBar
+      />
     </S.bg>
   );
 }
