@@ -20,7 +20,7 @@ import Loading from "../../../../component/common/Loading";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MyTooltip from "../../../../component/common/inputs/tooltip";
-import moment from 'moment';
+import moment from "moment";
 
 export default function LoLvoteCreatePage() {
   const options = [
@@ -52,7 +52,7 @@ export default function LoLvoteCreatePage() {
     setDatePickerOpen(false);
     setVoteArticle((prev) => ({
       ...prev,
-      deadline: moment(date).format('YYYY-MM-DDTHH:mm:ss'),
+      deadline: moment(date).format("YYYY-MM-DDTHH:mm:ss"),
     }));
 
     console.log(voteArticle.deadline);
@@ -104,7 +104,9 @@ export default function LoLvoteCreatePage() {
     const file = event.target.files[0];
     if (file) {
       if (file.size >= 100 * 1024 * 1024) {
-        toast.error('동영상 파일 크기가 너무 큽니다. 100MB 이하의 파일을 업로드해주세요.');
+        toast.error(
+          "동영상 파일 크기가 너무 큽니다. 100MB 이하의 파일을 업로드해주세요."
+        );
         return;
       }
 
@@ -359,6 +361,7 @@ export default function LoLvoteCreatePage() {
                 title: e.target.value,
               }));
             }}
+            maxLength={40}
           />
           <InputComment
             value={voteArticle.argument}
@@ -505,6 +508,7 @@ export default function LoLvoteCreatePage() {
                 promise: e.target.value,
               }));
             }}
+            maxLength={80}
           />
           <S.CreateBodybottom>
             <S.LeftBottom>

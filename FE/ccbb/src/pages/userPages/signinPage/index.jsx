@@ -75,6 +75,7 @@ export default function SigninPage() {
         onChange={(e) => {
           setEmail(e.target.value);
         }}
+        maxLength={40}
       />
       <Input1
         label="패스워드"
@@ -87,6 +88,7 @@ export default function SigninPage() {
         onChange={(e) => {
           setPassword(e.target.value);
         }}
+        maxLength={20}
       />
       <Button1
         text={"로그인"}
@@ -95,12 +97,13 @@ export default function SigninPage() {
         onClick={doLogin}
       />
 
-      {/* <a href="http://localhost:8081/api/oauth2/authorization/kakao">
+      <a href="http://localhost:8081/api/oauth2/authorization/kakao">
         kakao(localhost:8081)
       </a>
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         kakao(ccbb.pro)
-      </a> */}
+      </a>
+      <br />
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         <img
           src="/resource/kakao_login_large_wide.png"

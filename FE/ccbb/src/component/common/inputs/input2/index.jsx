@@ -12,6 +12,7 @@ export default function Input2({
   onChange,
   tooltip = false,
   tooltipDetail = "",
+  maxLength,
 }) {
   return (
     <S.InputBox>
@@ -32,6 +33,7 @@ export default function Input2({
         placeholder={placeholder}
         disabled={disabled} // disabled 속성에 따라 input 요소를 비활성화
         onChange={onChange}
+        maxLength={maxLength}
       />
     </S.InputBox>
   );

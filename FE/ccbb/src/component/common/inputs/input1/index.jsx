@@ -9,6 +9,7 @@ export default function Input1({
   value = "",
   onKeyPress,
   onChange,
+  maxLength,
 }) {
   return (
     <S.InputBox>
@@ -20,6 +21,7 @@ export default function Input1({
         height={height}
         onKeyPress={onKeyPress}
         onChange={onChange}
+        maxLength={maxLength}
       />
     </S.InputBox>
   );
