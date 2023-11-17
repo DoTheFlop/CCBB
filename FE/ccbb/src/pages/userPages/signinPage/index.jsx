@@ -97,12 +97,12 @@ export default function SigninPage() {
         onClick={doLogin}
       />
 
-      <a href="http://localhost:8081/api/oauth2/authorization/kakao">
+      {/* <a href="http://localhost:8081/api/oauth2/authorization/kakao">
         kakao(localhost:8081)
       </a>
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         kakao(ccbb.pro)
-      </a>
+      </a> */}
       <br />
       <a href="http://ccbb.pro/api/oauth2/authorization/kakao">
         <img
