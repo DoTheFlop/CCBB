@@ -50,4 +50,37 @@ public class FileController {
 		}
 	}
 
+	@GetMapping("/get/promise/{postId}")
+	public ResponseEntity<FileSystemResource> getPromiseFile(@PathVariable int postId) {
+		try {
+			ResponseEntity<FileSystemResource> promiseFile = fileService.getPromiseFile(postId);
+			return promiseFile;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/add/promise/{postId}")
+	public ResponseEntity<Boolean> addPromiseFile(@PathVariable int postId, @RequestHeader String Authorization,
+		@RequestPart(name = "file") MultipartFile file) {
+		try {
+			boolean result = fileService.savePromiseFile(file, postId);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/remove/promise/{postId}")
+	public ResponseEntity<Boolean> removePromiseFile(@PathVariable int postId, @RequestHeader String Authorization) {
+		try {
+			boolean result = fileService.removePromiseFile(postId);
+			return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 }

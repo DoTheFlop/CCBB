@@ -10,4 +10,6 @@ import com.D104.ccbb.file.domain.File;
 @Repository
 public interface FileRepo extends JpaRepository<File, Integer> {
 	List<File> findByPostId_PostId(int postId);
+
+	File findByPostId_PostIdAndIsPromise(int postId, boolean isPromise);
 }
