@@ -28,22 +28,16 @@ public class PostLoadDto {
 	private String title;
 	private String content;
 	private LocalDateTime createDate;
-	private List<CommentGetDto> comment;
 	private Integer type;
 	private List<FileDto> fileId;
 	private VoteDto vote;
 	public static PostLoadDto fromEntity(Post post) {
-		List<CommentGetDto> commentGetDto = post.getComment()
-			.stream()
-			.map(m -> CommentGetDto.fromEntity(m))
-			.collect(Collectors.toList());
 		VoteDto voteDto = VoteDto.fromEntity(post.getVote());
 		return PostLoadDto.builder()
 			.postId(post.getPostId())
 			.title(post.getTitle())
 			.content(post.getContent())
 			.createDate(post.getCreateDate())
-			.comment(commentGetDto)
 			.type(post.getType())
 			.vote(voteDto)
 			.fileId(post.getFiles().stream().map(FileDto::fromEntity).collect(Collectors.toList()))

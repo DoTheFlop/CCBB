@@ -61,22 +61,47 @@ public class UserController {
 
 	@PostMapping("/esign-up")
 	public ResponseEntity<String> esignup(@RequestBody UserLoginDto userLoginDto) {
-		userService.eSignup(userLoginDto);
-		return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
+		try {
+			userService.eSignup(userLoginDto);
+			return new ResponseEntity<>("회원가입 완료", HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			log.error(e.getMessage());
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			log.error("회원가입 중 에러 발생", e);
+			return new ResponseEntity<>("회원가입 중 에러 발생", HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
-	@PostMapping("/elogin")
-	public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+//	@PostMapping("/elogin")
+//	public ResponseEntity<Map<String, Object>> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+//		Map<String, Object> resultMap = new HashMap<>();
+//		HttpStatus status;
+//		try{
+//			String token = userService.elogin(userEmailPasDto);
+//			resultMap.put("token:", token);
+//			status = HttpStatus.OK;
+//		}catch (Exception e){
+//			resultMap.put("message", "fail: " + e);
+//			status = HttpStatus.INTERNAL_SERVER_ERROR;
+//		}
+//		return new ResponseEntity<Map<String, Object>>(resultMap, status);
+//	}
+@PostMapping("/elogin")
+public ResponseEntity<String> login(@RequestBody UserEmailPasDto userEmailPasDto) {
+	try {
 		String token = userService.elogin(userEmailPasDto);
 		return new ResponseEntity<>(token, HttpStatus.OK);
+	}catch (Exception e){
+		return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+}
 	@PutMapping("/modify")
 	public ResponseEntity<Map<String, Object>> update(@RequestHeader String Authorization,
 		@RequestBody UserDto userDto) {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status;
-
 		try {
 
 			userService.updateUser(jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userDto);
@@ -84,6 +109,7 @@ public class UserController {
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.OK;
 		} catch (Exception e) {
+			log.error("", e);
 			resultMap.put("message", "fail: " + e);
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -104,6 +130,7 @@ public class UserController {
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
+			log.error("", e);
 			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -121,6 +148,7 @@ public class UserController {
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.OK;
 		} catch (Exception e) {
+			log.error("", e);
 			resultMap.put("message", "fail: " + e);
 			resultMap.put("Authorization", Authorization);
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -138,11 +166,14 @@ public class UserController {
 			boolean pwCheck = userService.userPwCheck(
 				jwtTokenService.getUserEmail(jwtTokenService.extractToken(Authorization)), userPw);
 			json.put("check", pwCheck);
+			json.put("message", "success");
 			json.put("Authorization", Authorization);
 			status = HttpStatus.OK;
 		} catch (Exception e) {
+			log.error("", e);
 			json.put("message", "fail: " + e);
 			json.put("Authorization", Authorization);
+			log.error("비밀번호 확인 에러", e);
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
 		return new ResponseEntity<>(json, status);
@@ -154,7 +185,7 @@ public class UserController {
 		try {
 			log.info(lolName);
 			boolean result = userService.updateLolTier(Authorization, lolName);
-			return new ResponseEntity<>(result, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(result, HttpStatus.OK);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return new ResponseEntity<>(false, HttpStatus.INTERNAL_SERVER_ERROR);

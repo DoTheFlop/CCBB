@@ -22,23 +22,23 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	Optional<User> findUserByEmail(String email);
 
 	@Query(value = "select u.lol_tier as lolTier, sum(u.vote_count) as voteCount, sum(u.vote_victory) as voteVictory " +
-		"from User u " +
+		"from user u " +
 		"group by u.lol_tier",nativeQuery = true)
 	List<Map<String, Object>> getStatisticsTier();
 
-	@Query(value = "select u.main_position as position, sum(u.vote_count) as voteCount, sum(u.vote_victory) as voteVictory " +
-		"from User u " +
+	@Query(value = "select u.main_position as lolPosition, sum(u.vote_count) as voteCount, sum(u.vote_victory) as voteVictory " +
+		"from user u " +
 		"group by u.main_position",nativeQuery = true)
 	List<Map<String, Object>> getStatisticsPosition();
 
 	@Query(value = "select u.lol_tier as lolTier, count(*) as userCount "+
-		"from User u " +
+		"from user u " +
 		"group by u.lol_tier",nativeQuery = true)
 	List<Map<String, Object>> getUserCountTier();
 
 
 	@Query(value = "select u.main_position as lolPosition, count(*) as userCount "+
-		"from User u " +
+		"from user u " +
 		"group by u.main_position",nativeQuery = true)
 	List<Map<String, Object>> getUserCountPosition();
 

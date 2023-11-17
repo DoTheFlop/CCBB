@@ -41,14 +41,19 @@ public class ProfileImgController {
 	}
 
 	@GetMapping("/{userId}")
-	public ResponseEntity<byte[]> getProfileImg(@PathVariable int userId) {
+	public ResponseEntity<Object> getProfileImg(@PathVariable int userId) {
 		try {
 			byte[] img = profileImgService.getProfileImg(userId);
+
+			if (img == null) {
+				return new ResponseEntity<>("Image not found", HttpStatus.OK);
+			}
+
 			HttpHeaders headers = new HttpHeaders();
 			headers.setContentType(MediaType.IMAGE_JPEG);
 			return new ResponseEntity<>(img, headers, HttpStatus.OK);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			log.error("", e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

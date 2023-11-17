@@ -37,11 +37,11 @@ public class UserService {
 	private final JwtTokenService jwtTokenService;
 	private final PasswordEncoder passwordEncoder;
 
-	@Value("${riot.api.key}")
-	private String RIOT_API_KEY;
-
 	@Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
 	private String USER_INFO_URI;
+
+	@Value("${riot.api.key}")
+	private String RIOT_API_KEY;
 
 	@Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
 	private String REDIRECT_URI;
@@ -140,12 +140,15 @@ public class UserService {
 	public void updateUser(String email, UserDto userDto) {
 		User user = userRepository.findByEmail(email)
 			.orElseThrow(() -> new IllegalStateException(" No User"));
-		if (user.getNickname() != null)
+		if (userDto.getNickname() != null && userDto.getNickname().length() > 0)
 			user.setNickname(userDto.getNickname());
-		if (user.getSex() != null)
+		if (userDto.getSex() != null)
 			user.setSex(userDto.getSex());
-		if (user.getPassword() != null)
-			user.setPassword(userDto.getPassword());
+		if (userDto.getPassword() != null && userDto.getPassword().length() > 0) {
+			System.out.println("-------------------------------------");
+			System.out.println(userDto.getPassword());
+			user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+		}
 		userRepository.save(user); // 안적어도 @Transactional 때문에 저장이 자동으로 됨 . 가독성 때매 놔둔거임
 	}
 
@@ -183,7 +186,6 @@ public class UserService {
 
 	public boolean userPwCheck(String userEmail, String pw) {
 		User user = userRepository.findByEmail(userEmail).get();
-
 		return passwordEncoder.matches(pw, user.getPassword());
 	}
 

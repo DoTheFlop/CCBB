@@ -45,286 +45,301 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PostController {
 
-	private final PostService postService;
-	private final JwtTokenService jwtTokenService;
-	private final UserRepository userRepository;
-	private final LikesService likesService;
-	private final LikesRepo likesRepo;
-	private final PostRepo postRepo;
-	private final FileService fileService;
-	private final UserService userService;
-	private final VoteService voteService;
-	// private final FileService fileService;
+    private final PostService postService;
+    private final JwtTokenService jwtTokenService;
+    private final UserRepository userRepository;
+    private final LikesService likesService;
+    private final LikesRepo likesRepo;
+    private final PostRepo postRepo;
+    private final FileService fileService;
+    private final UserService userService;
+    private final VoteService voteService;
+    // private final FileService fileService;
 
-	// public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
+    // public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization, @RequestBody PostDto postDto, @RequestParam List<MultipartFile> files) {
 
-	@PostMapping("/add")
-	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
-		@RequestPart(value = "files", required = false) List<MultipartFile> files,
-		@RequestPart(value = "post") PostDto postDto) {
-		log.info(String.valueOf(postDto));
-		if (files != null) {
-			for (MultipartFile a : files) {
-				log.info(a.getOriginalFilename());
-			}
-		}
+    @PostMapping("/add")
+    public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
+                                                   @RequestPart(value = "files", required = false) List<MultipartFile> files,
+                                                   @RequestPart(value = "post") PostDto postDto) {
+        log.info(String.valueOf(postDto));
+        if (files != null) {
+            for (MultipartFile a : files) {
+                log.info(a.getOriginalFilename());
+            }
+        }
 
-		postDto.setUserId(
-			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.getUserId());
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			Post post = postService.setPost(postDto);
-			if (files != null)
-				fileService.saveFile(files, "post", post.getPostId());
-			resultMap.put("postId", post.getPostId());
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
-			System.out.println(e);
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+        postDto.setUserId(
+                userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                        .getUserId());
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            Post post = postService.setPost(postDto);
+            if (files != null)
+                fileService.saveFile(files, "post", post.getPostId());
+            resultMap.put("postId", post.getPostId());
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
+            System.out.println(e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/free/list")
-	public ResponseEntity<Map<String, Object>> add1() {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			List<PostLoadDto> freeList = postService.getFree()
-				.stream()
-				.map(m -> PostLoadDto.fromEntity(m))
-				.collect(Collectors.toList());
-			resultMap.put("freeList", freeList);
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getClass().getSimpleName());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/free/list")
+    public ResponseEntity<Map<String, Object>> add1() {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            List<PostLoadDto> freeList = postService.getFree()
+                    .stream()
+                    .map(m -> PostLoadDto.fromEntity(m))
+                    .collect(Collectors.toList());
+            resultMap.put("freeList", freeList);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/vote/detail")
-	public ResponseEntity<Map<String, Object>> detail(@RequestParam int postId) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			resultMap.put("voteList", postService.getDetail(postId));
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/detail")
+    public ResponseEntity<Map<String, Object>> detail(@RequestParam int postId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            resultMap.put("voteList", postService.getDetail(postId));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            log.error("vote detail 불러오기 오류: {}", e.getMessage());
+            resultMap.put("message", e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/vote/list")
-	public ResponseEntity<Map<String, Object>> list(@RequestParam int page) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			resultMap.put("voteList", postService.getPageList(page));
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
-	@GetMapping("/vote/pastList")
-	public ResponseEntity<Map<String, Object>> pastList(@RequestParam int page) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			resultMap.put("voteList", postService.getPastPageList(page));
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/list")
+    public ResponseEntity<Map<String, Object>> list(@RequestParam int page) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            resultMap.put("voteList", postService.getPageList(page));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/vote/popularList")
-	public ResponseEntity<Map<String, Object>> popularList(@RequestParam int page) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			resultMap.put("voteList", postService.getPopularityPage(page));
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
-	@GetMapping("/vote/popularPastList")
-	public ResponseEntity<Map<String, Object>> popularPastList(@RequestParam int page) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			resultMap.put("voteList", postService.getPopularityPastPage(page));
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/pastList")
+    public ResponseEntity<Map<String, Object>> pastList(@RequestParam int page) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            resultMap.put("voteList", postService.getPastPageList(page));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/vote/participationList")
-	public ResponseEntity<Map<String, Object>> participationList(@RequestHeader String Authorization) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		List<VoteListDto> partList = voteService.getParticipationList(
-			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.getUserId());
-		try {
-			resultMap.put("participationList", partList);
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
-	@GetMapping("/vote/participationPastList")
-	public ResponseEntity<Map<String, Object>> participationPastList(@RequestHeader String Authorization) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		List<VoteListDto> partList = voteService.getParticipationPastList(
-			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.getUserId());
-		try {
-			resultMap.put("participationList", partList);
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/popularList")
+    public ResponseEntity<Map<String, Object>> popularList(@RequestParam int page) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            resultMap.put("voteList", postService.getPopularityPage(page));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@GetMapping("/vote/acceptList")
-	public ResponseEntity<Map<String, Object>> acceptList(@RequestHeader String Authorization) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		List<VoteAcceptDto> acceptList = voteService.getNotAccept(
-			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.getUserId());
-		try {
-			resultMap.put("participationList", acceptList);
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("message", "fail: " + e.getMessage());
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/popularPastList")
+    public ResponseEntity<Map<String, Object>> popularPastList(@RequestParam int page) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            resultMap.put("voteList", postService.getPopularityPastPage(page));
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@PostMapping("/likes/add")
-	public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
-		@RequestBody LikesDto likesDto) {
-		likesDto.setUserId(
-			userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-				.getUserId());
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		try {
-			likesService.setPostLike(likesDto);
-			resultMap.put("message", "success");
-			status = HttpStatus.ACCEPTED;
-		} catch (Exception e) {
-			resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
-			System.out.println(e);
-			status = HttpStatus.INTERNAL_SERVER_ERROR;
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/participationList")
+    public ResponseEntity<Map<String, Object>> participationList(@RequestHeader String Authorization) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        List<VoteListDto> partList = voteService.getParticipationList(
+                userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                        .getUserId());
+        try {
+            resultMap.put("participationList", partList);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@DeleteMapping("/likes/delete")
-	public ResponseEntity<Map<String, Object>> delete(@RequestHeader String Authorization,
-		@RequestParam int likesId) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()) {
-			try {
-				likesService.deleteLikes(likesId);
-				resultMap.put("message", "success");
-				status = HttpStatus.ACCEPTED;
-			} catch (Exception e) {
-				resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
-				System.out.println(e);
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-			}
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/participationPastList")
+    public ResponseEntity<Map<String, Object>> participationPastList(@RequestHeader String Authorization) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        List<VoteListDto> partList = voteService.getParticipationPastList(
+                userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                        .getUserId());
+        try {
+            resultMap.put("participationList", partList);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@DeleteMapping("/delete")
-	public ResponseEntity<Map<String, Object>> deletePost(@RequestHeader String Authorization,
-		@RequestParam int postId) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		if (postRepo.getReferenceById(postId).getUserId().getUserId() == userService.getUserProfile(
-				jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()) {
-			try {
-				postService.deletePost(postId);
-				resultMap.put("message", "success");
-				status = HttpStatus.ACCEPTED;
-			} catch (Exception e) {
-				resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
-				System.out.println(e);
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-			}
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @GetMapping("/vote/acceptList")
+    public ResponseEntity<Map<String, Object>> acceptList(@RequestHeader String Authorization) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        List<VoteAcceptDto> acceptList = voteService.getNotAccept(
+                userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                        .getUserId());
+        try {
+            resultMap.put("participationList", acceptList);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("message", "fail: " + e.getMessage());
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@PutMapping("/modify")
-	public ResponseEntity<Map<String, Object>> modify(@RequestHeader String Authorization,
-		@RequestBody PostDto postDto) {
-		Map<String, Object> resultMap = new HashMap<>();
-		HttpStatus status = null;
-		if (postRepo.getReferenceById(postDto.getPostId()).getUserId().getUserId()
-			== userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
-			.getUserId()) {
-			try {
-				postService.modifyPost(postDto);
-				resultMap.put("message", "success");
-				status = HttpStatus.ACCEPTED;
-			} catch (Exception e) {
-				resultMap.put("message", "fail: " + e.getClass().getSimpleName());
-				System.out.println(e);
-				status = HttpStatus.INTERNAL_SERVER_ERROR;
-			}
-		}
-		return new ResponseEntity<Map<String, Object>>(resultMap, status);
-	}
+    @PostMapping("/likes/add")
+    public ResponseEntity<Map<String, Object>> add(@RequestHeader String Authorization,
+                                                   @RequestBody LikesDto likesDto) {
+        likesDto.setUserId(
+                userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                        .getUserId());
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        try {
+            likesService.setPostLike(likesDto);
+            resultMap.put("message", "success");
+            status = HttpStatus.ACCEPTED;
+        } catch (Exception e) {
+            resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
+            System.out.println(e);
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
 
-	@DeleteMapping("/reject/{postId}")
-	public ResponseEntity<String> reject(@RequestHeader String Authorization, @PathVariable int postId) {
-		try {
-			postService.rejectPost(postId, Authorization);
-			return new ResponseEntity<>("success", HttpStatus.OK);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @DeleteMapping("/likes/delete")
+    public ResponseEntity<Map<String, Object>> delete(@RequestHeader String Authorization,
+                                                      @RequestParam int likesId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        if (likesRepo.getReferenceById(likesId).getUserId().getUserId() == userService.getUserProfile(
+                        jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                .getUserId()) {
+            try {
+                likesService.deleteLikes(likesId);
+                resultMap.put("message", "success");
+                status = HttpStatus.ACCEPTED;
+            } catch (Exception e) {
+                resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
+                System.out.println(e);
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, Object>> deletePost(@RequestHeader String Authorization,
+                                                          @RequestParam int postId) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        if (postRepo.getReferenceById(postId).getUserId().getUserId() == userService.getUserProfile(
+                        jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                .getUserId()) {
+            try {
+                postService.deletePost(postId);
+                resultMap.put("message", "success");
+                status = HttpStatus.ACCEPTED;
+            } catch (Exception e) {
+                resultMap.put("messege", "fail: " + e.getClass().getSimpleName());
+                System.out.println(e);
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<Map<String, Object>> modify(@RequestHeader String Authorization,
+                                                      @RequestBody PostDto postDto) {
+        Map<String, Object> resultMap = new HashMap<>();
+        HttpStatus status = null;
+        if (postRepo.getReferenceById(postDto.getPostId()).getUserId().getUserId()
+                == userService.getUserProfile(jwtTokenService.getUserEmail((jwtTokenService.extractToken(Authorization))))
+                .getUserId()) {
+            try {
+                postService.modifyPost(postDto);
+                resultMap.put("message", "success");
+                status = HttpStatus.ACCEPTED;
+            } catch (Exception e) {
+                resultMap.put("message", "fail: " + e.getClass().getSimpleName());
+                System.out.println(e);
+                status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+        return new ResponseEntity<Map<String, Object>>(resultMap, status);
+    }
+
+    @DeleteMapping("/reject/{postId}")
+    public ResponseEntity<String> reject(@RequestHeader String Authorization, @PathVariable int postId) {
+        try {
+            postService.rejectPost(postId, Authorization);
+            return new ResponseEntity<>("success", HttpStatus.OK);
+        } catch (Exception e) {
+            log.error("투표 거절 실패 ", e);
+            return new ResponseEntity<>("fail", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/promise/accept/{postId}")
+    public ResponseEntity<String> acceptPromise(@RequestHeader String Authorization, @PathVariable int postId) {
+        try {
+            String result = postService.acceptPromise(Authorization, postId);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>("실패", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
