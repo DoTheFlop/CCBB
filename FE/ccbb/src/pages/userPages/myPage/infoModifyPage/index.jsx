@@ -56,6 +56,7 @@ export default function InfoModifyPage() {
                 password: e.target.value,
               }));
             }}
+            maxLength={20}
           />
           <Input1
             label="새 패스워드 확인"
@@ -67,6 +68,7 @@ export default function InfoModifyPage() {
             onChange={(e) => {
               SetPwCheck(e.target.value);
             }}
+            maxLength={20}
           />
           {pwCheck && !pwSame && (
             <div className="alert-message">패스워드가 일치하지 않습니다.</div>
@@ -99,6 +101,7 @@ export default function InfoModifyPage() {
               nickname: e.target.value,
             }));
           }}
+          maxLength={12}
         />
         <Button1
           text={"수정"}

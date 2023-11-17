@@ -5,7 +5,7 @@ import Button1 from "../../../component/common/buttons";
 import { ccbbApi } from "../../../api/ccbbApi";
 import { useNavigate } from "react-router";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupPage() {
   const navigate = useNavigate();
@@ -19,17 +19,17 @@ export default function SignupPage() {
 
   const emailRegex = /\S+@\S+\.\S+/;
   const createDate = new Date().toISOString();
-  
+
   const handleButtonSignup = () => {
-    const { email, nickname ,name, password } = user;
+    const { email, nickname, name, password } = user;
 
     // 필수 필드가 비어있는지 확인
     if (!email) {
       toast.error("이메일을 입력해 주세요");
       return;
-    } 
+    }
     if (!emailRegex.test(email)) {
-      toast.error('유효한 이메일 형식을 입력해 주세요');
+      toast.error("유효한 이메일 형식을 입력해 주세요");
       return;
     }
     if (!password) {
@@ -46,34 +46,33 @@ export default function SignupPage() {
     }
 
     const body = {
-      "createDate" : createDate,
-      "email" : user.email,
-      "name" : user.name,
-      "nickname" : user.nickname,
-      "password" : user.password,
-      "point" : 0,
-      "sex" : user.gender,
-      "state" : "1",
-      "voteCount" : 0,
-      "voteVictory":0
-    }
-//
-ccbbApi
-.post("/user/esign-up", JSON.stringify(body))
-.then((res) => {
-  console.log(res);
-  navigate('/signin');
-})
-.catch((e) => {
-  console.log(e);
-  if (e.response && e.response.status === 400) {
-    toast.error(e.response.data);
-  } else {
-    toast.error("회원가입 중 에러 발생");
-  }
-});
-  }
-
+      createDate: createDate,
+      email: user.email,
+      name: user.name,
+      nickname: user.nickname,
+      password: user.password,
+      point: 0,
+      sex: user.gender,
+      state: "1",
+      voteCount: 0,
+      voteVictory: 0,
+    };
+    //
+    ccbbApi
+      .post("/user/esign-up", JSON.stringify(body))
+      .then((res) => {
+        console.log(res);
+        navigate("/signin");
+      })
+      .catch((e) => {
+        console.log(e);
+        if (e.response && e.response.status === 400) {
+          toast.error(e.response.data);
+        } else {
+          toast.error("회원가입 중 에러 발생");
+        }
+      });
+  };
 
   return (
     <>
@@ -94,6 +93,7 @@ ccbbApi
             email: e.target.value,
           }));
         }}
+        maxLength={40}
       />
       <Input1
         label="패스워드"
@@ -108,6 +108,7 @@ ccbbApi
             password: e.target.value,
           }));
         }}
+        maxLength={20}
       />
       <Input1
         label="이름"
@@ -121,6 +122,7 @@ ccbbApi
             name: e.target.value,
           }));
         }}
+        maxLength={10}
       />
       <Input1
         label="닉네임"
@@ -134,32 +136,35 @@ ccbbApi
             nickname: e.target.value,
           }));
         }}
+        maxLength={12}
       />
       <S.GenderBox>
         <label>
           남자
-          <S.GenderRadio 
-          type="radio" 
-          name="gender" 
-          value={true} 
-          onChange={(e) => {
-            setUser((prev) => ({
-              ...prev,
-              gender:e.target.value
-              }))}}
+          <S.GenderRadio
+            type="radio"
+            name="gender"
+            value={true}
+            onChange={(e) => {
+              setUser((prev) => ({
+                ...prev,
+                gender: e.target.value,
+              }));
+            }}
           />
         </label>
         <label>
           여자
-          <S.GenderRadio 
-          type="radio" 
-          name="gender" 
-          value={false} 
-          onChange={(e) => {
-            setUser((prev) => ({
-              ...prev,
-              gender:e.target.value
-              }))}}
+          <S.GenderRadio
+            type="radio"
+            name="gender"
+            value={false}
+            onChange={(e) => {
+              setUser((prev) => ({
+                ...prev,
+                gender: e.target.value,
+              }));
+            }}
           />
         </label>
       </S.GenderBox>
@@ -170,13 +175,13 @@ ccbbApi
         onClick={handleButtonSignup}
       />
       <ToastContainer
-      position="top-right"
-      limit={1}
-      closeButton={false}
-      autoClose={2200}
-      closeOnClick
-      hideProgressBar
-    />
+        position="top-right"
+        limit={1}
+        closeButton={false}
+        autoClose={2200}
+        closeOnClick
+        hideProgressBar
+      />
     </>
   );
 }
