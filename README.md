@@ -37,17 +37,17 @@ gitlab, jira, notion, figma, mattermost
   - 해당 영상에 논점을 연동해서 영상위에 글이 보이도록 했고, 영상에 마우스를 올리면 영상이 실행되며, 영상을 클릭하면 해당 투표글로 가집니다.
   - 현재 가장 많은 투표수를 가진 게시글 5개에 사용된 영상으로 메인페이지를 구성했습니다.
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\메인페이지.gif)
+![메인페이지](/uploads/877012d39976686ec7cd7abe1de1f209/메인페이지.gif)
 
 ### 투표
 
 ### 투표 진행 플로우 차트
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\flowchart.png)
+![flowchart](/uploads/3c5cb5b9c2a2887e775df9389a58918a/flowchart.png)
 
 ### 투표게시글
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\투표게시글.gif)
+![투표게시글](/uploads/0cf93186e8ffa67ccff85619642d4039/투표게시글.gif)
 
 - 투표 기능
   - 투표 기간이 끝나기 전에는 득표수가 보이지 않음
@@ -58,7 +58,7 @@ gitlab, jira, notion, figma, mattermost
 
 ### 투표 작성
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\글작성_2.gif)
+![글작성_2](/uploads/15a770bc0bfe225f49d6084aca076735/글작성_2.gif)
 
 - 영상 업로드
   - 논점을 가리기 위해 영상이 필요하다. 영상을 업로드 하는 기능
@@ -79,7 +79,7 @@ gitlab, jira, notion, figma, mattermost
 
 ### 공약 이행
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\공약이행.gif)
+![투표수락](/uploads/c264b058517bf64cfac1f930eb6aad6f/투표수락.gif)
 
 ### 알림
 
@@ -88,24 +88,23 @@ gitlab, jira, notion, figma, mattermost
 
 ### 티어연동
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\티어연동_1.gif)
+![티어연동_1](/uploads/422161394e84e28bd0e8978ae990dce0/티어연동_1.gif)
 
 - RIOT API를 이용해 LOL 티어 정보 불러오기 기능
 
 ### 상품 응모
 
-![Untitled](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\응모.gif)
-
+![응모](/uploads/23f75c94ad8ddeb652057ac3b396fb67/응모.gif)
 - 사이트에서 활동하면서 모인 포인트를 사용하여 상품을 응모하는 기능
 - **Pessimistic Lock**을 이용해 동시성 문제 해결
 
 ## 📄 아키텍처 설계도
 
-![image (13).png](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\아키텍처.png)
+![아키텍처](/uploads/ca1577a224efd6f602a0938b0eb8dc00/아키텍처.png)
 
 ## 📊 ERD
 
-![굿게이머즈 (1).png](C:\Users\SSAFY\Desktop\최종본\S09P31D104\giffiles\ERD.png)
+![ERD](/uploads/e0785e1de391f260f888bcea8f6f809d/ERD.png)
 
 ## ✌️ 팀원 소개
 
