@@ -650,7 +650,7 @@ export default function LoLvoteDetailPage() {
               {curPost.vote.promise}
 
               {/* curPost.fileId 배열이 존재하고 최소 3개의 요소를 가지고 있을 때 파일 미리보기 부분을 렌더링하지 않음 */}
-              {voteStep() === 2 && (
+              {voteStep() >= 2 && (
                 <>
                   {dPromise && <h3>공약 이행</h3>}
                   {!promiseFile["hasPromise"] && (
