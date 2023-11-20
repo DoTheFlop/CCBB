@@ -19,6 +19,8 @@ import LoLvoteDetailPage from "./pages/boardPages/lolvoteBoard/lolvoteDetail";
 import LoLvoteCreatePage from "./pages/boardPages/lolvoteBoard/lolvoteCreate";
 import PaymentSuccessPage from "./pages/userPages/paymentSuccess";
 import StatisticPage from "./pages/statisticPage";
+import PolicyPage from "./pages/policyPage";
+import TermsOfServicePage from "./pages/termsOfServicePage";
 
 export default function App() {
   return (
@@ -50,6 +52,8 @@ export default function App() {
           <Route path="/gift" element={<GiftPage />}></Route>
           <Route path="/donate" element={<DonatePage />}></Route>
           <Route path="/kakaologin/:token" element={<KakaoLoginPage />}></Route>
+          <Route path="/policy/1" element={<PolicyPage />}></Route>
+          <Route path="/policy/2" element={<TermsOfServicePage />}></Route>
         </Routes>
       </S.main>
     </ThemeProvider>
